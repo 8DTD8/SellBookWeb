@@ -1,0 +1,7 @@
+com\bookstore\service\CategoryServiceTest.class
+com\bookstore\controller\UserControllerTest.class
+com\bookstore\controller\BookControllerTest.class
+com\bookstore\service\BookServiceTest.class
+com\bookstore\controller\CategoryControllerTest.class
+com\bookstore\controller\HealthCheckControllerTest.class
+com\bookstore\service\UserServiceTest.class
