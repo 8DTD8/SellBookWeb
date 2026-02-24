@@ -32,7 +32,6 @@ public class BookControllerTest {
         testBook.setTitle("Test Book");
         testBook.setAuthor("Test Author");
         testBook.setDescription("Test Description");
-        testBook.setIsbn("1234567890");
         testBook.setPrice(99.99);
         testBook.setQuantity(10);
         testBook.setCategoryId("607f1f77bcf86cd799439011");

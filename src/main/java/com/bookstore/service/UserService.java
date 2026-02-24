@@ -60,6 +60,17 @@ public class UserService {
         return convertToDTO(updatedUser);
     }
 
+    public UserDTO updateUserRole(String id, String newRole) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (newRole != null && !newRole.isEmpty()) {
+            user.setRole(newRole);
+            user.setUpdatedAt(LocalDateTime.now());
+        }
+        User updatedUser = userRepository.save(user);
+        return convertToDTO(updatedUser);
+    }
+
     public void deleteUser(String id) {
         if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException("User not found");

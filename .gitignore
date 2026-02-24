@@ -1,0 +1,219 @@
+# =====================================
+# Maven
+# =====================================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+.flattened-pom.xml
+
+# =====================================
+# IDE - IntelliJ IDEA
+# =====================================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.DS_Store
+
+# =====================================
+# IDE - Eclipse
+# =====================================
+.classpath
+.project
+.settings/
+.metadata
+*.swp
+*.swo
+
+# =====================================
+# IDE - VS Code
+# =====================================
+.vscode/
+*.code-workspace
+.history/
+
+# =====================================
+# IDE - NetBeans
+# =====================================
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# =====================================
+# Build & Compilation
+# =====================================
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# =====================================
+# Application Logs
+# =====================================
+logs/
+*.log
+*.log.*
+spring.log
+
+# =====================================
+# File Upload Directories
+# =====================================
+uploads/
+uploads/images/
+uploads/**/*
+
+# =====================================
+# Database
+# =====================================
+*.db
+*.sqlite
+*.sqlite3
+h2.mv.db
+
+# =====================================
+# Operating System
+# =====================================
+# Windows
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+.trash-*
+.fuse_hidden*
+
+# =====================================
+# Environment & Configuration
+# =====================================
+.env
+.env.local
+.env.*.local
+.env.production.local
+application-local.properties
+application-dev.properties
+application-prod.properties
+
+# =====================================
+# Node.js (if used for frontend integration)
+# =====================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# =====================================
+# Gradle (alternative to Maven)
+# =====================================
+.gradle/
+gradle-app.setting
+.gradletasknamecache
+
+# =====================================
+# SonarQube
+# =====================================
+.sonarqube/
+
+# =====================================
+# JetBrains
+# =====================================
+.idea_modules/
+*.jks
+*.keystore
+
+# =====================================
+# Generated Files
+# =====================================
+generated/
+generated-sources/
+generated-test-sources/
+
+# =====================================
+# Temporary Files
+# =====================================
+*.tmp
+*.bak
+*.temp
+~*
+.~*
+
+# =====================================
+# Test Reports
+# =====================================
+test-results/
+test-output/
+surefire-reports/
+jacoco.exec
+
+# =====================================
+# CloudinaryConfiguration (if using local config)
+# =====================================
+cloudinary.properties
+
+# =====================================
+# Checkstyle Reports
+# =====================================
+checkstyle-result.xml
+checkstyle-suppressions.xml
+
+# =====================================
+# Maven Wrapper
+# =====================================
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# =====================================
+# Security Files (Sensitive Data)
+# =====================================
+*.pem
+*.key
+*.cer
+*.crt
+application-secret.properties
+application-security.properties
+
+# =====================================
+# Local Testing Files
+# =====================================
+test-data/
+local-test-output/
+debug-logs/
+
+# =====================================
+# Database Backups
+# =====================================
+*.backup
+*.bak
+*.dump
+*.sql
+
+# =====================================
+# Miscellaneous
+# =====================================
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+.vscode-settings.json
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties

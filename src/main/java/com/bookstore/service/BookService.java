@@ -24,7 +24,6 @@ public class BookService {
         book.setTitle(bookDTO.getTitle());
         book.setAuthor(bookDTO.getAuthor());
         book.setDescription(bookDTO.getDescription());
-        book.setIsbn(bookDTO.getIsbn());
         book.setPrice(bookDTO.getPrice());
         book.setQuantity(bookDTO.getQuantity());
         book.setCategoryId(bookDTO.getCategoryId());
@@ -89,7 +88,6 @@ public class BookService {
         dto.setTitle(book.getTitle());
         dto.setAuthor(book.getAuthor());
         dto.setDescription(book.getDescription());
-        dto.setIsbn(book.getIsbn());
         dto.setPrice(book.getPrice());
         dto.setQuantity(book.getQuantity());
         dto.setCategoryId(book.getCategoryId());

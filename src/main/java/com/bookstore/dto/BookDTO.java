@@ -10,7 +10,6 @@ public class BookDTO {
     private String title;
     private String author;
     private String description;
-    private String isbn;
     private Double price;
     private Integer quantity;
     private String categoryId;
@@ -48,14 +47,6 @@ public class BookDTO {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
     }
 
     public Double getPrice() {

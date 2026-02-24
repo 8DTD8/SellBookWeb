@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -46,18 +47,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterUser() throws Exception {
-        String userJson = objectMapper.writeValueAsString(testUser);
-
-        mockMvc.perform(post("/api/users/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(userJson))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.email").value(testUser.getEmail()))
-                .andExpect(jsonPath("$.name").value(testUser.getName()));
-    }
-
-    @Test
+    @WithMockUser(username = "testuser", roles = "CUSTOMER")
     public void testGetAllUsers() throws Exception {
         mockMvc.perform(get("/api/users")
                 .contentType(MediaType.APPLICATION_JSON))
