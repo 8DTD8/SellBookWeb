@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa hàng bán sách</title>
+    <link rel="stylesheet" href="customer-styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>📚 Cửa Hàng Sách</h1>
+            </div>
+            <div class="navbar-menu">
+                <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm sách...">
+                <button class="btn-icon" onclick="showSection('cart')" title="Giỏ hàng">
+                    🛒 <span id="cartCount" class="badge">0</span>
+                </button>
+                <button class="btn-icon" onclick="showProfile()" title="Tài khoản">
+                    👤 <span id="userName"></span>
+                </button>
+                <button class="btn-icon logout-btn" onclick="handleLogout()" title="Đăng xuất">
+                    🚪 Thoát
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="section-header">
+                <h2>Cửa hàng sách trực tuyến</h2>
+                <p>Khám phá hàng ngàn quyển sách hay</p>
+            </div>
+
+            <div class="filters">
+                <select id="categorySelect" onchange="filterByCategory()">
+                    <option value="">-- Tất cả danh mục --</option>
+                </select>
+                <select id="sortSelect" onchange="sortBooks()">
+                    <option value="newest">Mới nhất</option>
+                    <option value="priceLow">Giá: Thấp → Cao</option>
+                    <option value="priceHigh">Giá: Cao → Thấp</option>
+                    <option value="ratingHigh">Xếp hạng: Cao → Thấp</option>
+                </select>
+            </div>
+
+            <div id="booksList" class="books-grid">
+            </div>
+        </section>
+
+        <!-- Book Details Section -->
+        <section id="bookDetail" class="section">
+            <div id="bookDetailContent" class="book-detail">
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="section">
+            <div class="profile-container">
+                <h2>Thông tin tài khoản</h2>
+                <div class="profile-info">
+                    <div class="info-group">
+                        <label>Tên:</label>
+                        <p id="profileName"></p>
+                    </div>
+                    <div class="info-group">
+                        <label>Email:</label>
+                        <p id="profileEmail"></p>
+                    </div>
+                    <div class="info-group">
+                        <label>Điện thoại:</label>
+                        <p id="profilePhone"></p>
+                    </div>
+                    <div class="info-group">
+                        <label>Vai trò:</label>
+                        <p id="profileRole"></p>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn btn-primary" onclick="showEditProfile()">Chỉnh sửa</button>
+                    <button class="btn btn-secondary" onclick="showSection('home')">Quay lại</button>
+                </div>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div id="editProfileForm" class="profile-container hidden">
+                <h2>Chỉnh sửa thông tin</h2>
+                <form onsubmit="saveProfile(event)">
+                    <div class="form-group">
+                        <label>Tên:</label>
+                        <input type="text" id="editName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="editEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Điện thoại:</label>
+                        <input type="tel" id="editPhone">
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideEditProfile()">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Cart Section -->
+        <section id="cart" class="section">
+            <div class="section-header">
+                <h2>Giỏ hàng</h2>
+            </div>
+            <div id="cartContent" class="cart-container">
+            </div>
+        </section>
+
+        <!-- My Reviews Section -->
+        <section id="myReviews" class="section">
+            <div class="section-header">
+                <h2>Đánh giá của tôi</h2>
+            </div>
+            <div id="myReviewsList" class="reviews-container">
+            </div>
+        </section>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alertModal" class="modal hidden">
+        <div class="modal-content">
+            <p id="alertText"></p>
+            <button class="btn btn-primary" onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Đánh giá sách</h3>
+            <form onsubmit="submitReview(event)">
+                <div class="form-group">
+                    <label>Xếp hạng (1-5 sao):</label>
+                    <div class="rating-input">
+                        <input type="radio" name="rating" value="1"> ⭐
+                        <input type="radio" name="rating" value="2"> ⭐⭐
+                        <input type="radio" name="rating" value="3"> ⭐⭐⭐
+                        <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐
+                        <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Bình luận:</label>
+                    <textarea id="reviewComment" required></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-success">Gửi đánh giá</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeReviewModal()">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="api.js"></script>
+    <script src="customer-app.js"></script>
+</body>
+</html>

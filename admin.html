@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Cửa hàng bán sách</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>📚 Quản lý cửa hàng</h1>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="#" onclick="showSection('dashboard')">Trang chủ</a></li>
+                <li><a href="#" onclick="showSection('books')">Sách</a></li>
+                <li><a href="#" onclick="showSection('categories')">Danh mục</a></li>
+                <li><a href="#" onclick="showSection('users')">Người dùng</a></li>
+                <li><a href="#" onclick="showSection('reviews')">Đánh giá</a></li>
+                <li><a href="#" onclick="handleLogout()" style="color: #ff6b6b;">Đăng xuất</a></li>
+            </ul>
+            <div class="user-info">
+                <span id="adminName"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="section-header">
+                <h2>Bảng điều khiển</h2>
+            </div>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>📖 Tổng số sách</h3>
+                    <p class="stat-number" id="totalBooks">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>📂 Danh mục</h3>
+                    <p class="stat-number" id="totalCategories">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>👥 Người dùng</h3>
+                    <p class="stat-number" id="totalUsers">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>⭐ Đánh giá chờ</h3>
+                    <p class="stat-number" id="pendingReviews">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Books Section -->
+        <section id="books" class="section">
+            <div class="section-header">
+                <h2>Quản lý sách</h2>
+                <button class="btn btn-primary" onclick="showAddBookForm()">+ Thêm sách mới</button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="search-bar">
+                <input type="text" id="searchBook" placeholder="Tìm kiếm sách..." onkeyup="searchBooks()">
+                <select id="categoryFilter" onchange="filterByCategory()">
+                    <option value="">-- Tất cả danh mục --</option>
+                </select>
+            </div>
+
+            <!-- Add/Edit Book Form -->
+            <div id="bookForm" class="form-container hidden">
+                <h3 id="bookFormTitle">Thêm sách mới</h3>
+                <form onsubmit="saveBook(event)">
+                    <input type="hidden" id="bookId">
+                    <div class="form-group">
+                        <label>Tiêu đề:</label>
+                        <input type="text" id="bookTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tác giả:</label>
+                        <input type="text" id="bookAuthor" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ISBN:</label>
+                        <input type="text" id="bookIsbn" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Giá bán:</label>
+                        <input type="number" id="bookPrice" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Số lượng:</label>
+                        <input type="number" id="bookQuantity" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Danh mục:</label>
+                        <select id="bookCategory" required>
+                            <option value="">-- Chọn danh mục --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả:</label>
+                        <textarea id="bookDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>URL Hình ảnh:</label>
+                        <input type="text" id="bookImage">
+                    </div>
+                    <div class="form-group">
+                        <label>Hoạt động:</label>
+                        <input type="checkbox" id="bookActive" checked>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideBookForm()">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Books List -->
+            <div class="list-container">
+                <table id="booksList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Tác giả</th>
+                            <th>ISBN</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Danh mục</th>
+                            <th>Xếp hạng</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section id="categories" class="section">
+            <div class="section-header">
+                <h2>Quản lý danh mục</h2>
+                <button class="btn btn-primary" onclick="showAddCategoryForm()">+ Thêm danh mục</button>
+            </div>
+
+            <!-- Add/Edit Category Form -->
+            <div id="categoryForm" class="form-container hidden">
+                <h3 id="categoryFormTitle">Thêm danh mục mới</h3>
+                <form onsubmit="saveCategory(event)">
+                    <input type="hidden" id="categoryId">
+                    <div class="form-group">
+                        <label>Tên danh mục:</label>
+                        <input type="text" id="categoryName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả:</label>
+                        <textarea id="categoryDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Icon:</label>
+                        <input type="text" id="categoryIcon" placeholder="VD: 📕">
+                    </div>
+                    <div class="form-group">
+                        <label>Hoạt động:</label>
+                        <input type="checkbox" id="categoryActive" checked>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideCategoryForm()">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Categories List -->
+            <div class="list-container">
+                <div id="categoriesList" class="grid-container">
+                </div>
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users" class="section">
+            <div class="section-header">
+                <h2>Quản lý người dùng</h2>
+                <button class="btn btn-primary" onclick="showAddUserForm()">+ Thêm người dùng</button>
+            </div>
+
+            <!-- Add/Edit User Form -->
+            <div id="userForm" class="form-container hidden">
+                <h3 id="userFormTitle">Thêm người dùng</h3>
+                <form onsubmit="saveUser(event)">
+                    <input type="hidden" id="userId">
+                    <div class="form-group">
+                        <label>Tên:</label>
+                        <input type="text" id="userName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="userEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Điện thoại:</label>
+                        <input type="tel" id="userPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Vai trò:</label>
+                        <select id="userRole" required>
+                            <option value="CUSTOMER">Khách hàng</option>
+                            <option value="ADMIN">Quản trị viên</option>
+                            <option value="STAFF">Nhân viên</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Hoạt động:</label>
+                        <input type="checkbox" id="userActive" checked>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideUserForm()">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Users List -->
+            <div class="list-container">
+                <table id="usersList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Điện thoại</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section id="reviews" class="section">
+            <div class="section-header">
+                <h2>Quản lý đánh giá</h2>
+            </div>
+
+            <!-- Tab navigation for reviews -->
+            <div class="tab-navigation">
+                <button class="tab-button active" onclick="showReviewTab('pending')">Đánh giá chờ duyệt</button>
+                <button class="tab-button" onclick="showReviewTab('all')">Tất cả đánh giá</button>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="list-container">
+                <div id="reviewsList" class="reviews-container">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alertModal" class="modal hidden">
+        <div class="modal-content">
+            <p id="alertText"></p>
+            <button class="btn btn-primary" onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="api.js"></script>
+    <script src="admin-app.js"></script>
+</body>
+</html>
