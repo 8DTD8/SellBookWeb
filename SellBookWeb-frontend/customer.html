@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sellbookweb - Cửa hàng sách trực tuyến</title>
+    <link rel="stylesheet" href="customer-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <div class="navbar-brand">
+                    <h1 class="logo">sellbookweb</h1>
+                </div>
+                <div class="navbar-menu-toggle">
+                    <i class="fas fa-th"></i>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            <div class="navbar-right">
+                <button class="search-btn" onclick="focusSearch()" title="Tìm kiếm">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="btn-icon" onclick="showNotifications()" title="Thông báo">
+                    <i class="fas fa-bell"></i>
+                    <span>Thông báo</span>
+                </button>
+                <button class="btn-icon" onclick="showSection('cart')" title="Giỏ hàng">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Giỏ Hàng</span>
+                    <span id="cartCount" class="badge">0</span>
+                </button>
+                <div class="account-dropdown">
+                    <button class="btn-icon account-btn" onclick="toggleAccountDropdown(event)" title="Tài khoản">
+                        <i class="fas fa-user"></i>
+                        <span id="accountName">Tài Khoản</span>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <div class="dropdown-menu" id="accountDropdown">
+                        <a href="#" onclick="event.stopPropagation(); showProfile(); closeAccountDropdown(); return false;" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Thông tin tài khoản</span>
+                        </a>
+                        <a href="#" onclick="event.stopPropagation(); handleLogout(); return false;" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Đăng xuất</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="search-bar hidden" id="searchBar">
+            <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm sách...">
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <!-- Sorting and Product Count Bar -->
+            <div class="sort-bar">
+                <div class="sort-left">
+                    <span class="sort-label">Sắp xếp theo:</span>
+                    <select id="sortSelect" class="sort-select" onchange="sortBooks()">
+                        <option value="bestselling">Bán chạy tuần</option>
+                        <option value="newest">Mới nhất</option>
+                        <option value="priceLow">Giá: Thấp → Cao</option>
+                        <option value="priceHigh">Giá: Cao → Thấp</option>
+                        <option value="ratingHigh">Xếp hạng: Cao → Thấp</option>
+                    </select>
+                </div>
+                <div class="sort-right">
+                    <select id="productCountSelect" class="product-count-select" onchange="changeProductCount()">
+                        <option value="12">12 sản phẩm</option>
+                        <option value="24">24 sản phẩm</option>
+                        <option value="36">36 sản phẩm</option>
+                        <option value="48">48 sản phẩm</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Books Grid -->
+            <div id="booksList" class="books-grid">
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+            </div>
+        </section>
+
+        <!-- Book Details Section -->
+        <section id="bookDetail" class="section">
+            <div id="bookDetailContent" class="book-detail-container">
+                <!-- Breadcrumbs will be inserted here -->
+                <div id="breadcrumbs" class="breadcrumbs"></div>
+                
+                <!-- Product Detail Layout -->
+                <div class="product-detail-layout">
+                    <!-- Left Column: Images and Actions -->
+                    <div class="product-images-column">
+                        <div class="main-image-container">
+                            <img id="mainProductImage" src="" alt="Product Image" class="main-product-image">
+                            <div class="promo-banner" id="promoBanner"></div>
+                        </div>
+                        <div class="thumbnail-container" id="thumbnailContainer">
+                            <!-- Thumbnails will be inserted here -->
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-add-cart" onclick="addToCartFromDetail()">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Thêm vào giỏ hàng</span>
+                            </button>
+                            <button class="btn-buy-now" onclick="buyNow()">
+                                <span>Mua ngay</span>
+                            </button>
+                        </div>
+                        <div class="store-policies">
+                            <h4>Chính sách ưu đãi của sellbookweb</h4>
+                            <div class="policy-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Thời gian giao hàng: Giao nhanh và uy tín</span>
+                            </div>
+                            <div class="policy-item">
+                                <i class="fas fa-redo"></i>
+                                <span>Chính sách đổi trả: Đổi trả miễn phí toàn quốc</span>
+                            </div>
+                            <div class="policy-item">
+                                <i class="fas fa-store"></i>
+                                <span>Chính sách khách sỉ: Ưu đãi khi mua số lượng lớn</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Product Info -->
+                    <div class="product-info-column">
+                        <div class="product-header">
+                            <span class="trend-badge" id="trendBadge">Xu hướng</span>
+                            <h1 class="product-title" id="productTitle"></h1>
+                        </div>
+                        
+                        <div class="product-basic-info" id="productBasicInfo">
+                            <!-- Basic info will be inserted here -->
+                        </div>
+                        
+                        <div class="product-rating-sales" id="productRatingSales">
+                            <!-- Rating and sales will be inserted here -->
+                        </div>
+                        
+                        <div class="product-pricing" id="productPricing">
+                            <!-- Pricing will be inserted here -->
+                        </div>
+                        
+                        <div class="product-availability" id="productAvailability">
+                            <!-- Availability will be inserted here -->
+                        </div>
+                        
+                        <div class="shipping-info">
+                            <h4>Thông tin vận chuyển</h4>
+                            <div class="shipping-address">
+                                <span id="shippingAddress">Giao hàng đến Phường Bến Nghé, Quận 1, Hồ Chí Minh</span>
+                                <a href="#" onclick="changeShippingAddress()">Thay đổi</a>
+                            </div>
+                            <div class="delivery-type">
+                                <i class="fas fa-truck"></i>
+                                <span>Giao hàng tiêu chuẩn</span>
+                            </div>
+                            <div class="delivery-date">
+                                <span>Dự kiến giao Thứ sáu - 27/02</span>
+                            </div>
+                        </div>
+                        
+                        <div class="related-offers">
+                            <div class="offers-header">
+                                <h4>Ưu đãi liên quan</h4>
+                                <a href="#">Xem thêm ></a>
+                            </div>
+                            <div class="offer-badges">
+                                <span class="offer-badge">Mã giảm 10k - to...</span>
+                                <span class="offer-badge">Mã giảm 20k - to...</span>
+                                <span class="offer-badge">Shopeepay: giảm...</span>
+                                <span class="offer-badge">Zalopay: giảm 20...</span>
+                            </div>
+                        </div>
+                        
+                        <div class="quantity-selector">
+                            <label>Số lượng:</label>
+                            <div class="quantity-control">
+                                <button onclick="decreaseQuantity()">-</button>
+                                <input type="number" id="productQuantity" value="1" min="1" readonly>
+                                <button onclick="increaseQuantity()">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="detailed-info">
+                            <h4>Thông tin chi tiết</h4>
+                            <table class="info-table" id="infoTable">
+                                <!-- Info table will be inserted here -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product Reviews Section -->
+                <div class="product-reviews-section">
+                    <h2 class="reviews-section-title">Đánh giá sản phẩm</h2>
+                    
+                    <div class="reviews-summary">
+                        <div class="rating-summary">
+                            <div class="average-rating" id="averageRating">0</div>
+                            <div class="rating-stars-large" id="ratingStarsLarge"></div>
+                            <div class="review-count" id="reviewCount">(0 đánh giá)</div>
+                        </div>
+                        <div class="rating-distribution" id="ratingDistribution">
+                            <!-- Rating distribution bars will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <div class="review-login-prompt" id="reviewLoginPrompt">
+                        <p>Chỉ có thành viên mới có thể viết nhận xét. Vui lòng <a href="#" onclick="showLoginPrompt()">đăng nhập</a> hoặc <a href="#" onclick="showLoginPrompt()">đăng ký</a>.</p>
+                    </div>
+                    
+                    <div class="reviews-tabs">
+                        <button class="review-tab active" onclick="filterReviews('newest')">Mới nhất</button>
+                        <button class="review-tab" onclick="filterReviews('mostLiked')">Yêu thích nhất</button>
+                    </div>
+                    
+                    <div class="reviews-list" id="reviewsList">
+                        <!-- Reviews will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="section">
+            <div class="profile-container" id="profileInfo">
+                <h2>Thông tin tài khoản</h2>
+                
+                <!-- Avatar Section -->
+                <div class="profile-avatar-section">
+                    <div class="profile-avatar" id="profileAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 id="profileNameDisplay"></h3>
+                    <span class="profile-role-badge" id="profileRoleBadge"></span>
+                </div>
+                
+                <div class="profile-info">
+                    <div class="info-group">
+                        <label><i class="fas fa-user"></i> Tên đầy đủ:</label>
+                        <p id="profileName"></p>
+                    </div>
+                    <div class="info-group">
+                        <label><i class="fas fa-envelope"></i> Email:</label>
+                        <p id="profileEmail"></p>
+                    </div>
+                    <div class="info-group">
+                        <label><i class="fas fa-phone"></i> Điện thoại:</label>
+                        <p id="profilePhone"></p>
+                    </div>
+                    <div class="info-group">
+                        <label><i class="fas fa-user-tag"></i> Vai trò:</label>
+                        <p id="profileRole"></p>
+                    </div>
+                    <div class="info-group">
+                        <label><i class="fas fa-calendar"></i> Ngày đăng ký:</label>
+                        <p id="profileCreatedAt"></p>
+                    </div>
+                    <div class="info-group">
+                        <label><i class="fas fa-check-circle"></i> Trạng thái:</label>
+                        <p id="profileStatus"></p>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn btn-primary" onclick="showEditProfile()">Chỉnh sửa</button>
+                    <button class="btn btn-secondary" onclick="showSection('home')">Quay lại</button>
+                </div>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div id="editProfileForm" class="profile-container hidden">
+                <h2>Chỉnh sửa thông tin</h2>
+                <form onsubmit="saveProfile(event)">
+                    <div class="form-group">
+                        <label>Tên:</label>
+                        <input type="text" id="editName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="editEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Điện thoại:</label>
+                        <input type="tel" id="editPhone">
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideEditProfile()">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Cart Section -->
+        <section id="cart" class="section">
+            <div class="section-header">
+                <h2>Giỏ hàng</h2>
+            </div>
+            <div id="cartContent" class="cart-container">
+            </div>
+        </section>
+
+        <!-- My Reviews Section -->
+        <section id="myReviews" class="section">
+            <div class="section-header">
+                <h2>Đánh giá của tôi</h2>
+            </div>
+            <div id="myReviewsList" class="reviews-container">
+            </div>
+        </section>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alertModal" class="modal hidden">
+        <div class="modal-content">
+            <p id="alertText"></p>
+            <button class="btn btn-primary" onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Đánh giá sách</h3>
+            <form onsubmit="submitReview(event)">
+                <div class="form-group">
+                    <label>Xếp hạng (1-5 sao):</label>
+                    <div class="rating-input">
+                        <input type="radio" name="rating" value="1"> ⭐
+                        <input type="radio" name="rating" value="2"> ⭐⭐
+                        <input type="radio" name="rating" value="3"> ⭐⭐⭐
+                        <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐
+                        <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Bình luận:</label>
+                    <textarea id="reviewComment" required></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-success">Gửi đánh giá</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeReviewModal()">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="api.js"></script>
+    <script src="customer-app.js"></script>
+</body>
+</html>
