@@ -52,6 +52,7 @@ function initializeApp() {
     loadBooks();
     loadProfile();
     loadCart();
+    initializeCategories(); // Load categories for filter
     
     // Search functionality
     const searchInput = document.getElementById('searchInput');
@@ -143,6 +144,10 @@ function showSection(sectionId) {
         if (sectionId === 'myReviews') {
             loadMyReviews();
         }
+        
+        if (sectionId === 'cart') {
+            loadCart(); // Reload cart when switching to cart section
+        }
     } catch (error) {
         console.error('Error in showSection:', error);
     }
@@ -151,6 +156,9 @@ function showSection(sectionId) {
 // Expose to window immediately for onclick handlers
 if (typeof window !== 'undefined') {
     window.showSection = showSection;
+    window.toggleCategoryMenu = toggleCategoryMenu;
+    window.closeCategoryMenu = closeCategoryMenu;
+    window.filterByCategoryId = filterByCategoryId;
 }
 
 // ==============================
@@ -201,10 +209,15 @@ function renderBooks(books) {
         card.className = 'book-card';
         card.onclick = () => showBookDetail(book.id);
         
-        // Calculate discount (simulate original price if not available)
-        const originalPrice = book.originalPrice || (book.price * 1.25); // 25% markup for demo
-        const discount = originalPrice > book.price ? Math.round(((originalPrice - book.price) / originalPrice) * 100) : 0;
-        const hasDiscount = discount > 0;
+        // Only show discount if admin has added discountCode
+        const hasDiscount = book.discountCode && book.discountCode.trim() !== '' && book.discount && book.discount > 0;
+        let discount = 0;
+        let originalPrice = book.price;
+        
+        if (hasDiscount) {
+            discount = book.discount;
+            originalPrice = book.price / (1 - (discount / 100));
+        }
         
         card.innerHTML = `
             <div class="book-image">
@@ -248,10 +261,16 @@ async function showBookDetail(bookId) {
 }
 
 function renderBookDetail(book) {
-    // Calculate discount
-    const originalPrice = book.originalPrice || (book.price * 1.25);
-    const discount = originalPrice > book.price ? Math.round(((originalPrice - book.price) / originalPrice) * 100) : 0;
-    const hasDiscount = discount > 0;
+    // Only show discount if admin has added discountCode
+    const hasDiscount = book.discountCode && book.discountCode.trim() !== '' && book.discount && book.discount > 0;
+    let discount = 0;
+    let originalPrice = book.price;
+    
+    if (hasDiscount) {
+        discount = book.discount;
+        // Calculate original price from discount percentage
+        originalPrice = book.price / (1 - (discount / 100));
+    }
     
     // Get category name for breadcrumbs
     const categoryName = getCategoryName(book.categoryId);
@@ -338,7 +357,7 @@ function renderBookDetail(book) {
     const ratingSales = document.getElementById('productRatingSales');
     if (ratingSales) {
         const reviewCount = book.reviewCount || 1;
-        const salesCount = book.salesCount || Math.floor(Math.random() * 5000) + 1000;
+        const salesCount = book.salesCount || 0; // Use actual sales count from book
         ratingSales.innerHTML = `
             <div class="rating-display">
                 <div class="rating-stars">${renderStars(book.rating || 0)}</div>
@@ -346,6 +365,18 @@ function renderBookDetail(book) {
             </div>
             <div class="sales-count">Đã bán ${formatNumber(salesCount)}</div>
         `;
+    }
+    
+    // Render trend badge - only show if salesCount > 50
+    const trendBadge = document.getElementById('trendBadge');
+    if (trendBadge) {
+        const salesCount = book.salesCount || 0;
+        if (salesCount > 50) {
+            trendBadge.style.display = 'inline-block';
+            trendBadge.textContent = 'Xu hướng';
+        } else {
+            trendBadge.style.display = 'none';
+        }
     }
     
     // Render pricing
@@ -361,11 +392,17 @@ function renderBookDetail(book) {
         `;
     }
     
-    // Render availability
+    // Render availability - "còn hàng" if quantity > 0, "hết hàng" if quantity = 0
     const availability = document.getElementById('productAvailability');
     if (availability) {
-        const storeCount = Math.floor(Math.random() * 50) + 50;
-        availability.textContent = `${storeCount} nhà sách còn hàng`;
+        const quantity = book.quantity || 0;
+        if (quantity > 0) {
+            availability.textContent = 'Còn hàng';
+            availability.style.color = '#28a745'; // Green color for in stock
+        } else {
+            availability.textContent = 'Hết hàng';
+            availability.style.color = '#dc3545'; // Red color for out of stock
+        }
     }
     
     // Render info table
@@ -809,12 +846,14 @@ function changeProductCount() {
     renderBooks(filteredBooks);
 }
 
-// Load categories for filter
+// Load categories for filter and menu
 async function loadCategories() {
     try {
         const categories = await fetchCategories();
+        
+        // Load categories into dropdown select
         const select = document.getElementById('categorySelect');
-        if (Array.isArray(categories)) {
+        if (select && Array.isArray(categories)) {
             categories.forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat.id;
@@ -822,37 +861,156 @@ async function loadCategories() {
                 select.appendChild(option);
             });
         }
+        
+        // Load categories into menu dropdown
+        loadCategoryMenu(categories);
     } catch (error) {
         console.error('Error loading categories:', error);
     }
 }
 
-// Initialize category filter on page load
-window.addEventListener('load', loadCategories);
+// Load categories into menu dropdown
+function loadCategoryMenu(categories) {
+    const menuList = document.getElementById('categoryMenuList');
+    if (!menuList) return;
+    
+    if (!Array.isArray(categories) || categories.length === 0) {
+        menuList.innerHTML = '<div class="category-menu-item">Chưa có danh mục</div>';
+        return;
+    }
+    
+    // Separate parent and child categories
+    const parentCategories = categories.filter(cat => !cat.parentId);
+    const childCategories = categories.filter(cat => cat.parentId);
+    
+    menuList.innerHTML = '';
+    
+    parentCategories.forEach(parent => {
+        // Add parent category
+        const parentItem = document.createElement('div');
+        parentItem.className = 'category-menu-item category-menu-parent';
+        parentItem.innerHTML = `
+            <i class="${parent.icon || 'fas fa-book'}"></i>
+            <span>${parent.name}</span>
+        `;
+        parentItem.onclick = (e) => {
+            e.stopPropagation();
+            filterByCategoryId(parent.id);
+            closeCategoryMenu();
+        };
+        menuList.appendChild(parentItem);
+        
+        // Add child categories
+        const children = childCategories.filter(child => child.parentId === parent.id);
+        if (children.length > 0) {
+            children.forEach(child => {
+                const childItem = document.createElement('div');
+                childItem.className = 'category-menu-item category-menu-child';
+                childItem.innerHTML = `
+                    <i class="${child.icon || 'fas fa-book'}"></i>
+                    <span>${child.name}</span>
+                `;
+                childItem.onclick = (e) => {
+                    e.stopPropagation();
+                    filterByCategoryId(child.id);
+                    closeCategoryMenu();
+                };
+                menuList.appendChild(childItem);
+            });
+        }
+    });
+}
+
+function filterByCategoryId(categoryId) {
+    const select = document.getElementById('categorySelect');
+    if (select) {
+        select.value = categoryId;
+    }
+    filterByCategory();
+}
+
+function toggleCategoryMenu(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const menu = document.getElementById('categoryDropdownMenu');
+    const toggle = document.querySelector('.navbar-menu-toggle');
+    if (menu && toggle) {
+        const isShowing = menu.classList.contains('show');
+        // Close other dropdowns
+        document.querySelectorAll('.dropdown-menu.show').forEach(d => d.classList.remove('show'));
+        document.querySelectorAll('.category-dropdown-menu.show').forEach(d => {
+            if (d !== menu) d.classList.remove('show');
+        });
+        
+        if (isShowing) {
+            menu.classList.remove('show');
+            toggle.classList.remove('active');
+        } else {
+            menu.classList.add('show');
+            toggle.classList.add('active');
+        }
+    }
+}
+
+function closeCategoryMenu() {
+    const menu = document.getElementById('categoryDropdownMenu');
+    const toggle = document.querySelector('.navbar-menu-toggle');
+    if (menu) {
+        menu.classList.remove('show');
+    }
+    if (toggle) {
+        toggle.classList.remove('active');
+    }
+}
+
+// Initialize category filter - call after DOM and books are loaded
+function initializeCategories() {
+    if (document.getElementById('categorySelect')) {
+        loadCategories();
+    }
+}
 
 // ==============================
 // CART MANAGEMENT
 // ==============================
 
-function addToCart(bookId) {
-    const book = allBooks.find(b => b.id === bookId);
-    if (!book) return;
+async function addToCart(bookId) {
+    try {
+        // Try to find book in allBooks first
+        let book = allBooks.find(b => b.id === bookId);
+        
+        // If not found, fetch from API
+        if (!book) {
+            book = await getBookById(bookId);
+        }
+        
+        if (!book) {
+            showAlert('Không tìm thấy sách!');
+            return;
+        }
 
-    const existingItem = cart.find(item => item.id === bookId);
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            id: bookId,
-            title: book.title,
-            price: book.price,
-            quantity: 1
-        });
+        const existingItem = cart.find(item => item.id === bookId);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                id: bookId,
+                title: book.title,
+                price: book.price,
+                image: book.image,
+                quantity: 1
+            });
+        }
+
+        saveCart();
+        loadCart(); // Reload cart to update display
+        updateCartCount();
+        showAlert('Đã thêm vào giỏ hàng!');
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        showAlert('Lỗi khi thêm vào giỏ hàng: ' + error.message);
     }
-
-    saveCart();
-    updateCartCount();
-    showAlert('Đã thêm vào giỏ hàng!');
 }
 
 function removeFromCart(bookId) {
@@ -888,39 +1046,56 @@ function updateCartCount() {
 
 function renderCart() {
     const container = document.getElementById('cartContent');
+    if (!container) {
+        console.error('cartContent element not found');
+        return;
+    }
     
-    if (cart.length === 0) {
+    if (!cart || cart.length === 0) {
         container.innerHTML = `
-            <div class="cart-empty">
-                <p>Giỏ hàng của bạn trống</p>
+            <div class="cart-empty" style="text-align: center; padding: 3rem;">
+                <i class="fas fa-shopping-cart" style="font-size: 4rem; color: #ddd; margin-bottom: 1rem;"></i>
+                <p style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;">Giỏ hàng của bạn trống</p>
                 <button class="btn btn-primary" onclick="showSection('home')">Tiếp tục mua sắm</button>
             </div>
         `;
         return;
     }
 
-    let html = '<div>';
+    let html = '<div class="cart-items-list">';
     let total = 0;
 
     cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
+        // Try to get image from item, or fetch from allBooks if not available
+        let imageUrl = item.image || '';
+        if (!imageUrl) {
+            const book = allBooks.find(b => b.id === item.id);
+            if (book && book.image) {
+                imageUrl = book.image;
+                // Update cart item with image
+                item.image = book.image;
+                saveCart();
+            }
+        }
         html += `
-            <div class="cart-item">
-                <div class="cart-item-info">
-                    <div class="cart-item-title">${item.title}</div>
-                    <div class="cart-item-price">${formatPrice(item.price)}</div>
+            <div class="cart-item" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid #e0e0e0; background: white; margin-bottom: 0.5rem; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div class="cart-item-image" style="width: 100px; height: 120px; flex-shrink: 0; background: #f5f5f5; border-radius: 4px; overflow: hidden;">
+                    ${imageUrl ? `<img src="${imageUrl}" alt="${item.title || 'Sách'}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f5f5;color:#999;font-size:2rem;\\'>📚</div>'">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f5f5;color:#999;font-size:2rem;">📚</div>'}
                 </div>
-                <div class="cart-item-actions">
-                    <div class="quantity-control">
-                        <button onclick="updateCartQuantity('${item.id}', ${item.quantity - 1})">-</button>
-                        <input type="number" value="${item.quantity}" readonly>
-                        <button onclick="updateCartQuantity('${item.id}', ${item.quantity + 1})">+</button>
+                <div class="cart-item-info" style="flex: 1;">
+                    <div class="cart-item-title" style="font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 0.5rem;">${item.title || 'Sách'}</div>
+                    <div class="cart-item-price" style="font-size: 1rem; color: #dc3545; font-weight: 600; margin-bottom: 0.5rem;">${formatPrice(item.price)}</div>
+                    <div class="quantity-control" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button onclick="updateCartQuantity('${item.id}', ${item.quantity - 1})" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">-</button>
+                        <input type="number" value="${item.quantity}" readonly style="width: 50px; text-align: center; border: 1px solid #ddd; border-radius: 4px; padding: 0.25rem;">
+                        <button onclick="updateCartQuantity('${item.id}', ${item.quantity + 1})" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">+</button>
                     </div>
-                    <div style="min-width: 100px; text-align: right;">
-                        <div style="font-weight: 600; color: #667eea;">${formatPrice(itemTotal)}</div>
-                        <button class="btn btn-danger btn-sm" onclick="removeFromCart('${item.id}')">Xóa</button>
-                    </div>
+                </div>
+                <div style="min-width: 120px; text-align: right;">
+                    <div style="font-weight: 600; color: #dc3545; font-size: 1.1rem; margin-bottom: 0.5rem;">${formatPrice(itemTotal)}</div>
+                    <button class="btn btn-danger btn-sm" onclick="removeFromCart('${item.id}')" style="padding: 0.5rem 1rem; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">Xóa</button>
                 </div>
             </div>
         `;
@@ -1455,6 +1630,16 @@ document.addEventListener('click', (event) => {
     if (accountDropdown && accountDropdownContainer) {
         if (!accountDropdownContainer.contains(event.target)) {
             closeAccountDropdown();
+        }
+    }
+    
+    // Xử lý đóng category menu khi click bên ngoài
+    const categoryMenu = document.getElementById('categoryDropdownMenu');
+    const categoryToggle = document.querySelector('.navbar-menu-toggle');
+    
+    if (categoryMenu && categoryToggle) {
+        if (!categoryToggle.contains(event.target) && !categoryMenu.contains(event.target)) {
+            closeCategoryMenu();
         }
     }
 });

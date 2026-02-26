@@ -22,6 +22,13 @@ public class Book {
     private String image;
     private Double rating;
     private List<String> tags;
+    private String supplierName; // Nhà cung cấp
+    private String coverType;    // Hình thức bìa (Bìa cứng / Bìa Mềm)
+    private String translator;   // Người dịch
+    private String publisher;    // Nhà xuất bản
+    private Double discount;     // Phần trăm giảm giá
+    private String discountCode; // Mã giảm giá
+    private Integer salesCount;  // Số lượng đã bán
     private Boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -90,6 +97,30 @@ public class Book {
         this.image = image;
     }
 
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public String getCoverType() {
+        return coverType;
+    }
+
+    public void setCoverType(String coverType) {
+        this.coverType = coverType;
+    }
+
+    public String getTranslator() {
+        return translator;
+    }
+
+    public void setTranslator(String translator) {
+        this.translator = translator;
+    }
+
     public Double getRating() {
         return rating;
     }
@@ -104,6 +135,38 @@ public class Book {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Double discount) {
+        this.discount = discount;
+    }
+
+    public String getDiscountCode() {
+        return discountCode;
+    }
+
+    public void setDiscountCode(String discountCode) {
+        this.discountCode = discountCode;
+    }
+
+    public Integer getSalesCount() {
+        return salesCount;
+    }
+
+    public void setSalesCount(Integer salesCount) {
+        this.salesCount = salesCount;
     }
 
     public Boolean getActive() {

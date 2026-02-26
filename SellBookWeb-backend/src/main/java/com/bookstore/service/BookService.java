@@ -28,6 +28,23 @@ public class BookService {
         book.setQuantity(bookDTO.getQuantity());
         book.setCategoryId(bookDTO.getCategoryId());
         book.setImage(bookDTO.getImage());
+        // Nếu nhà cung cấp trống, dùng cùng tên với NXB
+        String supplierName = bookDTO.getSupplierName();
+        if ((supplierName == null || supplierName.trim().isEmpty()) && bookDTO.getPublisher() != null) {
+            supplierName = bookDTO.getPublisher();
+        }
+        book.setSupplierName(supplierName);
+        // Hình thức bìa: mặc định Bìa Mềm
+        String coverType = bookDTO.getCoverType();
+        if (coverType == null || coverType.trim().isEmpty()) {
+            coverType = "Bìa Mềm";
+        }
+        book.setCoverType(coverType);
+        book.setTranslator(bookDTO.getTranslator());
+        book.setPublisher(bookDTO.getPublisher());
+        book.setDiscount(bookDTO.getDiscount());
+        book.setDiscountCode(bookDTO.getDiscountCode());
+        book.setSalesCount(bookDTO.getSalesCount() != null ? bookDTO.getSalesCount() : 0);
         book.setRating(0.0);
         book.setActive(true);
         book.setCreatedAt(LocalDateTime.now());
@@ -70,6 +87,25 @@ public class BookService {
         if (bookDTO.getPrice() != null) book.setPrice(bookDTO.getPrice());
         if (bookDTO.getQuantity() != null) book.setQuantity(bookDTO.getQuantity());
         if (bookDTO.getImage() != null) book.setImage(bookDTO.getImage());
+        if (bookDTO.getSupplierName() != null) {
+            String supplierName = bookDTO.getSupplierName();
+            if ((supplierName == null || supplierName.trim().isEmpty()) && bookDTO.getPublisher() != null) {
+                supplierName = bookDTO.getPublisher();
+            }
+            book.setSupplierName(supplierName);
+        }
+        if (bookDTO.getCoverType() != null) {
+            String coverType = bookDTO.getCoverType();
+            if (coverType == null || coverType.trim().isEmpty()) {
+                coverType = "Bìa Mềm";
+            }
+            book.setCoverType(coverType);
+        }
+        if (bookDTO.getTranslator() != null) book.setTranslator(bookDTO.getTranslator());
+        if (bookDTO.getPublisher() != null) book.setPublisher(bookDTO.getPublisher());
+        if (bookDTO.getDiscount() != null) book.setDiscount(bookDTO.getDiscount());
+        if (bookDTO.getDiscountCode() != null) book.setDiscountCode(bookDTO.getDiscountCode());
+        if (bookDTO.getSalesCount() != null) book.setSalesCount(bookDTO.getSalesCount());
         book.setUpdatedAt(LocalDateTime.now());
         Book updatedBook = bookRepository.save(book);
         return convertToDTO(updatedBook);
@@ -93,6 +129,13 @@ public class BookService {
         dto.setCategoryId(book.getCategoryId());
         dto.setImage(book.getImage());
         dto.setRating(book.getRating());
+        dto.setSupplierName(book.getSupplierName());
+        dto.setCoverType(book.getCoverType());
+        dto.setTranslator(book.getTranslator());
+        dto.setPublisher(book.getPublisher());
+        dto.setDiscount(book.getDiscount());
+        dto.setDiscountCode(book.getDiscountCode());
+        dto.setSalesCount(book.getSalesCount());
         dto.setActive(book.getActive());
         return dto;
     }

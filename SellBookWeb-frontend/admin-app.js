@@ -113,6 +113,9 @@ function renderBooks(books) {
             <td>${formatPrice(book.price)}</td>
             <td>${book.quantity || 0}</td>
             <td>${getCategoryName(book.categoryId)}</td>
+            <td>${book.supplierName || book.publisher || ''}</td>
+            <td>${book.coverType || 'Bìa Mềm'}</td>
+            <td>${book.translator || 'N/A'}</td>
             <td>${book.rating ? book.rating.toFixed(1) : '-'}</td>
             <td>
                 <div class="action-buttons">
@@ -135,6 +138,12 @@ function showAddBookForm() {
     document.getElementById('bookCategory').value = '';
     document.getElementById('bookDescription').value = '';
     document.getElementById('bookImage').value = '';
+    document.getElementById('bookSupplier').value = '';
+    document.getElementById('bookCoverType').value = 'Bìa Mềm';
+    document.getElementById('bookTranslator').value = '';
+    document.getElementById('bookPublisher').value = '';
+    document.getElementById('bookDiscountCode').value = '';
+    document.getElementById('bookDiscount').value = '';
     document.getElementById('bookActive').checked = true;
     document.getElementById('bookFormTitle').textContent = 'Thêm sách mới';
     document.getElementById('bookForm').classList.remove('hidden');
@@ -156,6 +165,12 @@ async function editBook(id) {
         document.getElementById('bookCategory').value = book.categoryId;
         document.getElementById('bookDescription').value = book.description || '';
         document.getElementById('bookImage').value = book.image || '';
+        document.getElementById('bookSupplier').value = book.supplierName || book.publisher || '';
+        document.getElementById('bookCoverType').value = book.coverType || 'Bìa Mềm';
+        document.getElementById('bookTranslator').value = book.translator || '';
+        document.getElementById('bookPublisher').value = book.publisher || '';
+        document.getElementById('bookDiscountCode').value = book.discountCode || '';
+        document.getElementById('bookDiscount').value = book.discount || '';
         document.getElementById('bookActive').checked = book.active !== false;
         document.getElementById('bookFormTitle').textContent = 'Chỉnh sửa sách';
         document.getElementById('bookForm').classList.remove('hidden');
@@ -168,6 +183,13 @@ async function saveBook(event) {
     event.preventDefault();
 
     const bookId = document.getElementById('bookId').value;
+    const discountCode = document.getElementById('bookDiscountCode').value.trim();
+    const discount = document.getElementById('bookDiscount').value ? parseFloat(document.getElementById('bookDiscount').value) : null;
+    const publisherValue = document.getElementById('bookPublisher').value;
+    const supplierValue = document.getElementById('bookSupplier').value;
+    const supplierName = supplierValue || publisherValue || null;
+    const coverTypeValue = document.getElementById('bookCoverType').value || 'Bìa Mềm';
+    
     const bookData = {
         title: document.getElementById('bookTitle').value,
         author: document.getElementById('bookAuthor').value,
@@ -177,6 +199,12 @@ async function saveBook(event) {
         categoryId: document.getElementById('bookCategory').value,
         description: document.getElementById('bookDescription').value,
         image: document.getElementById('bookImage').value,
+        supplierName: supplierName,
+        coverType: coverTypeValue,
+        translator: document.getElementById('bookTranslator').value || null,
+        publisher: publisherValue || null,
+        discountCode: discountCode || null,
+        discount: discount || null,
         active: document.getElementById('bookActive').checked
     };
 
@@ -277,17 +305,26 @@ function renderCategories(categories) {
         return;
     }
 
-    categories.forEach(category => {
+    // Separate parent and child categories
+    const parentCategories = categories.filter(c => !c.parentId);
+    const childCategories = categories.filter(c => c.parentId);
+
+    // Render parent categories first
+    parentCategories.forEach(category => {
         const card = document.createElement('div');
         card.className = 'card';
+        card.style.borderLeft = '4px solid #667eea';
         card.innerHTML = `
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">${category.icon || '📚'}</div>
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+                <i class="${category.icon || 'fas fa-book'}"></i>
+            </div>
             <h3>${category.name}</h3>
             <p>${category.description || 'Không có mô tả'}</p>
             <p style="font-size: 0.85rem; color: #999;">
                 <span class="badge ${category.active ? 'badge-success' : 'badge-danger'}">
                     ${category.active ? 'Hoạt động' : 'Không hoạt động'}
                 </span>
+                <span class="badge badge-info" style="margin-left: 0.5rem;">Nhóm chính</span>
             </p>
             <div class="card-buttons">
                 <button class="btn btn-warning btn-sm" onclick="editCategory('${category.id}')">Sửa</button>
@@ -295,7 +332,75 @@ function renderCategories(categories) {
             </div>
         `;
         container.appendChild(card);
+
+        // Render child categories under this parent
+        const children = childCategories.filter(c => c.parentId === category.id);
+        if (children.length > 0) {
+            const childrenContainer = document.createElement('div');
+            childrenContainer.style.marginLeft = '2rem';
+            childrenContainer.style.marginTop = '1rem';
+            childrenContainer.style.paddingLeft = '1rem';
+            childrenContainer.style.borderLeft = '2px solid #e0e0e0';
+            
+            children.forEach(child => {
+                const childCard = document.createElement('div');
+                childCard.className = 'card';
+                childCard.style.marginBottom = '0.75rem';
+                childCard.style.backgroundColor = '#f8f9fa';
+                childCard.innerHTML = `
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="${child.icon || 'fas fa-book'}"></i>
+                        <span style="font-size: 1rem; color: #666;">→</span>
+                    </div>
+                    <h4 style="font-size: 1rem; margin: 0.5rem 0;">${child.name}</h4>
+                    <p style="font-size: 0.85rem; color: #666; margin: 0.25rem 0;">${child.description || 'Không có mô tả'}</p>
+                    <p style="font-size: 0.75rem; color: #999;">
+                        <span class="badge ${child.active ? 'badge-success' : 'badge-danger'}">
+                            ${child.active ? 'Hoạt động' : 'Không hoạt động'}
+                        </span>
+                    </p>
+                    <div class="card-buttons">
+                        <button class="btn btn-warning btn-sm" onclick="editCategory('${child.id}')">Sửa</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCategoryConfirm('${child.id}')">Xóa</button>
+                    </div>
+                `;
+                childrenContainer.appendChild(childCard);
+            });
+            container.appendChild(childrenContainer);
+        }
     });
+
+    // Render orphaned child categories (if any)
+    const orphaned = childCategories.filter(c => {
+        const parentExists = categories.some(p => p.id === c.parentId);
+        return !parentExists;
+    });
+    
+    if (orphaned.length > 0) {
+        orphaned.forEach(category => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.borderLeft = '4px solid #ffc107';
+            card.innerHTML = `
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+                    <i class="${category.icon || 'fas fa-book'}"></i>
+                </div>
+                <h3>${category.name}</h3>
+                <p>${category.description || 'Không có mô tả'}</p>
+                <p style="font-size: 0.85rem; color: #999;">
+                    <span class="badge ${category.active ? 'badge-success' : 'badge-danger'}">
+                        ${category.active ? 'Hoạt động' : 'Không hoạt động'}
+                    </span>
+                    <span class="badge badge-warning" style="margin-left: 0.5rem;">Parent không tồn tại</span>
+                </p>
+                <div class="card-buttons">
+                    <button class="btn btn-warning btn-sm" onclick="editCategory('${category.id}')">Sửa</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteCategoryConfirm('${category.id}')">Xóa</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
 }
 
 function showAddCategoryForm() {
@@ -303,8 +408,10 @@ function showAddCategoryForm() {
     document.getElementById('categoryName').value = '';
     document.getElementById('categoryDescription').value = '';
     document.getElementById('categoryIcon').value = '';
+    document.getElementById('categoryParentId').value = '';
     document.getElementById('categoryActive').checked = true;
     document.getElementById('categoryFormTitle').textContent = 'Thêm danh mục mới';
+    populateParentCategorySelect();
     document.getElementById('categoryForm').classList.remove('hidden');
 }
 
@@ -319,6 +426,8 @@ async function editCategory(id) {
         document.getElementById('categoryName').value = category.name;
         document.getElementById('categoryDescription').value = category.description || '';
         document.getElementById('categoryIcon').value = category.icon || '';
+        populateParentCategorySelect(category.id); // Exclude current category from parent list
+        document.getElementById('categoryParentId').value = category.parentId || '';
         document.getElementById('categoryActive').checked = category.active !== false;
         document.getElementById('categoryFormTitle').textContent = 'Chỉnh sửa danh mục';
         document.getElementById('categoryForm').classList.remove('hidden');
@@ -331,10 +440,12 @@ async function saveCategory(event) {
     event.preventDefault();
 
     const categoryId = document.getElementById('categoryId').value;
+    const parentId = document.getElementById('categoryParentId').value;
     const categoryData = {
         name: document.getElementById('categoryName').value,
         description: document.getElementById('categoryDescription').value,
         icon: document.getElementById('categoryIcon').value,
+        parentId: parentId || null,
         active: document.getElementById('categoryActive').checked
     };
 
@@ -370,6 +481,34 @@ function populateCategorySelect() {
     select.innerHTML = '<option value="">-- Chọn danh mục --</option>';
     if (Array.isArray(categoriesData)) {
         categoriesData.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+        });
+    }
+}
+
+function populateParentCategorySelect(excludeId = null) {
+    const select = document.getElementById('categoryParentId');
+    if (!select) return;
+    
+    // Keep the first option (empty)
+    const firstOption = select.querySelector('option[value=""]');
+    select.innerHTML = '';
+    if (firstOption) {
+        select.appendChild(firstOption);
+    } else {
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = '-- Không có (Nhóm chính) --';
+        select.appendChild(emptyOption);
+    }
+    
+    if (Array.isArray(categoriesData)) {
+        // Only show parent categories (those without parentId)
+        const parentCategories = categoriesData.filter(cat => !cat.parentId && cat.id !== excludeId);
+        parentCategories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat.id;
             option.textContent = cat.name;

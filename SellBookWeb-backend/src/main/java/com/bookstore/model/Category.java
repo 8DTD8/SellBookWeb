@@ -15,6 +15,7 @@ public class Category {
     private String name;
     private String description;
     private String icon;
+    private String parentId; // For hierarchical categories
     private Boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -49,6 +50,14 @@ public class Category {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 
     public Boolean getActive() {

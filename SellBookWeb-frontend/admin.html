@@ -109,6 +109,37 @@
                         <input type="text" id="bookImage">
                     </div>
                     <div class="form-group">
+                        <label>Nhà cung cấp:</label>
+                        <input type="text" id="bookSupplier" placeholder="VD: Đinh Tị">
+                        <small style="color: #666;">Nếu bỏ trống sẽ dùng cùng tên với NXB</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Hình thức bìa:</label>
+                        <select id="bookCoverType">
+                            <option value="Bìa Mềm">Bìa Mềm</option>
+                            <option value="Bìa cứng">Bìa cứng</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Người dịch:</label>
+                        <input type="text" id="bookTranslator" placeholder="VD: Nguyễn Văn A">
+                        <small style="color: #666;">Nếu không có người dịch sẽ hiển thị N/A</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Nhà xuất bản (NXB):</label>
+                        <input type="text" id="bookPublisher" placeholder="VD: Nhà xuất bản Văn Học">
+                    </div>
+                    <div class="form-group">
+                        <label>Mã giảm giá:</label>
+                        <input type="text" id="bookDiscountCode" placeholder="VD: SALE20">
+                        <small style="color: #666;">Nhập mã giảm giá để kích hoạt chương trình khuyến mãi</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Phần trăm giảm giá (%):</label>
+                        <input type="number" id="bookDiscount" step="0.1" min="0" max="100" placeholder="VD: 20">
+                        <small style="color: #666;">Chỉ nhập khi có mã giảm giá</small>
+                    </div>
+                    <div class="form-group">
                         <label>Hoạt động:</label>
                         <input type="checkbox" id="bookActive" checked>
                     </div>
@@ -130,6 +161,9 @@
                             <th>Giá</th>
                             <th>Số lượng</th>
                             <th>Danh mục</th>
+                            <th>Nhà cung cấp</th>
+                            <th>Hình thức bìa</th>
+                            <th>Người dịch</th>
                             <th>Xếp hạng</th>
                             <th>Hành động</th>
                         </tr>
@@ -161,8 +195,16 @@
                         <textarea id="categoryDescription"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Icon:</label>
-                        <input type="text" id="categoryIcon" placeholder="VD: 📕">
+                        <label>Icon (FontAwesome class):</label>
+                        <input type="text" id="categoryIcon" placeholder="VD: fas fa-book">
+                        <small style="color: #666;">Sử dụng FontAwesome icon class, ví dụ: fas fa-book, fas fa-heart</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Danh mục cha (Parent):</label>
+                        <select id="categoryParentId">
+                            <option value="">-- Không có (Nhóm chính) --</option>
+                        </select>
+                        <small style="color: #666;">Chọn danh mục cha nếu đây là thể loại con</small>
                     </div>
                     <div class="form-group">
                         <label>Hoạt động:</label>

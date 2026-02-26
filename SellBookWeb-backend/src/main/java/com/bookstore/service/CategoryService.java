@@ -22,6 +22,7 @@ public class CategoryService {
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
         category.setIcon(categoryDTO.getIcon());
+        category.setParentId(categoryDTO.getParentId());
         category.setActive(true);
         category.setCreatedAt(LocalDateTime.now());
         category.setUpdatedAt(LocalDateTime.now());
@@ -47,6 +48,12 @@ public class CategoryService {
         if (categoryDTO.getName() != null) category.setName(categoryDTO.getName());
         if (categoryDTO.getDescription() != null) category.setDescription(categoryDTO.getDescription());
         if (categoryDTO.getIcon() != null) category.setIcon(categoryDTO.getIcon());
+        if (categoryDTO.getParentId() != null) {
+            category.setParentId(categoryDTO.getParentId());
+        } else if (categoryDTO.getParentId() == null && category.getParentId() != null) {
+            // Allow clearing parentId by sending null explicitly
+            category.setParentId(null);
+        }
         category.setUpdatedAt(LocalDateTime.now());
         Category updatedCategory = categoryRepository.save(category);
         return convertToDTO(updatedCategory);
@@ -65,6 +72,7 @@ public class CategoryService {
         dto.setName(category.getName());
         dto.setDescription(category.getDescription());
         dto.setIcon(category.getIcon());
+        dto.setParentId(category.getParentId());
         dto.setActive(category.getActive());
         return dto;
     }

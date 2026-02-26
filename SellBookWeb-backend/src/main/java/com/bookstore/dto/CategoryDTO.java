@@ -10,6 +10,7 @@ public class CategoryDTO {
     private String name;
     private String description;
     private String icon;
+    private String parentId;
     private Boolean active;
 
     public String getId() {
@@ -42,6 +43,14 @@ public class CategoryDTO {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 
     public Boolean getActive() {

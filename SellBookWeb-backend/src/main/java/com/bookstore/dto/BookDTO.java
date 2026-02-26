@@ -15,6 +15,13 @@ public class BookDTO {
     private String categoryId;
     private String image;
     private Double rating;
+    private String supplierName;
+    private String coverType;
+    private String translator;
+    private String publisher;
+    private Double discount;
+    private String discountCode;
+    private Integer salesCount;
     private Boolean active;
 
     public String getId() {
@@ -81,12 +88,68 @@ public class BookDTO {
         this.image = image;
     }
 
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public String getCoverType() {
+        return coverType;
+    }
+
+    public void setCoverType(String coverType) {
+        this.coverType = coverType;
+    }
+
+    public String getTranslator() {
+        return translator;
+    }
+
+    public void setTranslator(String translator) {
+        this.translator = translator;
+    }
+
     public Double getRating() {
         return rating;
     }
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Double discount) {
+        this.discount = discount;
+    }
+
+    public String getDiscountCode() {
+        return discountCode;
+    }
+
+    public void setDiscountCode(String discountCode) {
+        this.discountCode = discountCode;
+    }
+
+    public Integer getSalesCount() {
+        return salesCount;
+    }
+
+    public void setSalesCount(Integer salesCount) {
+        this.salesCount = salesCount;
     }
 
     public Boolean getActive() {
