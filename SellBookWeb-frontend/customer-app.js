@@ -209,15 +209,13 @@ function renderBooks(books) {
         card.className = 'book-card';
         card.onclick = () => showBookDetail(book.id);
         
-        // Only show discount if admin has added discountCode
-        const hasDiscount = book.discountCode && book.discountCode.trim() !== '' && book.discount && book.discount > 0;
-        let discount = 0;
-        let originalPrice = book.price;
-        
-        if (hasDiscount) {
-            discount = book.discount;
-            originalPrice = book.price / (1 - (discount / 100));
-        }
+        // Giảm giá badge: dựa vào phần trăm giảm trực tiếp từ giá gốc
+        const hasDiscount = book.discount && book.discount > 0;
+        const discount = hasDiscount ? book.discount : 0;
+        const originalPrice = book.price;
+        const finalPrice = hasDiscount
+            ? originalPrice * (1 - discount / 100)
+            : originalPrice;
         
         card.innerHTML = `
             <div class="book-image">
@@ -228,7 +226,7 @@ function renderBooks(books) {
                 <div class="book-title">${book.title}</div>
                 <div class="book-rating">${renderStars(book.rating || 0)}</div>
                 <div class="book-price-container">
-                    <span class="book-price">${formatPrice(book.price)}</span>
+                    <span class="book-price">${formatPrice(finalPrice)}</span>
                     ${hasDiscount ? `<span class="book-original-price">${formatPrice(originalPrice)}</span>` : ''}
                 </div>
                 <div class="book-actions">
@@ -261,16 +259,13 @@ async function showBookDetail(bookId) {
 }
 
 function renderBookDetail(book) {
-    // Only show discount if admin has added discountCode
-    const hasDiscount = book.discountCode && book.discountCode.trim() !== '' && book.discount && book.discount > 0;
-    let discount = 0;
-    let originalPrice = book.price;
-    
-    if (hasDiscount) {
-        discount = book.discount;
-        // Calculate original price from discount percentage
-        originalPrice = book.price / (1 - (discount / 100));
-    }
+    // Giảm giá badge: dựa vào phần trăm giảm trực tiếp từ giá gốc
+    const hasDiscount = book.discount && book.discount > 0;
+    const discount = hasDiscount ? book.discount : 0;
+    const originalPrice = book.price;
+    const finalPrice = hasDiscount
+        ? originalPrice * (1 - discount / 100)
+        : originalPrice;
     
     // Get category name for breadcrumbs
     const categoryName = getCategoryName(book.categoryId);
@@ -384,7 +379,7 @@ function renderBookDetail(book) {
     if (pricing) {
         pricing.innerHTML = `
             <div class="price-container">
-                <span class="current-price">${formatPrice(book.price)}</span>
+                <span class="current-price">${formatPrice(finalPrice)}</span>
                 ${hasDiscount ? `<span class="original-price">${formatPrice(originalPrice)}</span>` : ''}
                 ${hasDiscount ? `<span class="discount-badge-large">-${discount}%</span>` : ''}
             </div>
