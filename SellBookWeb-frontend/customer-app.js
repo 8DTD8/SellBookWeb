@@ -400,6 +400,49 @@ function renderBookDetail(book) {
         }
     }
     
+    // Render related offers / coupons
+    const relatedOffersSection = document.querySelector('.related-offers');
+    const offerBadges = document.getElementById('offerBadges');
+    if (relatedOffersSection && offerBadges) {
+        // Parse discountCode: split by comma if multiple coupons
+        const discountCodes = book.discountCode 
+            ? book.discountCode.split(',').map(code => code.trim()).filter(code => code.length > 0)
+            : [];
+        
+        // Build badges HTML
+        let badgesHTML = '';
+        
+        // Add discount percentage badge if exists
+        if (hasDiscount && discount > 0) {
+            badgesHTML += `<span class="offer-badge">Giảm ${discount}% từ giá gốc</span>`;
+        }
+        
+        // Add coupon badges
+        discountCodes.forEach(code => {
+            // Format coupon text based on common patterns
+            let couponText = code;
+            // If code looks like "SALE10", "FREESHIP20", etc., format it nicely
+            if (code.match(/^[A-Z]+\d+$/i)) {
+                const match = code.match(/^([A-Z]+)(\d+)$/i);
+                if (match) {
+                    const name = match[1];
+                    const amount = match[2];
+                    couponText = `Mã giảm ${amount}k - ${name}`;
+                }
+            }
+            badgesHTML += `<span class="offer-badge">${couponText}</span>`;
+        });
+        
+        // Show/hide section based on whether there are any offers
+        if (badgesHTML.trim() !== '') {
+            offerBadges.innerHTML = badgesHTML;
+            relatedOffersSection.style.display = 'block';
+        } else {
+            offerBadges.innerHTML = '';
+            relatedOffersSection.style.display = 'none';
+        }
+    }
+    
     // Render info table
     const infoTable = document.getElementById('infoTable');
     if (infoTable) {
@@ -482,6 +525,14 @@ function formatNumber(num) {
         return (num / 1000).toFixed(1) + 'k';
     }
     return num.toString();
+}
+
+// Parse coupon value (ví dụ: "SALE 10", "Mã giảm 10k" -> 10)
+function parseCouponValue(code) {
+    if (!code) return 0;
+    const match = String(code).match(/(\d+(\.\d+)?)/);
+    if (!match) return 0;
+    return parseFloat(match[1]);
 }
 
 let productQuantity = 1;
@@ -986,13 +1037,26 @@ async function addToCart(bookId) {
         }
 
         const existingItem = cart.find(item => item.id === bookId);
+        // Giảm giá phần trăm (badge) + giá trị coupon riêng
+        const hasDiscount = book.discount && book.discount > 0;
+        const discount = hasDiscount ? book.discount : 0; // %
+        const couponValue = parseCouponValue(book.discountCode); // số tiền giảm thêm từ coupon
+
         if (existingItem) {
             existingItem.quantity += 1;
+            // Cập nhật lại thông tin giảm giá nếu sách đã được chỉnh trong admin
+            existingItem.discount = discount;
+            existingItem.discountCode = book.discountCode || null;
+            existingItem.couponValue = couponValue || 0;
         } else {
             cart.push({
                 id: bookId,
                 title: book.title,
-                price: book.price,
+                price: book.price,                     // Giá gốc
+                discount: discount,                    // % giảm giá (badge)
+                discountCode: book.discountCode || null, // Mã coupon admin nhập
+                couponValue: couponValue || 0,         // Số tiền giảm thêm từ coupon
+                couponApplied: true,                   // Mặc định tự áp dụng coupon
                 image: book.image,
                 quantity: 1
             });
@@ -1048,7 +1112,7 @@ function renderCart() {
     
     if (!cart || cart.length === 0) {
         container.innerHTML = `
-            <div class="cart-empty" style="text-align: center; padding: 3rem;">
+            <div class="cart-empty">
                 <i class="fas fa-shopping-cart" style="font-size: 4rem; color: #ddd; margin-bottom: 1rem;"></i>
                 <p style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;">Giỏ hàng của bạn trống</p>
                 <button class="btn btn-primary" onclick="showSection('home')">Tiếp tục mua sắm</button>
@@ -1058,11 +1122,37 @@ function renderCart() {
     }
 
     let html = '<div class="cart-items-list">';
-    let total = 0;
+    let subtotalOriginal = 0;
+    let subtotalFinal = 0;
 
     cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
+        const originalPrice = item.price || 0;
+        const percentDiscount = item.discount || 0; // %
+
+        // Giá sau khi áp dụng giảm giá phần trăm (badge)
+        const priceAfterPercent = percentDiscount > 0
+            ? originalPrice * (1 - percentDiscount / 100)
+            : originalPrice;
+
+        // Giá trị coupon (số tiền) – nếu chưa có thì tính lại từ mã
+        if (item.couponValue == null || typeof item.couponValue === 'undefined') {
+            item.couponValue = parseCouponValue(item.discountCode);
+        }
+        const couponValue = item.couponValue || 0;
+        const hasCoupon = !!item.discountCode && couponValue > 0;
+        const couponApplied = hasCoupon && (item.couponApplied !== false);
+
+        // Giá cuối cùng: sau phần trăm + trừ thêm coupon (nếu đang áp dụng)
+        const finalPrice = couponApplied
+            ? Math.max(priceAfterPercent - couponValue, 0)
+            : priceAfterPercent;
+
+        const originalItemTotal = originalPrice * item.quantity;
+        const finalItemTotal = finalPrice * item.quantity;
+
+        subtotalOriginal += originalItemTotal;
+        subtotalFinal += finalItemTotal;
+
         // Try to get image from item, or fetch from allBooks if not available
         let imageUrl = item.image || '';
         if (!imageUrl) {
@@ -1074,37 +1164,57 @@ function renderCart() {
                 saveCart();
             }
         }
+
         html += `
-            <div class="cart-item" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid #e0e0e0; background: white; margin-bottom: 0.5rem; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div class="cart-item">
                 <div class="cart-item-image" style="width: 100px; height: 120px; flex-shrink: 0; background: #f5f5f5; border-radius: 4px; overflow: hidden;">
                     ${imageUrl ? `<img src="${imageUrl}" alt="${item.title || 'Sách'}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f5f5;color:#999;font-size:2rem;\\'>📚</div>'">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f5f5;color:#999;font-size:2rem;">📚</div>'}
                 </div>
-                <div class="cart-item-info" style="flex: 1;">
-                    <div class="cart-item-title" style="font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 0.5rem;">${item.title || 'Sách'}</div>
-                    <div class="cart-item-price" style="font-size: 1rem; color: #dc3545; font-weight: 600; margin-bottom: 0.5rem;">${formatPrice(item.price)}</div>
-                    <div class="quantity-control" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <button onclick="updateCartQuantity('${item.id}', ${item.quantity - 1})" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">-</button>
-                        <input type="number" value="${item.quantity}" readonly style="width: 50px; text-align: center; border: 1px solid #ddd; border-radius: 4px; padding: 0.25rem;">
-                        <button onclick="updateCartQuantity('${item.id}', ${item.quantity + 1})" style="width: 30px; height: 30px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer;">+</button>
+                <div class="cart-item-info">
+                    <div class="cart-item-title">${item.title || 'Sách'}</div>
+                    <div class="cart-item-price">
+                        <span class="cart-item-current-price">${formatPrice(finalPrice)}</span>
+                        ${percentDiscount > 0 ? `<span class="cart-item-original-price">${formatPrice(originalPrice)}</span><span class="cart-item-discount-badge">-${percentDiscount}%</span>` : ''}
                     </div>
+                    <div class="quantity-control">
+                        <button onclick="updateCartQuantity('${item.id}', ${item.quantity - 1})">-</button>
+                        <input type="number" value="${item.quantity}" readonly>
+                        <button onclick="updateCartQuantity('${item.id}', ${item.quantity + 1})">+</button>
+                    </div>
+                    ${hasCoupon ? `
+                        <div class="cart-item-coupon">
+                            <button type="button" class="coupon-toggle ${couponApplied ? 'applied' : 'not-applied'}" onclick="toggleCartItemCoupon('${item.id}')">
+                                ${couponApplied ? 'Đang áp dụng' : 'Không áp dụng'}: ${item.discountCode} (-${formatPrice(couponValue)})
+                            </button>
+                        </div>
+                    ` : ''}
                 </div>
-                <div style="min-width: 120px; text-align: right;">
-                    <div style="font-weight: 600; color: #dc3545; font-size: 1.1rem; margin-bottom: 0.5rem;">${formatPrice(itemTotal)}</div>
-                    <button class="btn btn-danger btn-sm" onclick="removeFromCart('${item.id}')" style="padding: 0.5rem 1rem; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">Xóa</button>
+                <div class="cart-item-total">
+                    <div class="cart-item-total-price">${formatPrice(finalItemTotal)}</div>
+                    ${percentDiscount > 0 ? `<div class="cart-item-total-original">${formatPrice(originalItemTotal)}</div>` : ''}
+                    <button class="btn btn-danger btn-sm" onclick="removeFromCart('${item.id}')">Xóa</button>
                 </div>
             </div>
         `;
     });
 
+    const discountTotal = subtotalOriginal - subtotalFinal;
+
     html += `
         <div class="cart-summary">
             <div class="summary-row">
                 <span>Tạm tính:</span>
-                <span>${formatPrice(total)}</span>
+                <span>${formatPrice(subtotalOriginal)}</span>
             </div>
+            ${discountTotal > 0 ? `
+            <div class="summary-row">
+                <span>Giảm giá (mã giảm giá):</span>
+                <span>- ${formatPrice(discountTotal)}</span>
+            </div>
+            ` : ''}
             <div class="summary-row total">
                 <span>Tổng cộng:</span>
-                <span>${formatPrice(total)}</span>
+                <span>${formatPrice(subtotalFinal)}</span>
             </div>
             <div class="cart-actions">
                 <button class="btn btn-secondary" onclick="showSection('home')">Tiếp tục mua sắm</button>
@@ -1114,6 +1224,18 @@ function renderCart() {
     </div>`;
 
     container.innerHTML = html;
+}
+
+function toggleCartItemCoupon(bookId) {
+    const item = cart.find(i => i.id === bookId);
+    if (!item) return;
+    // Chỉ cho phép toggle khi có coupon hợp lệ
+    const couponValue = item.couponValue != null ? item.couponValue : parseCouponValue(item.discountCode);
+    if (!item.discountCode || !couponValue || couponValue <= 0) return;
+
+    item.couponApplied = item.couponApplied === false ? true : false;
+    saveCart();
+    renderCart();
 }
 
 function checkout() {
@@ -1601,6 +1723,7 @@ window.closeReviewModal = closeReviewModal;
 window.showLoginPrompt = showLoginPrompt;
 window.updateCartQuantity = updateCartQuantity;
 window.removeFromCart = removeFromCart;
+window.toggleCartItemCoupon = toggleCartItemCoupon;
 window.checkout = checkout;
 window.submitReview = submitReview;
 window.openReviewModal = openReviewModal;

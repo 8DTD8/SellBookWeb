@@ -1627,8 +1627,30 @@ html {
 }
 
 .cart-item-price {
-    color: #667eea;
+    color: #dc3545;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cart-item-current-price {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.cart-item-original-price {
+    font-size: 0.9rem;
+    color: #a0aec0;
+    text-decoration: line-through;
+}
+
+.cart-item-discount-badge {
+    font-size: 0.8rem;
+    color: #dc3545;
+    background: #ffe5ea;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
 }
 
 .cart-item-actions {
@@ -1677,7 +1699,6 @@ html {
     margin-top: 2rem;
     padding-top: 2rem;
     border-top: 2px solid #e2e8f0;
-    text-align: right;
 }
 
 .summary-row {
@@ -1703,6 +1724,55 @@ html {
 
 .cart-actions button {
     padding: 0.75rem 2rem;
+}
+
+.cart-item-total {
+    min-width: 140px;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.cart-item-total-price {
+    font-weight: 700;
+    color: #dc3545;
+    font-size: 1.1rem;
+}
+
+.cart-item-total-original {
+    font-size: 0.85rem;
+    color: #a0aec0;
+    text-decoration: line-through;
+}
+
+.cart-item-coupon {
+    margin-top: 0.5rem;
+}
+
+.coupon-toggle {
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: 4px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.coupon-toggle.applied {
+    border-color: #dc3545;
+    color: #dc3545;
+    background: #fff5f7;
+}
+
+.coupon-toggle.not-applied {
+    color: #4a5568;
+}
+
+.coupon-toggle:hover {
+    background: #f7fafc;
 }
 
 /* ================================
