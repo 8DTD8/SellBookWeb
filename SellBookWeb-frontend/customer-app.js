@@ -915,55 +915,71 @@ async function loadCategories() {
     }
 }
 
-// Load categories into menu dropdown
+// Load categories into menu dropdown (new horizontal Shopee-style)
 function loadCategoryMenu(categories) {
-    const menuList = document.getElementById('categoryMenuList');
-    if (!menuList) return;
-    
+    const parentRow = document.getElementById('categoryParentRow');
+    const childRow = document.getElementById('categoryChildRow');
+    if (!parentRow || !childRow) return;
+
     if (!Array.isArray(categories) || categories.length === 0) {
-        menuList.innerHTML = '<div class="category-menu-item">Chưa có danh mục</div>';
+        parentRow.innerHTML = '<div class="category-menu-item">Chưa có danh mục</div>';
+        childRow.innerHTML = '';
         return;
     }
-    
-    // Separate parent and child categories
+
     const parentCategories = categories.filter(cat => !cat.parentId);
     const childCategories = categories.filter(cat => cat.parentId);
-    
-    menuList.innerHTML = '';
-    
-    parentCategories.forEach(parent => {
-        // Add parent category
-        const parentItem = document.createElement('div');
-        parentItem.className = 'category-menu-item category-menu-parent';
-        parentItem.innerHTML = `
-            <i class="${parent.icon || 'fas fa-book'}"></i>
-            <span>${parent.name}</span>
-        `;
-        parentItem.onclick = (e) => {
+
+    parentRow.innerHTML = '';
+    childRow.innerHTML = '';
+
+    let activeParentId = parentCategories.length > 0 ? parentCategories[0].id : null;
+
+    parentCategories.forEach((parent, index) => {
+        const chip = document.createElement('div');
+        chip.className = 'category-chip';
+        if (parent.id === activeParentId) chip.classList.add('active');
+        chip.innerHTML = `<i class="${parent.icon || 'fas fa-book'}"></i><span>${parent.name}</span>`;
+
+        chip.onclick = (e) => {
             e.stopPropagation();
+            activeParentId = parent.id;
+            document.querySelectorAll('#categoryParentRow .category-chip').forEach(el => el.classList.remove('active'));
+            chip.classList.add('active');
+            renderChildCategories(parent.id, childCategories);
             filterByCategoryId(parent.id);
+        };
+
+        parentRow.appendChild(chip);
+
+        if (index === 0 && activeParentId === parent.id) {
+            renderChildCategories(parent.id, childCategories);
+        }
+    });
+}
+
+function renderChildCategories(parentId, childCategories) {
+    const childRow = document.getElementById('categoryChildRow');
+    if (!childRow) return;
+
+    const children = childCategories.filter(child => child.parentId === parentId);
+    childRow.innerHTML = '';
+
+    if (children.length === 0) {
+        childRow.innerHTML = '<div class="category-chip" style="border:0; color:#888;">Không có danh mục con</div>';
+        return;
+    }
+
+    children.forEach(child => {
+        const chip = document.createElement('div');
+        chip.className = 'category-chip';
+        chip.innerHTML = `<i class="${child.icon || 'fas fa-book'}"></i><span>${child.name}</span>`;
+        chip.onclick = (e) => {
+            e.stopPropagation();
+            filterByCategoryId(child.id);
             closeCategoryMenu();
         };
-        menuList.appendChild(parentItem);
-        
-        // Add child categories
-        const children = childCategories.filter(child => child.parentId === parent.id);
-        if (children.length > 0) {
-            children.forEach(child => {
-                const childItem = document.createElement('div');
-                childItem.className = 'category-menu-item category-menu-child';
-                childItem.innerHTML = `
-                    <i class="${child.icon || 'fas fa-book'}"></i>
-                    <span>${child.name}</span>
-                `;
-                childItem.onclick = (e) => {
-                    e.stopPropagation();
-                    filterByCategoryId(child.id);
-                    closeCategoryMenu();
-                };
-                menuList.appendChild(childItem);
-            });
-        }
+        childRow.appendChild(chip);
     });
 }
 

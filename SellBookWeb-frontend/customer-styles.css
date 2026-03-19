@@ -92,33 +92,83 @@ html {
     top: calc(100% + 0.5rem);
     left: 0;
     background: white;
-    min-width: 280px;
-    max-height: 500px;
-    overflow-y: auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-radius: 4px;
+    min-width: 500px;
+    max-width: 980px;
+    padding: 0.75rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
     z-index: 1001;
     border: 1px solid #e0e0e0;
 }
 
 .category-dropdown-menu.show {
     display: block;
-    animation: slideDown 0.3s ease;
+    animation: slideDown 0.25s ease;
 }
 
 .category-menu-header {
-    padding: 1rem;
-    font-weight: 600;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
     color: #333;
-    border-bottom: 1px solid #e0e0e0;
     background: #f8f9fa;
-    font-size: 1rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
 }
 
-.category-menu-list {
-    padding: 0.5rem 0;
-    max-height: 400px;
-    overflow-y: auto;
+.category-parent-row,
+.category-child-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.35rem 0.5rem;
+    scrollbar-width: thin;
+}
+
+.category-parent-row::-webkit-scrollbar,
+.category-child-row::-webkit-scrollbar {
+    height: 6px;
+}
+
+.category-parent-row::-webkit-scrollbar-thumb,
+.category-child-row::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0;
+    border-radius: 10px;
+}
+
+.category-dropdown-menu .category-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    min-width: 90px;
+}
+
+.category-dropdown-menu .category-chip:hover,
+.category-dropdown-menu .category-chip.active {
+    background: #dc3545;
+    color: #fff;
+    border: 1px solid #dc3545;
+}
+
+.category-chip i {
+    font-size: 0.9rem;
+    color: inherit;
+}
+
+.category-child-row {
+    margin-top: 0.35rem;
+    border-top: 1px dashed #eee;
+    padding-top: 0.6rem;
 }
 
 .category-menu-item {
@@ -133,6 +183,22 @@ html {
 
 .category-menu-item:hover {
     background-color: #f5f5f5;
+}
+
+.category-menu-item i {
+    width: 20px;
+    text-align: center;
+    color: #dc3545;
+}
+
+.category-menu-item.category-menu-child {
+    padding-left: 2.5rem;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.category-menu-item.category-menu-child i {
+    font-size: 0.85rem;
 }
 
 .category-menu-item i {
