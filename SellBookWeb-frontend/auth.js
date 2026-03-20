@@ -195,6 +195,11 @@ async function handleRegister(event) {
         return;
     }
 
+    if (phone && !/^[0-9]{10}$/.test(phone)) {
+        showError('Số điện thoại không hợp lệ, vui lòng nhập đúng 10 chữ số');
+        return;
+    }
+
     try {
         btn.disabled = true;
         btn.innerHTML = '<span class="loading"></span> Đang xử lý...';
