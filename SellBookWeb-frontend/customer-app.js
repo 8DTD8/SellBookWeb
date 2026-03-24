@@ -6,6 +6,10 @@ let allBooks = [];
 let filteredBooks = [];
 let cart = [];
 let currentBook = null;
+let selectedCategories = [];
+let selectedPriceRange = 'all';
+let allCategoriesData = [];
+let selectedCartItems = new Set();
 let myReviews = [];
 let currentPage = 0;
 let productsPerPage = 12;
@@ -156,9 +160,9 @@ function showSection(sectionId) {
 // Expose to window immediately for onclick handlers
 if (typeof window !== 'undefined') {
     window.showSection = showSection;
-    window.toggleCategoryMenu = toggleCategoryMenu;
-    window.closeCategoryMenu = closeCategoryMenu;
-    window.filterByCategoryId = filterByCategoryId;
+    window.toggleFilterPanel = toggleFilterPanel;
+    window.closeFilterPanel = closeFilterPanel;
+    window.filterByPrice = filterByPrice;
 }
 
 // ==============================
@@ -835,15 +839,68 @@ window.closeAccountDropdown = closeAccountDropdown;
 
 // Đóng dropdown khi click bên ngoài (sẽ được gộp với event listener khác ở cuối file)
 
-function filterByCategory() {
-    const categoryId = document.getElementById('categorySelect')?.value;
-    if (categoryId) {
-        filteredBooks = allBooks.filter(book => book.categoryId === categoryId);
-    } else {
-        filteredBooks = [...allBooks];
+function applyFilters() {
+    let result = [...allBooks];
+
+    // Filter by selected categories
+    if (selectedCategories.length > 0) {
+        result = result.filter(book => selectedCategories.includes(book.categoryId));
     }
-    currentPage = 0; // Reset to first page when filtering
+
+    // Filter by price range
+    if (selectedPriceRange !== 'all') {
+        result = result.filter(book => {
+            const price = book.price || 0;
+            switch (selectedPriceRange) {
+                case 'under50': return price < 50000;
+                case '50to100': return price >= 50000 && price <= 100000;
+                case '100to200': return price >= 100000 && price <= 200000;
+                case 'over200': return price > 200000;
+                default: return true;
+            }
+        });
+    }
+
+    filteredBooks = result;
+    currentPage = 0;
     sortBooks();
+}
+
+function filterByPrice(range) {
+    selectedPriceRange = range;
+    // Update active button
+    document.querySelectorAll('.price-range-btn').forEach(btn => btn.classList.remove('active'));
+    const clickedBtn = document.querySelector(`.price-range-btn[onclick="filterByPrice('${range}')"]`);
+    if (clickedBtn) clickedBtn.classList.add('active');
+    applyFilters();
+}
+
+function toggleFilterPanel(event) {
+    if (event) event.stopPropagation();
+    const sidebar = document.getElementById('filterSidebar');
+    const overlay = document.getElementById('filterOverlay');
+    const toggle = document.querySelector('.navbar-menu-toggle');
+    if (sidebar && overlay) {
+        const isShowing = sidebar.classList.contains('show');
+        if (isShowing) {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+            if (toggle) toggle.classList.remove('active');
+        } else {
+            sidebar.classList.add('show');
+            overlay.classList.add('show');
+            if (toggle) toggle.classList.add('active');
+        }
+    }
+}
+
+function closeFilterPanel() {
+    const sidebar = document.getElementById('filterSidebar');
+    const overlay = document.getElementById('filterOverlay');
+    const toggle = document.querySelector('.navbar-menu-toggle');
+    if (sidebar) sidebar.classList.remove('show');
+    if (overlay) overlay.classList.remove('show');
+    if (toggle) toggle.classList.remove('active');
 }
 
 function showNotifications() {
@@ -892,129 +949,72 @@ function changeProductCount() {
     renderBooks(filteredBooks);
 }
 
-// Load categories for filter and menu
+// Load categories for filter sidebar
 async function loadCategories() {
     try {
         const categories = await fetchCategories();
-        
-        // Load categories into dropdown select
-        const select = document.getElementById('categorySelect');
-        if (select && Array.isArray(categories)) {
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat.id;
-                option.textContent = cat.name;
-                select.appendChild(option);
-            });
-        }
-        
-        // Load categories into menu dropdown
-        loadCategoryMenu(categories);
+        if (!Array.isArray(categories)) return;
+        allCategoriesData = categories;
+        renderFilterCategories(categories);
     } catch (error) {
         console.error('Error loading categories:', error);
     }
 }
 
-// Load categories into menu dropdown
-function loadCategoryMenu(categories) {
-    const menuList = document.getElementById('categoryMenuList');
-    if (!menuList) return;
-    
-    if (!Array.isArray(categories) || categories.length === 0) {
-        menuList.innerHTML = '<div class="category-menu-item">Chưa có danh mục</div>';
-        return;
-    }
-    
-    // Separate parent and child categories
-    const parentCategories = categories.filter(cat => !cat.parentId);
-    const childCategories = categories.filter(cat => cat.parentId);
-    
-    menuList.innerHTML = '';
-    
-    parentCategories.forEach(parent => {
-        // Add parent category
-        const parentItem = document.createElement('div');
-        parentItem.className = 'category-menu-item category-menu-parent';
-        parentItem.innerHTML = `
-            <i class="${parent.icon || 'fas fa-book'}"></i>
-            <span>${parent.name}</span>
+function renderFilterCategories(categories) {
+    const container = document.getElementById('filterCategoryList');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    // "Tất cả" option
+    const allItem = document.createElement('label');
+    allItem.className = 'filter-category-item' + (selectedCategories.length === 0 ? ' active' : '');
+    allItem.innerHTML = `
+        <input type="checkbox" ${selectedCategories.length === 0 ? 'checked' : ''} onchange="toggleAllCategories(this)">
+        <span class="custom-checkbox"></span>
+        <span>Tất cả</span>
+    `;
+    container.appendChild(allItem);
+
+    categories.forEach(cat => {
+        const item = document.createElement('label');
+        const isChecked = selectedCategories.includes(cat.id);
+        item.className = 'filter-category-item' + (isChecked ? ' active' : '');
+        item.innerHTML = `
+            <input type="checkbox" value="${cat.id}" ${isChecked ? 'checked' : ''} onchange="toggleCategoryFilter(this, '${cat.id}')">
+            <span class="custom-checkbox"></span>
+            <span>${cat.name}</span>
         `;
-        parentItem.onclick = (e) => {
-            e.stopPropagation();
-            filterByCategoryId(parent.id);
-            closeCategoryMenu();
-        };
-        menuList.appendChild(parentItem);
-        
-        // Add child categories
-        const children = childCategories.filter(child => child.parentId === parent.id);
-        if (children.length > 0) {
-            children.forEach(child => {
-                const childItem = document.createElement('div');
-                childItem.className = 'category-menu-item category-menu-child';
-                childItem.innerHTML = `
-                    <i class="${child.icon || 'fas fa-book'}"></i>
-                    <span>${child.name}</span>
-                `;
-                childItem.onclick = (e) => {
-                    e.stopPropagation();
-                    filterByCategoryId(child.id);
-                    closeCategoryMenu();
-                };
-                menuList.appendChild(childItem);
-            });
-        }
+        container.appendChild(item);
     });
 }
 
-function filterByCategoryId(categoryId) {
-    const select = document.getElementById('categorySelect');
-    if (select) {
-        select.value = categoryId;
-    }
-    filterByCategory();
+function toggleAllCategories(checkbox) {
+    selectedCategories = [];
+    renderFilterCategories(allCategoriesData);
+    applyFilters();
 }
 
-function toggleCategoryMenu(event) {
-    if (event) {
-        event.stopPropagation();
-    }
-    const menu = document.getElementById('categoryDropdownMenu');
-    const toggle = document.querySelector('.navbar-menu-toggle');
-    if (menu && toggle) {
-        const isShowing = menu.classList.contains('show');
-        // Close other dropdowns
-        document.querySelectorAll('.dropdown-menu.show').forEach(d => d.classList.remove('show'));
-        document.querySelectorAll('.category-dropdown-menu.show').forEach(d => {
-            if (d !== menu) d.classList.remove('show');
-        });
-        
-        if (isShowing) {
-            menu.classList.remove('show');
-            toggle.classList.remove('active');
-        } else {
-            menu.classList.add('show');
-            toggle.classList.add('active');
+function toggleCategoryFilter(checkbox, categoryId) {
+    if (checkbox.checked) {
+        if (!selectedCategories.includes(categoryId)) {
+            selectedCategories.push(categoryId);
         }
+    } else {
+        selectedCategories = selectedCategories.filter(id => id !== categoryId);
     }
+    renderFilterCategories(allCategoriesData);
+    applyFilters();
 }
 
-function closeCategoryMenu() {
-    const menu = document.getElementById('categoryDropdownMenu');
-    const toggle = document.querySelector('.navbar-menu-toggle');
-    if (menu) {
-        menu.classList.remove('show');
-    }
-    if (toggle) {
-        toggle.classList.remove('active');
-    }
-}
+// Expose filter functions to window
+window.toggleAllCategories = toggleAllCategories;
+window.toggleCategoryFilter = toggleCategoryFilter;
 
 // Initialize category filter - call after DOM and books are loaded
 function initializeCategories() {
-    if (document.getElementById('categorySelect')) {
-        loadCategories();
-    }
+    loadCategories();
 }
 
 // ==============================
@@ -1111,6 +1111,7 @@ function renderCart() {
     }
     
     if (!cart || cart.length === 0) {
+        selectedCartItems.clear();
         container.innerHTML = `
             <div class="cart-empty">
                 <i class="fas fa-shopping-cart" style="font-size: 4rem; color: #ddd; margin-bottom: 1rem;"></i>
@@ -1121,11 +1122,32 @@ function renderCart() {
         return;
     }
 
+    // Clean up selectedCartItems - remove items no longer in cart
+    const cartIds = new Set(cart.map(item => item.id));
+    selectedCartItems.forEach(id => {
+        if (!cartIds.has(id)) selectedCartItems.delete(id);
+    });
+
+    const allSelected = cart.length > 0 && cart.every(item => selectedCartItems.has(item.id));
+
     let html = '<div class="cart-items-list">';
+
+    // Select all row
+    html += `
+        <div class="cart-select-all">
+            <label class="cart-checkbox-label">
+                <input type="checkbox" ${allSelected ? 'checked' : ''} onchange="toggleSelectAllCart(this)">
+                <span class="cart-custom-checkbox"></span>
+                <span>Chọn tất cả (${selectedCartItems.size}/${cart.length})</span>
+            </label>
+        </div>
+    `;
+
     let subtotalOriginal = 0;
     let subtotalFinal = 0;
 
     cart.forEach(item => {
+        const isSelected = selectedCartItems.has(item.id);
         const originalPrice = item.price || 0;
         const percentDiscount = item.discount || 0; // %
 
@@ -1150,8 +1172,10 @@ function renderCart() {
         const originalItemTotal = originalPrice * item.quantity;
         const finalItemTotal = finalPrice * item.quantity;
 
-        subtotalOriginal += originalItemTotal;
-        subtotalFinal += finalItemTotal;
+        if (isSelected) {
+            subtotalOriginal += originalItemTotal;
+            subtotalFinal += finalItemTotal;
+        }
 
         // Try to get image from item, or fetch from allBooks if not available
         let imageUrl = item.image || '';
@@ -1159,14 +1183,19 @@ function renderCart() {
             const book = allBooks.find(b => b.id === item.id);
             if (book && book.image) {
                 imageUrl = book.image;
-                // Update cart item with image
                 item.image = book.image;
                 saveCart();
             }
         }
 
         html += `
-            <div class="cart-item">
+            <div class="cart-item ${isSelected ? 'cart-item-selected' : ''}">
+                <div class="cart-item-checkbox">
+                    <label class="cart-checkbox-label">
+                        <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleCartItemSelect('${item.id}', this)">
+                        <span class="cart-custom-checkbox"></span>
+                    </label>
+                </div>
                 <div class="cart-item-image" style="width: 100px; height: 120px; flex-shrink: 0; background: #f5f5f5; border-radius: 4px; overflow: hidden;">
                     ${imageUrl ? `<img src="${imageUrl}" alt="${item.title || 'Sách'}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f5f5;color:#999;font-size:2rem;\\'>📚</div>'">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f5f5;color:#999;font-size:2rem;">📚</div>'}
                 </div>
@@ -1199,11 +1228,12 @@ function renderCart() {
     });
 
     const discountTotal = subtotalOriginal - subtotalFinal;
+    const selectedCount = selectedCartItems.size;
 
     html += `
         <div class="cart-summary">
             <div class="summary-row">
-                <span>Tạm tính:</span>
+                <span>Tạm tính (${selectedCount} sản phẩm):</span>
                 <span>${formatPrice(subtotalOriginal)}</span>
             </div>
             ${discountTotal > 0 ? `
@@ -1218,13 +1248,35 @@ function renderCart() {
             </div>
             <div class="cart-actions">
                 <button class="btn btn-secondary" onclick="showSection('home')">Tiếp tục mua sắm</button>
-                <button class="btn btn-primary" onclick="checkout()">Thanh toán</button>
+                <button class="btn btn-primary" onclick="checkout()" ${selectedCount === 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>Thanh toán (${selectedCount})</button>
             </div>
         </div>
     </div>`;
 
     container.innerHTML = html;
 }
+
+function toggleCartItemSelect(bookId, checkbox) {
+    if (checkbox.checked) {
+        selectedCartItems.add(bookId);
+    } else {
+        selectedCartItems.delete(bookId);
+    }
+    renderCart();
+}
+
+function toggleSelectAllCart(checkbox) {
+    if (checkbox.checked) {
+        cart.forEach(item => selectedCartItems.add(item.id));
+    } else {
+        selectedCartItems.clear();
+    }
+    renderCart();
+}
+
+// Expose to window
+window.toggleCartItemSelect = toggleCartItemSelect;
+window.toggleSelectAllCart = toggleSelectAllCart;
 
 function toggleCartItemCoupon(bookId) {
     const item = cart.find(i => i.id === bookId);
@@ -1243,8 +1295,194 @@ function checkout() {
         showAlert('Giỏ hàng trống');
         return;
     }
-    showAlert('Tính năng thanh toán sẽ được cập nhật!');
+    if (selectedCartItems.size === 0) {
+        showAlert('Vui lòng chọn ít nhất một sản phẩm để thanh toán');
+        return;
+    }
+    showSection('checkout');
+    renderCheckoutPage();
 }
+
+function renderCheckoutPage() {
+    const user = auth.getUser();
+
+    // Pre-fill user info
+    const nameInput = document.getElementById('checkoutName');
+    const emailInput = document.getElementById('checkoutEmail');
+    const phoneInput = document.getElementById('checkoutPhone');
+    if (nameInput && user) nameInput.value = user.name || '';
+    if (emailInput && user) emailInput.value = user.email || '';
+    if (phoneInput && user) phoneInput.value = user.phone || '';
+
+    // Render order items in sidebar
+    const itemsList = document.getElementById('checkoutItemsList');
+    const selectedItems = cart.filter(item => selectedCartItems.has(item.id));
+
+    document.getElementById('checkoutItemCount').textContent = selectedItems.length + ' sản phẩm';
+
+    let subtotal = 0;
+    let totalOriginal = 0;
+    let itemsHtml = '';
+
+    selectedItems.forEach(item => {
+        const originalPrice = item.price || 0;
+        const percentDiscount = item.discount || 0;
+        const priceAfterPercent = percentDiscount > 0
+            ? originalPrice * (1 - percentDiscount / 100)
+            : originalPrice;
+
+        const couponValue = item.couponValue || 0;
+        const hasCoupon = !!item.discountCode && couponValue > 0;
+        const couponApplied = hasCoupon && (item.couponApplied !== false);
+        const finalPrice = couponApplied
+            ? Math.max(priceAfterPercent - couponValue, 0)
+            : priceAfterPercent;
+
+        subtotal += finalPrice * item.quantity;
+        totalOriginal += originalPrice * item.quantity;
+
+        const imageUrl = item.image || '';
+        itemsHtml += `
+            <div class="checkout-order-item">
+                ${imageUrl ? `<img src="${imageUrl}" alt="${item.title || ''}">` : '<div style="width:50px;height:65px;background:#f5f5f5;border-radius:4px;display:flex;align-items:center;justify-content:center;">📚</div>'}
+                <div class="checkout-order-item-info">
+                    <div class="checkout-order-item-title">${item.title || 'Sách'}</div>
+                    <div class="checkout-order-item-qty">x${item.quantity}</div>
+                    <div class="checkout-order-item-price">${formatPrice(finalPrice * item.quantity)}</div>
+                </div>
+            </div>
+        `;
+    });
+
+    itemsList.innerHTML = itemsHtml;
+
+    const shippingFee = 30000;
+    const savings = totalOriginal - subtotal;
+
+    document.getElementById('checkoutSubtotal').textContent = formatPrice(subtotal);
+    document.getElementById('checkoutShipping').textContent = formatPrice(shippingFee);
+    document.getElementById('checkoutSavings').textContent = '-' + formatPrice(savings);
+    document.getElementById('checkoutTotal').textContent = formatPrice(subtotal + shippingFee);
+
+    // Reset payment method
+    selectPaymentMethod('COD', document.querySelector('.payment-method-option.selected'));
+}
+
+function selectPaymentMethod(method, element) {
+    document.querySelectorAll('.payment-method-option').forEach(opt => opt.classList.remove('selected'));
+    if (element) element.classList.add('selected');
+    const radio = document.querySelector(`input[name="paymentMethod"][value="${method}"]`);
+    if (radio) radio.checked = true;
+}
+
+function applyCheckoutCoupon() {
+    const code = document.getElementById('checkoutCouponInput').value.trim();
+    if (!code) {
+        showAlert('Vui lòng nhập mã giảm giá');
+        return;
+    }
+    showAlert('Tính năng mã giảm giá đang được cập nhật!');
+}
+
+async function placeOrder() {
+    const name = document.getElementById('checkoutName').value.trim();
+    const phone = document.getElementById('checkoutPhone').value.trim();
+    const email = document.getElementById('checkoutEmail').value.trim();
+    const province = document.getElementById('checkoutProvince').value;
+    const district = document.getElementById('checkoutDistrict').value.trim();
+    const ward = document.getElementById('checkoutWard').value.trim();
+    const address = document.getElementById('checkoutAddress').value.trim();
+    const note = document.getElementById('checkoutNote').value.trim();
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || 'COD';
+
+    // Validate
+    if (!name) { showAlert('Vui lòng nhập họ và tên'); return; }
+    if (!phone) { showAlert('Vui lòng nhập số điện thoại'); return; }
+    if (!/^[0-9]{10}$/.test(phone)) { showAlert('Số điện thoại không hợp lệ, vui lòng nhập đúng 10 chữ số'); return; }
+    if (!email) { showAlert('Vui lòng nhập email'); return; }
+    if (!province) { showAlert('Vui lòng chọn tỉnh/thành phố'); return; }
+    if (!address) { showAlert('Vui lòng nhập địa chỉ cụ thể'); return; }
+
+    const selectedItems = cart.filter(item => selectedCartItems.has(item.id));
+    if (selectedItems.length === 0) {
+        showAlert('Không có sản phẩm nào được chọn');
+        return;
+    }
+
+    // Build full address
+    const provinceText = document.getElementById('checkoutProvince').selectedOptions[0]?.text || '';
+    const fullAddress = [address, ward, district, provinceText].filter(Boolean).join(', ');
+
+    // Calculate total
+    let totalPrice = 0;
+    const orderItems = selectedItems.map(item => {
+        const originalPrice = item.price || 0;
+        const percentDiscount = item.discount || 0;
+        const priceAfterPercent = percentDiscount > 0
+            ? originalPrice * (1 - percentDiscount / 100)
+            : originalPrice;
+        const couponValue = item.couponValue || 0;
+        const hasCoupon = !!item.discountCode && couponValue > 0;
+        const couponApplied = hasCoupon && (item.couponApplied !== false);
+        const finalPrice = couponApplied
+            ? Math.max(priceAfterPercent - couponValue, 0)
+            : priceAfterPercent;
+
+        totalPrice += finalPrice * item.quantity;
+
+        return {
+            bookId: item.id,
+            title: item.title,
+            price: finalPrice,
+            quantity: item.quantity
+        };
+    });
+
+    const shippingFee = 30000;
+    totalPrice += shippingFee;
+
+    const user = auth.getUser();
+
+    const orderData = {
+        userId: user?.id,
+        items: orderItems,
+        totalPrice: totalPrice,
+        status: 'PENDING',
+        paymentMethod: paymentMethod,
+        shippingAddress: fullAddress + (note ? ' | Ghi chú: ' + note : ''),
+        phone: phone
+    };
+
+    const placeOrderBtn = document.querySelector('.btn-place-order');
+    try {
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+        const result = await apiCall('/orders', 'POST', orderData);
+
+        // Remove purchased items from cart
+        cart = cart.filter(item => !selectedCartItems.has(item.id));
+        selectedCartItems.clear();
+        saveCart();
+        updateCartCount();
+
+        // Show success
+        document.getElementById('successOrderId').textContent = result.id || 'N/A';
+        showSection('orderSuccess');
+
+    } catch (error) {
+        showAlert('Đặt hàng thất bại: ' + error.message);
+    } finally {
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.innerHTML = '<i class="fas fa-check"></i> Đặt hàng';
+    }
+}
+
+// Expose checkout functions to window
+window.checkout = checkout;
+window.selectPaymentMethod = selectPaymentMethod;
+window.applyCheckoutCoupon = applyCheckoutCoupon;
+window.placeOrder = placeOrder;
 
 // ==============================
 // PROFILE MANAGEMENT
@@ -1751,13 +1989,13 @@ document.addEventListener('click', (event) => {
         }
     }
     
-    // Xử lý đóng category menu khi click bên ngoài
-    const categoryMenu = document.getElementById('categoryDropdownMenu');
-    const categoryToggle = document.querySelector('.navbar-menu-toggle');
+    // Xử lý đóng filter panel khi click bên ngoài
+    const filterSidebar = document.getElementById('filterSidebar');
+    const filterToggle = document.querySelector('.navbar-menu-toggle');
     
-    if (categoryMenu && categoryToggle) {
-        if (!categoryToggle.contains(event.target) && !categoryMenu.contains(event.target)) {
-            closeCategoryMenu();
+    if (filterSidebar && filterToggle) {
+        if (!filterToggle.contains(event.target) && !filterSidebar.contains(event.target)) {
+            closeFilterPanel();
         }
     }
 });

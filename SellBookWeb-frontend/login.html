@@ -204,14 +204,19 @@
 
         .links {
             text-align: center;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             font-size: 0.9rem;
+        }
+
+        .links p {
+            margin: 0;
         }
 
         .links a {
             color: #667eea;
             text-decoration: none;
             cursor: pointer;
+            font-weight: 600;
         }
 
         .links a:hover {
@@ -246,16 +251,13 @@
                     <input type="password" id="loginPassword" required>
                 </div>
 
-                <div class="form-group">
-                    <label>Vai trò:</label>
-                    <select id="loginRole" required>
-                        <option value="">-- Chọn vai trò --</option>
-                        <option value="CUSTOMER">Khách hàng</option>
-                        <option value="ADMIN">Quản trị viên</option>
-                    </select>
-                </div>
+                <input type="hidden" id="loginRole" value="">
 
                 <button type="submit" class="submit-btn" id="loginBtn">Đăng nhập</button>
+
+                <div class="links">
+                    <p><span style="color: #999;">Liên Hệ trợ giúp:</span> <a href="mailto:dangtiendat.dmx2019@gmail.com">dangtiendat.dmx2019@gmail.com</a></p>
+                </div>
             </form>
 
             <!-- Register Form -->
@@ -286,12 +288,11 @@
                 </div>
 
                 <button type="submit" class="submit-btn" id="registerBtn">Đăng ký</button>
-            </form>
 
-            <div class="links">
-                <p>Demo: Email: admin@test.com | Mật khẩu: 123456 | Role: ADMIN</p>
-                <p>Demo Customer: Email: customer@test.com | Mật khẩu: 123456 | Role: CUSTOMER</p>
-            </div>
+                <div class="links">
+                    <p><span style="color: #999;">Bạn đã có tài khoản?</span> <a onclick="toggleForm('login'); return false;">Đăng nhập</a></p>
+                </div>
+            </form>
         </div>
     </div>
 

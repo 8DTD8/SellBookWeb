@@ -15,15 +15,9 @@
                 <div class="navbar-brand">
                     <h1 class="logo" onclick="showSection('home')" style="cursor: pointer;">sellbookweb</h1>
                 </div>
-                <div class="navbar-menu-toggle" onclick="toggleCategoryMenu(event)">
+                <div class="navbar-menu-toggle" onclick="toggleFilterPanel(event)">
                     <i class="fas fa-th"></i>
                     <i class="fas fa-chevron-down"></i>
-                    <div class="category-dropdown-menu" id="categoryDropdownMenu">
-                        <div class="category-menu-header">Danh mục sách</div>
-                        <div id="categoryMenuList" class="category-menu-list">
-                            <!-- Categories will be loaded here -->
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="navbar-right">
@@ -62,6 +56,31 @@
             <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm sách...">
         </div>
     </nav>
+
+    <!-- Filter Sidebar Overlay -->
+    <div class="filter-overlay" id="filterOverlay" onclick="closeFilterPanel()"></div>
+    <aside class="filter-sidebar" id="filterSidebar">
+        <div class="filter-sidebar-header">
+            <span><i class="fas fa-filter"></i> Bộ lọc</span>
+            <button class="filter-close-btn" onclick="closeFilterPanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="filter-section">
+            <h4 class="filter-section-title">Danh mục</h4>
+            <div id="filterCategoryList" class="filter-category-list">
+                <!-- Categories will be loaded here -->
+            </div>
+        </div>
+        <div class="filter-section">
+            <h4 class="filter-section-title">Khoảng giá</h4>
+            <div id="filterPriceRange" class="filter-price-range">
+                <button class="price-range-btn active" onclick="filterByPrice('all')">Tất cả</button>
+                <button class="price-range-btn" onclick="filterByPrice('under50')">Dưới 50k</button>
+                <button class="price-range-btn" onclick="filterByPrice('50to100')">50k - 100k</button>
+                <button class="price-range-btn" onclick="filterByPrice('100to200')">100k - 200k</button>
+                <button class="price-range-btn" onclick="filterByPrice('over200')">Trên 200k</button>
+            </div>
+        </div>
+    </aside>
 
     <!-- Main Container -->
     <div class="container">
@@ -323,6 +342,225 @@
                 <h2>Đánh giá của tôi</h2>
             </div>
             <div id="myReviewsList" class="reviews-container">
+            </div>
+        </section>
+
+        <!-- Checkout Section -->
+        <section id="checkout" class="section">
+            <!-- Progress Steps -->
+            <div class="checkout-progress">
+                <div class="progress-step completed">
+                    <div class="step-circle"><i class="fas fa-check"></i></div>
+                    <span class="step-label">Giỏ hàng</span>
+                </div>
+                <div class="progress-line active"></div>
+                <div class="progress-step active">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Thanh toán</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step">
+                    <div class="step-circle">3</div>
+                    <span class="step-label">Hoàn tất</span>
+                </div>
+            </div>
+
+            <h2 class="checkout-title"><i class="fas fa-credit-card"></i> Thanh toán</h2>
+
+            <div class="checkout-layout">
+                <!-- Left Column -->
+                <div class="checkout-left">
+                    <!-- 1. Thông tin người nhận -->
+                    <div class="checkout-card">
+                        <div class="checkout-card-header">
+                            <span class="checkout-step-num">1</span>
+                            <h3>Thông tin người nhận</h3>
+                        </div>
+                        <div class="checkout-card-body">
+                            <div class="checkout-form-row">
+                                <div class="checkout-form-group">
+                                    <label>Họ và tên <span class="required">*</span></label>
+                                    <input type="text" id="checkoutName" placeholder="Nguyễn Văn A">
+                                </div>
+                                <div class="checkout-form-group">
+                                    <label>Số điện thoại <span class="required">*</span></label>
+                                    <input type="tel" id="checkoutPhone" placeholder="VD: 0367897220">
+                                </div>
+                            </div>
+                            <div class="checkout-form-group">
+                                <label>Email <span class="required">*</span></label>
+                                <input type="email" id="checkoutEmail" placeholder="email@example.com">
+                                <small class="form-hint">Chúng tôi sẽ gửi thông tin đơn hàng qua email này</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Địa chỉ giao hàng -->
+                    <div class="checkout-card">
+                        <div class="checkout-card-header">
+                            <span class="checkout-step-num">2</span>
+                            <h3>Địa chỉ giao hàng</h3>
+                        </div>
+                        <div class="checkout-card-body">
+                            <div class="checkout-form-row checkout-form-row-3">
+                                <div class="checkout-form-group">
+                                    <label>Tỉnh/Thành phố <span class="required">*</span></label>
+                                    <select id="checkoutProvince">
+                                        <option value="">Chọn tỉnh/thành</option>
+                                        <option value="hanoi">Hà Nội</option>
+                                        <option value="hcm">TP. Hồ Chí Minh</option>
+                                        <option value="danang">Đà Nẵng</option>
+                                        <option value="haiphong">Hải Phòng</option>
+                                        <option value="cantho">Cần Thơ</option>
+                                        <option value="binhduong">Bình Dương</option>
+                                        <option value="dongnai">Đồng Nai</option>
+                                        <option value="khanhhoa">Khánh Hòa</option>
+                                        <option value="lamdong">Lâm Đồng</option>
+                                        <option value="thanhhoa">Thanh Hóa</option>
+                                        <option value="nghean">Nghệ An</option>
+                                        <option value="quangninh">Quảng Ninh</option>
+                                        <option value="other">Khác</option>
+                                    </select>
+                                </div>
+                                <div class="checkout-form-group">
+                                    <label>Quận/Huyện</label>
+                                    <input type="text" id="checkoutDistrict" placeholder="VD: Quận 1">
+                                </div>
+                                <div class="checkout-form-group">
+                                    <label>Phường/Xã</label>
+                                    <input type="text" id="checkoutWard" placeholder="VD: Phường Bến Nghé">
+                                </div>
+                            </div>
+                            <div class="checkout-form-group">
+                                <label>Địa chỉ cụ thể <span class="required">*</span></label>
+                                <input type="text" id="checkoutAddress" placeholder="Số nhà, tên đường...">
+                            </div>
+                            <div class="checkout-form-group">
+                                <label>Ghi chú cho người giao hàng</label>
+                                <textarea id="checkoutNote" rows="3" placeholder="VD: Giao giờ hành chính, gọi trước khi giao..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Phương thức thanh toán -->
+                    <div class="checkout-card">
+                        <div class="checkout-card-header">
+                            <span class="checkout-step-num">3</span>
+                            <h3>Phương thức thanh toán</h3>
+                        </div>
+                        <div class="checkout-card-body">
+                            <label class="payment-method-option selected" onclick="selectPaymentMethod('COD', this)">
+                                <input type="radio" name="paymentMethod" value="COD" checked>
+                                <div class="payment-method-content">
+                                    <div class="payment-method-icon">💵</div>
+                                    <div class="payment-method-details">
+                                        <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                        <p>Thanh toán bằng tiền mặt khi nhận hàng. Phổ biến và tiện lợi nhất.</p>
+                                        <span class="payment-popular">✓ Phổ biến nhất</span>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="payment-method-option" onclick="selectPaymentMethod('BANK', this)">
+                                <input type="radio" name="paymentMethod" value="BANK">
+                                <div class="payment-method-content">
+                                    <div class="payment-method-icon">🏦</div>
+                                    <div class="payment-method-details">
+                                        <strong>Chuyển khoản ngân hàng</strong>
+                                        <p>Chuyển khoản trước qua ngân hàng, giao hàng sau khi xác nhận.</p>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="payment-method-option" onclick="selectPaymentMethod('MOMO', this)">
+                                <input type="radio" name="paymentMethod" value="MOMO">
+                                <div class="payment-method-content">
+                                    <div class="payment-method-icon" style="width:36px;height:36px;background:#a50064;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:0.7rem;line-height:1;letter-spacing:-0.5px;font-family:Arial,sans-serif;"><div style="text-align:center;">mo<br>mo</div></div>
+                                    <div class="payment-method-details">
+                                        <strong>Ví MoMo</strong>
+                                        <p>Thanh toán nhanh chóng qua ví điện tử MoMo.</p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Order Summary -->
+                <div class="checkout-right">
+                    <div class="checkout-card checkout-order-summary">
+                        <div class="checkout-card-header">
+                            <span>🛒 Đơn hàng</span>
+                            <span id="checkoutItemCount" class="checkout-item-count">0 sản phẩm</span>
+                        </div>
+                        <div class="checkout-card-body">
+                            <div id="checkoutItemsList" class="checkout-items-list">
+                                <!-- Items will be rendered here -->
+                            </div>
+                            <div class="checkout-coupon-row">
+                                <input type="text" id="checkoutCouponInput" placeholder="MÃ GIẢM GIÁ">
+                                <button class="btn btn-success btn-sm" onclick="applyCheckoutCoupon()">Áp dụng</button>
+                            </div>
+                            <div class="checkout-totals">
+                                <div class="checkout-total-row">
+                                    <span>Tạm tính</span>
+                                    <span id="checkoutSubtotal">0đ</span>
+                                </div>
+                                <div class="checkout-total-row">
+                                    <span>Phí vận chuyển</span>
+                                    <span id="checkoutShipping">30.000đ</span>
+                                </div>
+                                <div class="checkout-total-row checkout-savings">
+                                    <span>Tiết kiệm</span>
+                                    <span id="checkoutSavings">-0đ</span>
+                                </div>
+                                <div class="checkout-total-row checkout-grand-total">
+                                    <span>Tổng cộng</span>
+                                    <span id="checkoutTotal">0đ</span>
+                                </div>
+                            </div>
+                            <button class="btn-place-order" onclick="placeOrder()">
+                                <i class="fas fa-check"></i> Đặt hàng
+                            </button>
+                            <div class="checkout-trust">
+                                <p>Bằng việc đặt hàng, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a></p>
+                                <div class="trust-icons">
+                                    <span><i class="fas fa-lock"></i> Bảo mật</span>
+                                    <span><i class="fas fa-thumbs-up"></i> Uy tín</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Success Section -->
+        <section id="orderSuccess" class="section">
+            <div class="checkout-progress">
+                <div class="progress-step completed">
+                    <div class="step-circle"><i class="fas fa-check"></i></div>
+                    <span class="step-label">Giỏ hàng</span>
+                </div>
+                <div class="progress-line active"></div>
+                <div class="progress-step completed">
+                    <div class="step-circle"><i class="fas fa-check"></i></div>
+                    <span class="step-label">Thanh toán</span>
+                </div>
+                <div class="progress-line active"></div>
+                <div class="progress-step active">
+                    <div class="step-circle"><i class="fas fa-check"></i></div>
+                    <span class="step-label">Hoàn tất</span>
+                </div>
+            </div>
+            <div class="order-success-container">
+                <div class="order-success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Đặt hàng thành công!</h2>
+                <p>Cảm ơn bạn đã mua hàng. Đơn hàng của bạn đang được xử lý.</p>
+                <p class="order-id-text">Mã đơn hàng: <strong id="successOrderId"></strong></p>
+                <div class="order-success-actions">
+                    <button class="btn btn-primary" onclick="showSection('home')">Tiếp tục mua sắm</button>
+                </div>
             </div>
         </section>
     </div>

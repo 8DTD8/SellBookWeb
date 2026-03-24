@@ -110,11 +110,10 @@ async function handleLogin(event) {
 
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
-    const role = document.getElementById('loginRole').value;
     const btn = document.getElementById('loginBtn');
 
     // Validation
-    if (!email || !password || !role) {
+    if (!email || !password) {
         showError('Vui lòng điền đầy đủ thông tin');
         return;
     }
@@ -131,8 +130,7 @@ async function handleLogin(event) {
             },
             body: JSON.stringify({
                 email,
-                password,
-                role
+                password
             })
         });
 
@@ -158,7 +156,7 @@ async function handleLogin(event) {
         auth.setAuth(user, token);
 
         // Redirect based on role
-        if (data.role === 'ADMIN') {
+        if (user.role === 'ADMIN') {
             window.location.href = 'admin.html';
         } else {
             window.location.href = 'customer.html';
@@ -194,6 +192,11 @@ async function handleRegister(event) {
 
     if (password.length < 6) {
         showError('Mật khẩu phải có ít nhất 6 ký tự');
+        return;
+    }
+
+    if (phone && !/^[0-9]{10}$/.test(phone)) {
+        showError('Số điện thoại không hợp lệ, vui lòng nhập đúng 10 chữ số');
         return;
     }
 
