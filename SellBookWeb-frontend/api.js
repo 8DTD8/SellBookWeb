@@ -37,7 +37,14 @@ async function apiCall(endpoint, method = 'GET', data = null) {
             throw new Error(errorData.message || `Error: ${response.statusText}`);
         }
 
-        return await response.json();
+        const contentType = response.headers.get('content-type');
+        if (response.status === 204 || !contentType) {
+            return null;
+        }
+        if (contentType.includes('application/json')) {
+            return await response.json();
+        }
+        return await response.text();
     } catch (error) {
         console.error('API Error:', error);
         throw error;
@@ -113,7 +120,7 @@ async function getUserById(id) {
 }
 
 async function registerUser(userData) {
-    return apiCall('/users/register', 'POST', userData);
+    return apiCall('/admin/users', 'POST', userData);
 }
 
 async function updateUser(id, userData) {

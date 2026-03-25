@@ -1,6 +1,7 @@
 package com.bookstore.controller;
 
 import com.bookstore.dto.UserDTO;
+import com.bookstore.model.User;
 import com.bookstore.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,12 @@ public class AdminUserController {
     public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
         UserDTO user = userService.getUserById(id);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping
+    public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
+        UserDTO createdUser = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PutMapping("/{id}/role")
