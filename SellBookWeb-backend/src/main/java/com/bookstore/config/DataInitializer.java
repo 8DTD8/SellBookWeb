@@ -35,7 +35,23 @@ public class DataInitializer {
     }
 
     private void initializeAdminUser() {
-        // Check if admin user already exists
+        // Super Admin account
+        if (userRepository.findByEmail("superadmin@bookstore.com").isEmpty()) {
+            User superAdmin = new User();
+            superAdmin.setName("Super Admin");
+            superAdmin.setEmail("superadmin@bookstore.com");
+            superAdmin.setPassword(passwordEncoder.encode("SuperAdmin@123"));
+            superAdmin.setRole("SUPER_ADMIN");
+            superAdmin.setActive(true);
+            superAdmin.setCreatedAt(LocalDateTime.now());
+            superAdmin.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(superAdmin);
+            System.out.println("✓ Super Admin user created!");
+            System.out.println("  Email: superadmin@bookstore.com");
+            System.out.println("  Password: SuperAdmin@123");
+        }
+
+        // Admin account 1
         if (userRepository.findByEmail("admin@bookstore.com").isEmpty()) {
             User adminUser = new User();
             adminUser.setName("Admin User");
@@ -45,13 +61,26 @@ public class DataInitializer {
             adminUser.setActive(true);
             adminUser.setCreatedAt(LocalDateTime.now());
             adminUser.setUpdatedAt(LocalDateTime.now());
-            
             userRepository.save(adminUser);
-            System.out.println("✓ Admin user created successfully!");
+            System.out.println("✓ Admin user 1 created!");
             System.out.println("  Email: admin@bookstore.com");
             System.out.println("  Password: Admin@123456");
-        } else {
-            System.out.println("✓ Admin user already exists");
+        }
+
+        // Admin account 2
+        if (userRepository.findByEmail("admin2@bookstore.com").isEmpty()) {
+            User adminUser2 = new User();
+            adminUser2.setName("Admin User 2");
+            adminUser2.setEmail("admin2@bookstore.com");
+            adminUser2.setPassword(passwordEncoder.encode("Admin2@123456"));
+            adminUser2.setRole("ADMIN");
+            adminUser2.setActive(true);
+            adminUser2.setCreatedAt(LocalDateTime.now());
+            adminUser2.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(adminUser2);
+            System.out.println("✓ Admin user 2 created!");
+            System.out.println("  Email: admin2@bookstore.com");
+            System.out.println("  Password: Admin2@123456");
         }
     }
 

@@ -37,6 +37,7 @@
                 <button class="btn-icon" onclick="showSection('myOrders')" title="Đơn hàng">
                     <i class="fas fa-box"></i>
                     <span>Đơn Hàng</span>
+                    <span id="orderBadge" class="badge" style="display:none;">0</span>
                 </button>
                 <div class="account-dropdown">
                     <button class="btn-icon account-btn" onclick="toggleAccountDropdown(event)" title="Tài khoản">
@@ -615,7 +616,7 @@
 
     <!-- Alert Modal -->
     <div id="alertModal" class="modal hidden">
-        <div class="modal-content">
+        <div class="modal-content" style="text-align: center;">
             <p id="alertText"></p>
             <button class="btn btn-primary" onclick="closeAlert()">OK</button>
         </div>

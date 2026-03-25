@@ -112,11 +112,11 @@ async function deleteCategory(id) {
 // ==============================
 
 async function fetchUsers() {
-    return apiCall('/users');
+    return apiCall('/admin/users');
 }
 
 async function getUserById(id) {
-    return apiCall(`/users/${id}`);
+    return apiCall(`/admin/users/${id}`);
 }
 
 async function registerUser(userData) {
@@ -124,11 +124,11 @@ async function registerUser(userData) {
 }
 
 async function updateUser(id, userData) {
-    return apiCall(`/users/${id}`, 'PUT', userData);
+    return apiCall(`/admin/users/${id}`, 'PUT', userData);
 }
 
 async function deleteUser(id) {
-    return apiCall(`/users/${id}`, 'DELETE');
+    return apiCall(`/admin/users/${id}`, 'DELETE');
 }
 
 // ==============================

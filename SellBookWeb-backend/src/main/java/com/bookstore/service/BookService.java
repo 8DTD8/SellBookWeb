@@ -26,7 +26,7 @@ public class BookService {
         book.setDescription(bookDTO.getDescription());
         book.setPrice(bookDTO.getPrice());
         book.setQuantity(bookDTO.getQuantity());
-        book.setCategoryId(bookDTO.getCategoryId());
+        book.setCategoryIds(bookDTO.getCategoryIds());
         book.setImage(bookDTO.getImage());
         // Nếu nhà cung cấp trống, dùng cùng tên với NXB
         String supplierName = bookDTO.getSupplierName();
@@ -66,7 +66,7 @@ public class BookService {
     }
 
     public List<BookDTO> booksByCategory(String categoryId) {
-        return bookRepository.findByCategoryId(categoryId).stream()
+        return bookRepository.findByCategoryIdsContaining(categoryId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -86,6 +86,7 @@ public class BookService {
         if (bookDTO.getDescription() != null) book.setDescription(bookDTO.getDescription());
         if (bookDTO.getPrice() != null) book.setPrice(bookDTO.getPrice());
         if (bookDTO.getQuantity() != null) book.setQuantity(bookDTO.getQuantity());
+        if (bookDTO.getCategoryIds() != null) book.setCategoryIds(bookDTO.getCategoryIds());
         if (bookDTO.getImage() != null) book.setImage(bookDTO.getImage());
         if (bookDTO.getSupplierName() != null) {
             String supplierName = bookDTO.getSupplierName();
@@ -126,7 +127,7 @@ public class BookService {
         dto.setDescription(book.getDescription());
         dto.setPrice(book.getPrice());
         dto.setQuantity(book.getQuantity());
-        dto.setCategoryId(book.getCategoryId());
+        dto.setCategoryIds(book.getCategoryIds());
         dto.setImage(book.getImage());
         dto.setRating(book.getRating());
         dto.setSupplierName(book.getSupplierName());

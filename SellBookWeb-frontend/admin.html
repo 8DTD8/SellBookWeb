@@ -96,9 +96,10 @@
                     </div>
                     <div class="form-group">
                         <label>Danh mục:</label>
-                        <select id="bookCategory" required>
-                            <option value="">-- Chọn danh mục --</option>
-                        </select>
+                        <div id="bookCategoryContainer" class="category-checkbox-list" style="border: 1px solid #ccc; border-radius: 4px; max-height: 180px; overflow-y: auto; padding: 8px;">
+                            <!-- Checkboxes will be populated by JS -->
+                        </div>
+                        <small style="color: #666;">Có thể chọn nhiều danh mục</small>
                     </div>
                     <div class="form-group">
                         <label>Mô tả:</label>
@@ -252,8 +253,9 @@
                         <label>Vai trò:</label>
                         <select id="userRole" required>
                             <option value="CUSTOMER">Khách hàng</option>
-                            <option value="ADMIN">Quản trị viên</option>
                             <option value="STAFF">Nhân viên</option>
+                            <option value="ADMIN">Quản trị viên</option>
+                            <option value="SUPER_ADMIN">Super Admin</option>
                         </select>
                     </div>
                     <div class="form-group">

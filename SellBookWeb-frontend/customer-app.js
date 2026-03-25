@@ -58,6 +58,7 @@ function initializeApp() {
     loadCart();
     initializeCategories(); // Load categories for filter
     loadNotifBadge(); // Load notification badge count
+    loadOrderBadge(); // Load order count badge
     
     // Search functionality
     const searchInput = document.getElementById('searchInput');
@@ -156,6 +157,7 @@ function showSection(sectionId) {
 
         if (sectionId === 'notifications') {
             loadNotifications();
+            markNotifsRead();
         }
         
         if (sectionId === 'cart') {
@@ -281,7 +283,7 @@ function renderBookDetail(book) {
         : originalPrice;
     
     // Get category name for breadcrumbs
-    const categoryName = getCategoryName(book.categoryId);
+    const categoryName = getCategoryName(book.categoryIds);
     
     // Render breadcrumbs
     const breadcrumbs = document.getElementById('breadcrumbs');
@@ -528,8 +530,9 @@ function createThumbnail(imageSrc, index, isActive) {
     return thumb;
 }
 
-function getCategoryName(categoryId) {
-    // This would normally fetch from API, but for now return a default
+function getCategoryName(categoryIds) {
+    if (!categoryIds || !Array.isArray(categoryIds) || categoryIds.length === 0) return 'Sách';
+    // Return first category name as primary
     return 'Sách Tiếng Việt';
 }
 
@@ -853,7 +856,10 @@ function applyFilters() {
 
     // Filter by selected categories
     if (selectedCategories.length > 0) {
-        result = result.filter(book => selectedCategories.includes(book.categoryId));
+        result = result.filter(book => {
+            const bookCats = book.categoryIds || [];
+            return selectedCategories.some(catId => bookCats.includes(catId));
+        });
     }
 
     // Filter by price range
@@ -921,72 +927,71 @@ async function loadNotifications() {
     container.innerHTML = '<p style="text-align:center;color:#999;">Đang tải...</p>';
     try {
         const books = await fetchBooks();
-        if (!books || books.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#999;">Không có thông báo nào.</p>';
-            updateNotifBadge(0);
-            return;
-        }
-
         const notifications = [];
 
-        // 1. Sách mới (tạo trong 7 ngày gần nhất)
-        const now = new Date();
-        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        books.forEach(book => {
-            if (book.createdAt) {
-                const created = new Date(book.createdAt);
-                if (created >= sevenDaysAgo) {
+        // 0. Thông báo đặt hàng thành công (lưu trong localStorage)
+        const orderNotifs = JSON.parse(localStorage.getItem('orderNotifs') || '[]');
+        orderNotifs.forEach(n => {
+            notifications.push({
+                type: 'order',
+                icon: '✅',
+                color: '#27ae60',
+                title: 'Đặt hàng thành công',
+                message: `Đơn hàng <b>${n.orderId}</b> đã được đặt thành công!`,
+                image: null,
+                bookId: null,
+                time: new Date(n.time)
+            });
+        });
+
+        if (books && books.length > 0) {
+            const now = new Date();
+            const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+            // 1. Sách mới
+            books.forEach(book => {
+                if (book.createdAt) {
+                    const created = new Date(book.createdAt);
+                    if (created >= sevenDaysAgo) {
+                        notifications.push({
+                            type: 'new', icon: '📗', color: '#27ae60',
+                            title: 'Sách mới',
+                            message: `<b>${book.title}</b> vừa được thêm vào cửa hàng!`,
+                            image: book.image, bookId: book.id,
+                            time: created
+                        });
+                    }
+                }
+            });
+
+            // 2. Hết hàng
+            books.forEach(book => {
+                if (book.quantity != null && book.quantity <= 0) {
                     notifications.push({
-                        type: 'new',
-                        icon: '📗',
-                        color: '#27ae60',
-                        title: 'Sách mới',
-                        message: `<b>${book.title}</b> vừa được thêm vào cửa hàng!`,
-                        price: book.price,
-                        image: book.image,
-                        bookId: book.id,
-                        time: created
+                        type: 'outofstock', icon: '⚠️', color: '#e74c3c',
+                        title: 'Hết hàng',
+                        message: `<b>${book.title}</b> hiện đã hết hàng.`,
+                        image: book.image, bookId: book.id,
+                        time: book.updatedAt ? new Date(book.updatedAt) : new Date()
                     });
                 }
-            }
-        });
+            });
 
-        // 2. Sách hết hàng
-        books.forEach(book => {
-            if (book.quantity != null && book.quantity <= 0) {
-                notifications.push({
-                    type: 'outofstock',
-                    icon: '⚠️',
-                    color: '#e74c3c',
-                    title: 'Hết hàng',
-                    message: `<b>${book.title}</b> hiện đã hết hàng.`,
-                    image: book.image,
-                    bookId: book.id,
-                    time: book.updatedAt ? new Date(book.updatedAt) : now
-                });
-            }
-        });
+            // 3. Giảm giá
+            books.forEach(book => {
+                if (book.discount && book.discount > 0) {
+                    notifications.push({
+                        type: 'discount', icon: '🎉', color: '#f39c12',
+                        title: 'Giảm giá ' + book.discount + '%',
+                        message: `<b>${book.title}</b> đang giảm <b>${book.discount}%</b>! Giá chỉ còn <b>${formatPrice(book.price * (1 - book.discount / 100))}</b>`,
+                        image: book.image, bookId: book.id,
+                        time: book.updatedAt ? new Date(book.updatedAt) : new Date()
+                    });
+                }
+            });
+        }
 
-        // 3. Sách đang giảm giá
-        books.forEach(book => {
-            if (book.discount && book.discount > 0) {
-                notifications.push({
-                    type: 'discount',
-                    icon: '🎉',
-                    color: '#f39c12',
-                    title: 'Giảm giá ' + book.discount + '%',
-                    message: `<b>${book.title}</b> đang giảm <b>${book.discount}%</b>! Giá chỉ còn <b>${formatPrice(book.price * (1 - book.discount / 100))}</b>`,
-                    image: book.image,
-                    bookId: book.id,
-                    time: book.updatedAt ? new Date(book.updatedAt) : now
-                });
-            }
-        });
-
-        // Sắp xếp theo thời gian mới nhất
         notifications.sort((a, b) => b.time - a.time);
-
-        updateNotifBadge(notifications.length);
 
         if (notifications.length === 0) {
             container.innerHTML = '<p style="text-align:center;color:#999;">Không có thông báo nào.</p>';
@@ -996,8 +1001,9 @@ async function loadNotifications() {
         let html = '';
         notifications.forEach(n => {
             const timeStr = n.time ? n.time.toLocaleString('vi-VN') : '';
+            const clickAttr = n.bookId ? `onclick="viewBookDetail('${n.bookId}')"` : '';
             html += `
-            <div style="display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid #e8e8e8;border-left:4px solid ${n.color};border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'" onclick="viewBookDetail('${n.bookId}')">
+            <div style="display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid #e8e8e8;border-left:4px solid ${n.color};border-radius:8px;padding:14px;margin-bottom:10px;${n.bookId ? 'cursor:pointer;' : ''}transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'" ${clickAttr}>
                 ${n.image ? `<img src="${n.image}" style="width:50px;height:65px;object-fit:cover;border-radius:4px;flex-shrink:0;">` : `<div style="width:50px;height:65px;background:#f5f5f5;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.5em;flex-shrink:0;">${n.icon}</div>`}
                 <div style="flex:1;min-width:0;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
@@ -1028,17 +1034,58 @@ function updateNotifBadge(count) {
 
 async function loadNotifBadge() {
     try {
+        // Kiểm tra đã xem chưa
+        const lastRead = localStorage.getItem('notifsReadAt');
         const books = await fetchBooks();
         if (!books) return;
         let count = 0;
         const now = new Date();
         const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const readTime = lastRead ? new Date(lastRead) : null;
+
         books.forEach(book => {
-            if (book.createdAt && new Date(book.createdAt) >= sevenDaysAgo) count++;
-            if (book.quantity != null && book.quantity <= 0) count++;
-            if (book.discount && book.discount > 0) count++;
+            const created = book.createdAt ? new Date(book.createdAt) : null;
+            const updated = book.updatedAt ? new Date(book.updatedAt) : null;
+            if (created && created >= sevenDaysAgo && (!readTime || created > readTime)) count++;
+            if (book.quantity != null && book.quantity <= 0 && (!readTime || (updated && updated > readTime))) count++;
+            if (book.discount && book.discount > 0 && (!readTime || (updated && updated > readTime))) count++;
         });
+
+        // Thông báo đặt hàng chưa đọc
+        const orderNotifs = JSON.parse(localStorage.getItem('orderNotifs') || '[]');
+        orderNotifs.forEach(n => {
+            if (!readTime || new Date(n.time) > readTime) count++;
+        });
+
         updateNotifBadge(count);
+    } catch (e) {}
+}
+
+function markNotifsRead() {
+    localStorage.setItem('notifsReadAt', new Date().toISOString());
+    updateNotifBadge(0);
+}
+
+function updateOrderBadge(count) {
+    const badge = document.getElementById('orderBadge');
+    if (badge) {
+        if (count > 0) {
+            badge.textContent = count;
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+}
+
+async function loadOrderBadge() {
+    try {
+        const user = auth.getUser();
+        if (!user || !user.id) return;
+        const orders = await apiCall(`/orders?userId=${user.id}`);
+        if (!orders) return;
+        const activeCount = orders.filter(o => o.status !== 'DELIVERED' && o.status !== 'CANCELLED').length;
+        updateOrderBadge(activeCount);
     } catch (e) {}
 }
 
@@ -1668,6 +1715,15 @@ async function placeOrder() {
 
         // Show success
         document.getElementById('successOrderId').textContent = result.id || 'N/A';
+
+        // Save order notification
+        const orderNotifs = JSON.parse(localStorage.getItem('orderNotifs') || '[]');
+        orderNotifs.unshift({ orderId: result.id, time: new Date().toISOString() });
+        if (orderNotifs.length > 20) orderNotifs.length = 20;
+        localStorage.setItem('orderNotifs', JSON.stringify(orderNotifs));
+
+        loadOrderBadge();
+        loadNotifBadge();
         showSection('orderSuccess');
 
     } catch (error) {
@@ -1745,6 +1801,7 @@ async function cancelMyOrder(orderId) {
         await apiCall(`/orders/${orderId}/cancel`, 'PUT');
         showAlert('Đã hủy đơn hàng thành công!');
         loadMyOrders();
+        loadOrderBadge();
     } catch (error) {
         showAlert('Lỗi: ' + error.message);
     }

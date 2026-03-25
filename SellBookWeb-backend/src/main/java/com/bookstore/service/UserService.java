@@ -93,6 +93,7 @@ public class UserService {
         dto.setAvatar(user.getAvatar());
         dto.setRole(user.getRole());
         dto.setActive(user.getActive());
+        dto.setOnline(user.getOnline() != null ? user.getOnline() : false);
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;

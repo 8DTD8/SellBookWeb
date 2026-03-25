@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -18,7 +19,7 @@ public class Book {
     private String description;
     private Double price;
     private Integer quantity;
-    private String categoryId;
+    private List<String> categoryIds = new ArrayList<>();
     private String image;
     private Double rating;
     private List<String> tags;
@@ -81,12 +82,12 @@ public class Book {
         this.quantity = quantity;
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public List<String> getCategoryIds() {
+        return categoryIds;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryIds(List<String> categoryIds) {
+        this.categoryIds = categoryIds != null ? categoryIds : new ArrayList<>();
     }
 
     public String getImage() {

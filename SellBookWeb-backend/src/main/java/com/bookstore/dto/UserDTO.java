@@ -14,6 +14,7 @@ public class UserDTO {
     private String avatar;
     private String role;
     private Boolean active;
+    private Boolean online;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -87,5 +88,13 @@ public class UserDTO {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Boolean getOnline() {
+        return online;
+    }
+
+    public void setOnline(Boolean online) {
+        this.online = online;
     }
 }

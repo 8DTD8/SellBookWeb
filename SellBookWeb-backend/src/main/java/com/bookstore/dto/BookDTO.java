@@ -2,6 +2,8 @@ package com.bookstore.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +14,7 @@ public class BookDTO {
     private String description;
     private Double price;
     private Integer quantity;
-    private String categoryId;
+    private List<String> categoryIds = new ArrayList<>();
     private String image;
     private Double rating;
     private String supplierName;
@@ -72,12 +74,12 @@ public class BookDTO {
         this.quantity = quantity;
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public List<String> getCategoryIds() {
+        return categoryIds;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryIds(List<String> categoryIds) {
+        this.categoryIds = categoryIds != null ? categoryIds : new ArrayList<>();
     }
 
     public String getImage() {

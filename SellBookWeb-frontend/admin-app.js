@@ -112,7 +112,7 @@ function renderBooks(books) {
             <td>${book.isbn || ''}</td>
             <td>${formatPrice(book.price)}</td>
             <td>${book.quantity || 0}</td>
-            <td>${getCategoryName(book.categoryId)}</td>
+            <td>${getCategoryNames(book.categoryIds)}</td>
             <td>${book.supplierName || book.publisher || ''}</td>
             <td>${book.coverType || 'Bìa Mềm'}</td>
             <td>${book.translator || 'N/A'}</td>
@@ -135,7 +135,7 @@ function showAddBookForm() {
     document.getElementById('bookIsbn').value = '';
     document.getElementById('bookPrice').value = '';
     document.getElementById('bookQuantity').value = '';
-    document.getElementById('bookCategory').value = '';
+    populateCategoryCheckboxes([]);
     document.getElementById('bookDescription').value = '';
     document.getElementById('bookImage').value = '';
     document.getElementById('bookSupplier').value = '';
@@ -162,7 +162,7 @@ async function editBook(id) {
         document.getElementById('bookIsbn').value = book.isbn;
         document.getElementById('bookPrice').value = book.price;
         document.getElementById('bookQuantity').value = book.quantity;
-        document.getElementById('bookCategory').value = book.categoryId;
+        populateCategoryCheckboxes(book.categoryIds || []);
         document.getElementById('bookDescription').value = book.description || '';
         document.getElementById('bookImage').value = book.image || '';
         document.getElementById('bookSupplier').value = book.supplierName || book.publisher || '';
@@ -196,7 +196,7 @@ async function saveBook(event) {
         isbn: document.getElementById('bookIsbn').value,
         price: parseFloat(document.getElementById('bookPrice').value),
         quantity: parseInt(document.getElementById('bookQuantity').value),
-        categoryId: document.getElementById('bookCategory').value,
+        categoryIds: getSelectedCategoryIds(),
         description: document.getElementById('bookDescription').value,
         image: document.getElementById('bookImage').value,
         supplierName: supplierName,
@@ -277,9 +277,12 @@ async function filterByCategory() {
     }
 }
 
-function getCategoryName(categoryId) {
-    const category = categoriesData.find(cat => cat.id === categoryId);
-    return category ? category.name : '-';
+function getCategoryNames(categoryIds) {
+    if (!categoryIds || !Array.isArray(categoryIds) || categoryIds.length === 0) return '-';
+    return categoryIds.map(id => {
+        const cat = categoriesData.find(c => c.id === id);
+        return cat ? cat.name : '';
+    }).filter(Boolean).join(', ') || '-';
 }
 
 // ==============================
@@ -477,16 +480,27 @@ async function deleteCategoryConfirm(id) {
 }
 
 function populateCategorySelect() {
-    const select = document.getElementById('bookCategory');
-    select.innerHTML = '<option value="">-- Chọn danh mục --</option>';
+    populateCategoryCheckboxes([]);
+}
+
+function populateCategoryCheckboxes(selectedIds) {
+    const container = document.getElementById('bookCategoryContainer');
+    if (!container) return;
+    container.innerHTML = '';
     if (Array.isArray(categoriesData)) {
         categoriesData.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.id;
-            option.textContent = cat.name;
-            select.appendChild(option);
+            const checked = selectedIds.includes(cat.id) ? 'checked' : '';
+            const label = document.createElement('label');
+            label.style.cssText = 'display: block; padding: 4px 0; cursor: pointer;';
+            label.innerHTML = `<input type="checkbox" class="book-cat-cb" value="${cat.id}" ${checked}> ${cat.name}`;
+            container.appendChild(label);
         });
     }
+}
+
+function getSelectedCategoryIds() {
+    const checkboxes = document.querySelectorAll('.book-cat-cb:checked');
+    return Array.from(checkboxes).map(cb => cb.value);
 }
 
 function populateParentCategorySelect(excludeId = null) {
@@ -539,26 +553,63 @@ function renderUsers(users) {
         return;
     }
 
+    const currentUser = auth.getUser();
+    const currentRole = currentUser ? currentUser.role : '';
+
+    const roleOrder = { 'SUPER_ADMIN': 0, 'ADMIN': 1, 'STAFF': 2, 'CUSTOMER': 3 };
+    users.sort((a, b) => (roleOrder[a.role] ?? 99) - (roleOrder[b.role] ?? 99));
+
     users.forEach(user => {
         const row = document.createElement('tr');
+        // ADMIN cannot delete self, other ADMINs, or SUPER_ADMINs
+        // ADMIN cannot edit ADMIN or SUPER_ADMIN users
+        const isAdminTarget = (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN');
+        const isSelf = (user.id === currentUser?.id);
+        const canDelete = currentRole === 'SUPER_ADMIN' || (!isAdminTarget && !isSelf);
+        const canEdit = currentRole === 'SUPER_ADMIN' || (!isAdminTarget && !isSelf);
+
+        const roleLabel = {
+            'SUPER_ADMIN': 'Super Admin',
+            'ADMIN': 'Quản trị viên',
+            'STAFF': 'Nhân viên',
+            'CUSTOMER': 'Khách hàng'
+        }[user.role] || user.role;
+
         row.innerHTML = `
             <td>${user.name || ''}</td>
             <td>${user.email || ''}</td>
             <td>${user.phone || '-'}</td>
-            <td>${user.role || 'CUSTOMER'}</td>
+            <td>${roleLabel}</td>
             <td>
-                <span class="badge ${user.active ? 'badge-success' : 'badge-danger'}">
-                    ${user.active ? 'Hoạt động' : 'Không hoạt động'}
+                <span class="badge ${user.online ? 'badge-success' : 'badge-danger'}">
+                    ${user.online ? 'Hoạt động' : 'Không hoạt động'}
                 </span>
             </td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn btn-warning btn-sm" onclick="editUser('${user.id}')">Sửa</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteUserConfirm('${user.id}')">Xóa</button>
+                    ${canEdit ? `<button class="btn btn-warning btn-sm" onclick="editUser('${user.id}')">Sửa</button>` : ''}
+                    ${canDelete ? `<button class="btn btn-danger btn-sm" onclick="deleteUserConfirm('${user.id}')">Xóa</button>` : ''}
                 </div>
             </td>
         `;
         tbody.appendChild(row);
+    });
+}
+
+function populateRoleDropdown() {
+    const roleSelect = document.getElementById('userRole');
+    const currentRole = auth.getUser()?.role || '';
+    roleSelect.innerHTML = '';
+    const roles = [{ value: 'CUSTOMER', label: 'Khách hàng' }, { value: 'STAFF', label: 'Nhân viên' }];
+    if (currentRole === 'SUPER_ADMIN') {
+        roles.push({ value: 'ADMIN', label: 'Quản trị viên' });
+        roles.push({ value: 'SUPER_ADMIN', label: 'Super Admin' });
+    }
+    roles.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.value;
+        opt.textContent = r.label;
+        roleSelect.appendChild(opt);
     });
 }
 
@@ -567,9 +618,10 @@ function showAddUserForm() {
     document.getElementById('userName').value = '';
     document.getElementById('userEmail').value = '';
     document.getElementById('userPhone').value = '';
-    document.getElementById('userRole').value = 'CUSTOMER';
     document.getElementById('userActive').checked = true;
     document.getElementById('userFormTitle').textContent = 'Thêm người dùng';
+    populateRoleDropdown();
+    document.getElementById('userRole').value = 'CUSTOMER';
     document.getElementById('userForm').classList.remove('hidden');
 }
 
@@ -584,9 +636,10 @@ async function editUser(id) {
         document.getElementById('userName').value = user.name;
         document.getElementById('userEmail').value = user.email;
         document.getElementById('userPhone').value = user.phone || '';
-        document.getElementById('userRole').value = user.role;
         document.getElementById('userActive').checked = user.active !== false;
         document.getElementById('userFormTitle').textContent = 'Chỉnh sửa người dùng';
+        populateRoleDropdown();
+        document.getElementById('userRole').value = user.role;
         document.getElementById('userForm').classList.remove('hidden');
     } catch (error) {
         showAlert('Lỗi khi tải thông tin người dùng: ' + error.message);

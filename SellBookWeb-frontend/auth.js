@@ -29,7 +29,15 @@ class AuthManager {
         localStorage.setItem('token', token);
     }
 
-    logout() {
+    async logout() {
+        try {
+            if (this.token) {
+                await fetch(`${API_BASE_URL}/auth/logout`, {
+                    method: 'POST',
+                    headers: this.getAuthHeader()
+                });
+            }
+        } catch (e) { /* ignore */ }
         this.token = null;
         this.user = null;
         localStorage.removeItem('token');
@@ -58,9 +66,9 @@ window.addEventListener('load', () => {
         }
 
         // Redirect based on role
-        if (currentPage === 'admin.html' && auth.getRole() !== 'ADMIN') {
+        if (currentPage === 'admin.html' && auth.getRole() !== 'ADMIN' && auth.getRole() !== 'SUPER_ADMIN') {
             window.location.href = 'customer.html';
-        } else if (currentPage === 'customer.html' && auth.getRole() === 'ADMIN') {
+        } else if (currentPage === 'customer.html' && (auth.getRole() === 'ADMIN' || auth.getRole() === 'SUPER_ADMIN')) {
             window.location.href = 'admin.html';
         }
     }
@@ -156,7 +164,7 @@ async function handleLogin(event) {
         auth.setAuth(user, token);
 
         // Redirect based on role
-        if (user.role === 'ADMIN') {
+        if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') {
             window.location.href = 'admin.html';
         } else {
             window.location.href = 'customer.html';

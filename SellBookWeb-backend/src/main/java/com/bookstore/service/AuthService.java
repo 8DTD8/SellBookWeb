@@ -51,10 +51,20 @@ public class AuthService {
             throw new RuntimeException("Invalid password");
         }
 
+        user.setOnline(true);
+        userRepository.save(user);
+
         String accessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId(), user.getEmail());
 
         return new AuthResponse(accessToken, refreshToken, convertToDTO(user));
+    }
+
+    public void logout(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setOnline(false);
+        userRepository.save(user);
     }
 
     public AuthResponse refreshToken(String refreshToken) {
@@ -137,6 +147,7 @@ public class AuthService {
         dto.setAvatar(user.getAvatar());
         dto.setRole(user.getRole());
         dto.setActive(user.getActive());
+        dto.setOnline(user.getOnline() != null ? user.getOnline() : false);
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;

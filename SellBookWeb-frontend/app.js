@@ -102,7 +102,7 @@ function renderBooks(books) {
             <td>${book.isbn || ''}</td>
             <td>${formatPrice(book.price)}</td>
             <td>${book.quantity || 0}</td>
-            <td>${getCategoryName(book.categoryId)}</td>
+            <td>${getCategoryNames(book.categoryIds)}</td>
             <td>${book.rating ? book.rating.toFixed(1) : '-'}</td>
             <td>
                 <div class="action-buttons">
@@ -122,7 +122,6 @@ function showAddBookForm() {
     document.getElementById('bookIsbn').value = '';
     document.getElementById('bookPrice').value = '';
     document.getElementById('bookQuantity').value = '';
-    document.getElementById('bookCategory').value = '';
     document.getElementById('bookDescription').value = '';
     document.getElementById('bookImage').value = '';
     document.getElementById('bookActive').checked = true;
@@ -143,7 +142,6 @@ async function editBook(id) {
         document.getElementById('bookIsbn').value = book.isbn;
         document.getElementById('bookPrice').value = book.price;
         document.getElementById('bookQuantity').value = book.quantity;
-        document.getElementById('bookCategory').value = book.categoryId;
         document.getElementById('bookDescription').value = book.description || '';
         document.getElementById('bookImage').value = book.image || '';
         document.getElementById('bookActive').checked = book.active !== false;
@@ -164,7 +162,7 @@ async function saveBook(event) {
         isbn: document.getElementById('bookIsbn').value,
         price: parseFloat(document.getElementById('bookPrice').value),
         quantity: parseInt(document.getElementById('bookQuantity').value),
-        categoryId: document.getElementById('bookCategory').value,
+        categoryIds: [],
         description: document.getElementById('bookDescription').value,
         image: document.getElementById('bookImage').value,
         active: document.getElementById('bookActive').checked
@@ -239,9 +237,12 @@ async function filterByCategory() {
     }
 }
 
-function getCategoryName(categoryId) {
-    const category = categoriesData.find(cat => cat.id === categoryId);
-    return category ? category.name : '-';
+function getCategoryNames(categoryIds) {
+    if (!categoryIds || !Array.isArray(categoryIds) || categoryIds.length === 0) return '-';
+    return categoryIds.map(id => {
+        const cat = categoriesData.find(c => c.id === id);
+        return cat ? cat.name : '';
+    }).filter(Boolean).join(', ') || '-';
 }
 
 // ==============================
