@@ -24,11 +24,17 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode("Password@123"));
+        } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
-        user.setActive(true);
-        user.setRole("CUSTOMER");
+        user.setActive(user.getActive() != null ? user.getActive() : true);
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("CUSTOMER");
+        }
         User savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
     }

@@ -57,6 +57,7 @@ function initializeApp() {
     loadProfile();
     loadCart();
     initializeCategories(); // Load categories for filter
+    loadNotifBadge(); // Load notification badge count
     
     // Search functionality
     const searchInput = document.getElementById('searchInput');
@@ -147,6 +148,14 @@ function showSection(sectionId) {
 
         if (sectionId === 'myReviews') {
             loadMyReviews();
+        }
+
+        if (sectionId === 'myOrders') {
+            loadMyOrders();
+        }
+
+        if (sectionId === 'notifications') {
+            loadNotifications();
         }
         
         if (sectionId === 'cart') {
@@ -904,11 +913,133 @@ function closeFilterPanel() {
 }
 
 function showNotifications() {
+    showSection('notifications');
+}
+
+async function loadNotifications() {
+    const container = document.getElementById('notificationsList');
+    container.innerHTML = '<p style="text-align:center;color:#999;">Đang tải...</p>';
     try {
-        showAlert('Tính năng thông báo sẽ được cập nhật!');
+        const books = await fetchBooks();
+        if (!books || books.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;">Không có thông báo nào.</p>';
+            updateNotifBadge(0);
+            return;
+        }
+
+        const notifications = [];
+
+        // 1. Sách mới (tạo trong 7 ngày gần nhất)
+        const now = new Date();
+        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        books.forEach(book => {
+            if (book.createdAt) {
+                const created = new Date(book.createdAt);
+                if (created >= sevenDaysAgo) {
+                    notifications.push({
+                        type: 'new',
+                        icon: '📗',
+                        color: '#27ae60',
+                        title: 'Sách mới',
+                        message: `<b>${book.title}</b> vừa được thêm vào cửa hàng!`,
+                        price: book.price,
+                        image: book.image,
+                        bookId: book.id,
+                        time: created
+                    });
+                }
+            }
+        });
+
+        // 2. Sách hết hàng
+        books.forEach(book => {
+            if (book.quantity != null && book.quantity <= 0) {
+                notifications.push({
+                    type: 'outofstock',
+                    icon: '⚠️',
+                    color: '#e74c3c',
+                    title: 'Hết hàng',
+                    message: `<b>${book.title}</b> hiện đã hết hàng.`,
+                    image: book.image,
+                    bookId: book.id,
+                    time: book.updatedAt ? new Date(book.updatedAt) : now
+                });
+            }
+        });
+
+        // 3. Sách đang giảm giá
+        books.forEach(book => {
+            if (book.discount && book.discount > 0) {
+                notifications.push({
+                    type: 'discount',
+                    icon: '🎉',
+                    color: '#f39c12',
+                    title: 'Giảm giá ' + book.discount + '%',
+                    message: `<b>${book.title}</b> đang giảm <b>${book.discount}%</b>! Giá chỉ còn <b>${formatPrice(book.price * (1 - book.discount / 100))}</b>`,
+                    image: book.image,
+                    bookId: book.id,
+                    time: book.updatedAt ? new Date(book.updatedAt) : now
+                });
+            }
+        });
+
+        // Sắp xếp theo thời gian mới nhất
+        notifications.sort((a, b) => b.time - a.time);
+
+        updateNotifBadge(notifications.length);
+
+        if (notifications.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;">Không có thông báo nào.</p>';
+            return;
+        }
+
+        let html = '';
+        notifications.forEach(n => {
+            const timeStr = n.time ? n.time.toLocaleString('vi-VN') : '';
+            html += `
+            <div style="display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid #e8e8e8;border-left:4px solid ${n.color};border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'" onclick="viewBookDetail('${n.bookId}')">
+                ${n.image ? `<img src="${n.image}" style="width:50px;height:65px;object-fit:cover;border-radius:4px;flex-shrink:0;">` : `<div style="width:50px;height:65px;background:#f5f5f5;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.5em;flex-shrink:0;">${n.icon}</div>`}
+                <div style="flex:1;min-width:0;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                        <span style="font-weight:600;color:${n.color};font-size:0.95em;">${n.icon} ${n.title}</span>
+                        <span style="font-size:0.8em;color:#aaa;white-space:nowrap;">${timeStr}</span>
+                    </div>
+                    <div style="font-size:0.9em;color:#444;line-height:1.4;">${n.message}</div>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
     } catch (error) {
-        console.error('Error in showNotifications:', error);
+        container.innerHTML = '<p style="text-align:center;color:red;">Lỗi: ' + error.message + '</p>';
     }
+}
+
+function updateNotifBadge(count) {
+    const badge = document.getElementById('notifCount');
+    if (badge) {
+        if (count > 0) {
+            badge.textContent = count;
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+}
+
+async function loadNotifBadge() {
+    try {
+        const books = await fetchBooks();
+        if (!books) return;
+        let count = 0;
+        const now = new Date();
+        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        books.forEach(book => {
+            if (book.createdAt && new Date(book.createdAt) >= sevenDaysAgo) count++;
+            if (book.quantity != null && book.quantity <= 0) count++;
+            if (book.discount && book.discount > 0) count++;
+        });
+        updateNotifBadge(count);
+    } catch (e) {}
 }
 
 // Expose to window for onclick handlers
@@ -1373,6 +1504,11 @@ function selectPaymentMethod(method, element) {
     if (element) element.classList.add('selected');
     const radio = document.querySelector(`input[name="paymentMethod"][value="${method}"]`);
     if (radio) radio.checked = true;
+
+    const bankInfo = document.getElementById('bankInfo');
+    const momoInfo = document.getElementById('momoInfo');
+    if (bankInfo) bankInfo.style.display = method === 'BANK' ? 'block' : 'none';
+    if (momoInfo) momoInfo.style.display = method === 'MOMO' ? 'block' : 'none';
 }
 
 function applyCheckoutCoupon() {
@@ -1381,7 +1517,71 @@ function applyCheckoutCoupon() {
         showAlert('Vui lòng nhập mã giảm giá');
         return;
     }
-    showAlert('Tính năng mã giảm giá đang được cập nhật!');
+
+    const baseUrl = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://localhost:8080/api');
+    fetch(`${baseUrl}/coupons/code/${encodeURIComponent(code)}`)
+        .then(res => {
+            if (!res.ok) throw new Error('Mã giảm giá không tồn tại');
+            return res.json();
+        })
+        .then(coupon => {
+            if (!coupon || !coupon.active) {
+                showAlert('Mã giảm giá không hợp lệ hoặc đã hết hạn');
+                return;
+            }
+            // Store applied coupon
+            window.appliedCheckoutCoupon = coupon;
+            // Recalculate checkout totals
+            updateCheckoutWithCoupon(coupon);
+            showAlert(`Áp dụng mã ${coupon.code} thành công! Giảm ${coupon.discountType === 'PERCENTAGE' ? coupon.discountValue + '%' : formatPrice(coupon.discountValue)}`);
+        })
+        .catch(err => {
+            window.appliedCheckoutCoupon = null;
+            showAlert('Lỗi: ' + err.message);
+        });
+}
+
+function updateCheckoutWithCoupon(coupon) {
+    const selectedItems = cart.filter(item => selectedCartItems.has(item.id));
+    let subtotal = 0;
+    let totalOriginal = 0;
+
+    selectedItems.forEach(item => {
+        const originalPrice = item.price || 0;
+        const percentDiscount = item.discount || 0;
+        const priceAfterPercent = percentDiscount > 0
+            ? originalPrice * (1 - percentDiscount / 100)
+            : originalPrice;
+
+        const couponValue = item.couponValue || 0;
+        const hasCoupon = !!item.discountCode && couponValue > 0;
+        const couponApplied = hasCoupon && (item.couponApplied !== false);
+        const finalPrice = couponApplied
+            ? Math.max(priceAfterPercent - couponValue, 0)
+            : priceAfterPercent;
+
+        subtotal += finalPrice * item.quantity;
+        totalOriginal += originalPrice * item.quantity;
+    });
+
+    let couponDiscount = 0;
+    if (coupon) {
+        if (coupon.discountType === 'PERCENTAGE') {
+            couponDiscount = subtotal * (coupon.discountValue / 100);
+        } else {
+            couponDiscount = coupon.discountValue;
+        }
+        couponDiscount = Math.min(couponDiscount, subtotal);
+    }
+
+    const afterCoupon = subtotal - couponDiscount;
+    const shippingFee = 30000;
+    const savings = totalOriginal - afterCoupon;
+
+    document.getElementById('checkoutSubtotal').textContent = formatPrice(afterCoupon);
+    document.getElementById('checkoutShipping').textContent = formatPrice(shippingFee);
+    document.getElementById('checkoutSavings').textContent = '-' + formatPrice(savings);
+    document.getElementById('checkoutTotal').textContent = formatPrice(afterCoupon + shippingFee);
 }
 
 async function placeOrder() {
@@ -1483,6 +1683,75 @@ window.checkout = checkout;
 window.selectPaymentMethod = selectPaymentMethod;
 window.applyCheckoutCoupon = applyCheckoutCoupon;
 window.placeOrder = placeOrder;
+
+// ==============================
+// MY ORDERS
+// ==============================
+
+async function loadMyOrders() {
+    const user = auth.getUser();
+    if (!user || !user.id) return;
+    const container = document.getElementById('myOrdersList');
+    container.innerHTML = '<p style="text-align:center;color:#999;">Đang tải...</p>';
+    try {
+        const orders = await apiCall(`/orders?userId=${user.id}`);
+        if (!orders || orders.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;">Bạn chưa có đơn hàng nào.</p>';
+            return;
+        }
+        const statusMap = { PENDING: 'Chờ xác nhận', CONFIRMED: 'Đã xác nhận', SHIPPED: 'Đang giao', DELIVERED: 'Đã giao', CANCELLED: 'Đã hủy' };
+        const statusColor = { PENDING: '#f0ad4e', CONFIRMED: '#5bc0de', SHIPPED: '#0275d8', DELIVERED: '#5cb85c', CANCELLED: '#d9534f' };
+        let html = '';
+        orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        orders.forEach(order => {
+            const date = order.createdAt ? new Date(order.createdAt).toLocaleString('vi-VN') : '';
+            const color = statusColor[order.status] || '#999';
+            const label = statusMap[order.status] || order.status;
+            let itemsHtml = '';
+            if (order.items) {
+                order.items.forEach(item => {
+                    itemsHtml += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f0f0f0;">
+                        <span>${item.title || 'Sách'} x${item.quantity}</span>
+                        <span>${formatPrice(item.price * item.quantity)}</span>
+                    </div>`;
+                });
+            }
+            html += `
+            <div style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:16px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <div>
+                        <span style="font-weight:600;">Mã ĐH:</span> <span style="font-size:0.9em;color:#555;">${order.id}</span>
+                        <span style="margin-left:12px;font-size:0.85em;color:#888;">${date}</span>
+                    </div>
+                    <span style="padding:4px 12px;border-radius:20px;font-size:0.85em;color:#fff;background:${color};">${label}</span>
+                </div>
+                <div style="margin-bottom:10px;">${itemsHtml}</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div style="font-size:0.9em;color:#666;"><i class="fas fa-map-marker-alt"></i> ${order.shippingAddress || ''}</div>
+                    <div style="font-weight:700;color:#e74c3c;font-size:1.1em;">${formatPrice(order.totalPrice)}</div>
+                </div>
+                ${order.status === 'PENDING' ? `<div style="text-align:right;margin-top:8px;"><button class="btn btn-danger btn-sm" onclick="cancelMyOrder('${order.id}')">Hủy đơn</button></div>` : ''}
+            </div>`;
+        });
+        container.innerHTML = html;
+    } catch (error) {
+        container.innerHTML = '<p style="text-align:center;color:red;">Lỗi khi tải đơn hàng: ' + error.message + '</p>';
+    }
+}
+
+async function cancelMyOrder(orderId) {
+    if (!confirm('Bạn chắc chắn muốn hủy đơn hàng này?')) return;
+    try {
+        await apiCall(`/orders/${orderId}/cancel`, 'PUT');
+        showAlert('Đã hủy đơn hàng thành công!');
+        loadMyOrders();
+    } catch (error) {
+        showAlert('Lỗi: ' + error.message);
+    }
+}
+
+window.loadMyOrders = loadMyOrders;
+window.cancelMyOrder = cancelMyOrder;
 
 // ==============================
 // PROFILE MANAGEMENT

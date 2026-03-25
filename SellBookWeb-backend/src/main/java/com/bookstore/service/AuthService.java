@@ -29,6 +29,7 @@ public class AuthService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPhone(request.getPhone());
         user.setRole("CUSTOMER");
         user.setActive(true);
         user.setCreatedAt(LocalDateTime.now());
@@ -76,6 +77,7 @@ public class AuthService {
         private String name;
         private String email;
         private String password;
+        private String phone;
 
         public RegisterRequest() {}
 
@@ -87,6 +89,9 @@ public class AuthService {
 
         public String getPassword() { return password; }
         public void setPassword(String password) { this.password = password; }
+
+        public String getPhone() { return phone; }
+        public void setPhone(String phone) { this.phone = phone; }
     }
 
     public static class LoginRequest {
