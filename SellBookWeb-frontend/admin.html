@@ -18,8 +18,9 @@
                 <li><a href="#" onclick="showSection('books')">Sách</a></li>
                 <li><a href="#" onclick="showSection('categories')">Danh mục</a></li>
                 <li><a href="#" onclick="showSection('users')">Người dùng</a></li>
-                <li><a href="#" onclick="showSection('reviews')">Đánh giá</a></li>
-                <li><a href="#" onclick="handleLogout()" style="color: #ff6b6b;">Đăng xuất</a></li>
+            <li><a href="#" onclick="showSection('reviews')">Đánh giá</a></li>
+            <li><a href="#" onclick="showSection('orders')">Đơn hàng</a></li>
+            <li><a href="#" onclick="handleLogout()" style="color: #ff6b6b;">Đăng xuất</a></li>
             </ul>
             <div class="user-info">
                 <span id="adminName"></span>
@@ -276,6 +277,46 @@
                             <th>Email</th>
                             <th>Điện thoại</th>
                             <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="orders" class="section">
+            <div class="section-header">
+                <h2>Quản lý đơn hàng</h2>
+                <button class="btn btn-primary" onclick="refreshOrders()">Làm mới danh sách</button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="search-bar">
+                <input type="text" id="searchOrder" placeholder="Tìm kiếm đơn hàng..." onkeyup="searchOrders()">
+                <select id="statusFilter" onchange="filterByStatus()">
+                    <option value="">-- Tất cả trạng thái --</option>
+                    <option value="PENDING">Chờ xác nhận</option>
+                    <option value="CONFIRMED">Đã xác nhận</option>
+                    <option value="SHIPPED">Đang vận chuyển</option>
+                    <option value="DELIVERED">Đã giao</option>
+                    <option value="CANCELLED">Đã hủy</option>
+                </select>
+            </div>
+
+            <!-- Orders List -->
+            <div class="list-container">
+                <table id="ordersList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
                             <th>Trạng thái</th>
                             <th>Hành động</th>
                         </tr>

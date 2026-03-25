@@ -14,6 +14,9 @@ let myReviews = [];
 let currentPage = 0;
 let productsPerPage = 12;
 let totalPages = 1;
+let notifications = [];
+let unreadNotificationCount = 0;
+let notificationPollingInterval = null;
 
 // API_BASE_URL is defined in api.js, don't redeclare it here
 
@@ -58,6 +61,7 @@ function initializeApp() {
     loadCart();
     initializeCategories(); // Load categories for filter
     loadNotifBadge(); // Load notification badge count
+    startNotificationPolling(); // Start notification polling
     
     // Search functionality
     const searchInput = document.getElementById('searchInput');
@@ -1752,6 +1756,177 @@ async function cancelMyOrder(orderId) {
 
 window.loadMyOrders = loadMyOrders;
 window.cancelMyOrder = cancelMyOrder;
+
+// ==============================
+// NOTIFICATION SYSTEM
+// ==============================
+
+// Start polling for notifications
+function startNotificationPolling() {
+    const user = auth.getUser();
+    if (!user || !user.id) return;
+    
+    // Initial load
+    loadNotifBadge();
+    
+    // Poll every 30 seconds
+    notificationPollingInterval = setInterval(async () => {
+        await loadNotifBadge();
+    }, 30000);
+}
+
+// Stop polling for notifications
+function stopNotificationPolling() {
+    if (notificationPollingInterval) {
+        clearInterval(notificationPollingInterval);
+        notificationPollingInterval = null;
+    }
+}
+
+// Load notification badge count
+async function loadNotifBadge() {
+    const user = auth.getUser();
+    if (!user || !user.id) return;
+    
+    try {
+        const count = await getUnreadCount(user.id);
+        unreadNotificationCount = count;
+        updateNotificationBadge();
+    } catch (error) {
+        console.error('Error loading notification badge:', error);
+    }
+}
+
+// Update notification badge display
+function updateNotificationBadge() {
+    const badge = document.getElementById('notifBadge');
+    if (badge) {
+        if (unreadNotificationCount > 0) {
+            badge.textContent = unreadNotificationCount > 99 ? '99+' : unreadNotificationCount;
+            badge.style.display = 'inline-block';
+            badge.classList.add('has-notifications');
+        } else {
+            badge.style.display = 'none';
+            badge.classList.remove('has-notifications');
+        }
+    }
+}
+
+// Load and display notifications
+async function loadNotifications() {
+    const user = auth.getUser();
+    if (!user || !user.id) return;
+    
+    try {
+        notifications = await getNotifications(user.id);
+        renderNotifications();
+    } catch (error) {
+        console.error('Error loading notifications:', error);
+        showAlert('Lỗi khi tải thông báo');
+    }
+}
+
+// Render notifications list
+function renderNotifications() {
+    const container = document.getElementById('notificationsList');
+    if (!container) return;
+    
+    if (!Array.isArray(notifications) || notifications.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #999;">Không có thông báo</p>';
+        return;
+    }
+    
+    container.innerHTML = notifications.map(notification => `
+        <div class="notification-item ${notification.read ? 'read' : 'unread'}" onclick="handleNotificationClick('${notification.id}')">
+            <div class="notification-header">
+                <h4>${notification.title || 'Thông báo'}</h4>
+                <span class="notification-time">${formatDate(notification.createdAt)}</span>
+            </div>
+            <p class="notification-message">${notification.message || ''}</p>
+            ${!notification.read ? '<div class="unread-indicator"></div>' : ''}
+        </div>
+    `).join('');
+}
+
+// Handle notification click
+async function handleNotificationClick(notificationId) {
+    // Mark as read
+    try {
+        await markNotificationAsRead(notificationId);
+        
+        // Update local data
+        const notification = notifications.find(n => n.id === notificationId);
+        if (notification) {
+            notification.read = true;
+        }
+        
+        // Update badge
+        unreadNotificationCount = Math.max(0, unreadNotificationCount - 1);
+        updateNotificationBadge();
+        
+        // Re-render notifications
+        renderNotifications();
+        
+        // If it's an order notification, maybe refresh orders
+        const notif = notifications.find(n => n.id === notificationId);
+        if (notif && notif.type === 'ORDER_STATUS_CHANGED' && notif.orderId) {
+            // Refresh orders if user is on orders page
+            const currentSection = document.querySelector('.section.active');
+            if (currentSection && currentSection.id === 'myOrders') {
+                loadMyOrders();
+            }
+        }
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+    }
+}
+
+// Mark all notifications as read
+async function markAllAsRead() {
+    const user = auth.getUser();
+    if (!user || !user.id) return;
+    
+    try {
+        await markAllNotificationsAsRead(user.id);
+        
+        // Update local data
+        notifications.forEach(n => n.read = true);
+        unreadNotificationCount = 0;
+        updateNotificationBadge();
+        renderNotifications();
+        
+        showAlert('Đã đánh dấu tất cả thông báo là đã đọc');
+    } catch (error) {
+        console.error('Error marking all as read:', error);
+        showAlert('Lỗi khi đánh dấu đã đọc');
+    }
+}
+
+// Format date for display
+function formatDate(dateString) {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 1) return 'Vừa xong';
+    if (diffMins < 60) return `${diffMins} phút trước`;
+    if (diffHours < 24) return `${diffHours} giờ trước`;
+    if (diffDays < 7) return `${diffDays} ngày trước`;
+    
+    return date.toLocaleDateString('vi-VN');
+}
+
+// Expose notification functions
+window.loadNotifications = loadNotifications;
+window.handleNotificationClick = handleNotificationClick;
+window.markAllAsRead = markAllAsRead;
+window.startNotificationPolling = startNotificationPolling;
+window.stopNotificationPolling = stopNotificationPolling;
 
 // ==============================
 // PROFILE MANAGEMENT

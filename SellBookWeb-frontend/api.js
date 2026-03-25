@@ -159,6 +159,73 @@ async function deleteReview(id) {
     return apiCall(`/reviews/${id}`, 'DELETE');
 }
 
+// ==============================
+// ORDERS API
+// ==============================
+
+async function fetchOrders(page = 0, size = 20) {
+    try {
+        const response = await apiCall(`/admin/orders?page=${page}&size=${size}`);
+        // The API returns { orders: [...], message: "..." }
+        return response && response.orders ? response.orders : [];
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        throw error;
+    }
+}
+
+async function getOrderById(id) {
+    try {
+        const response = await apiCall(`/admin/orders/${id}`);
+        // The API returns { order: ..., message: "..." }
+        return response && response.order ? response.order : null;
+    } catch (error) {
+        console.error(`Error fetching order ${id}:`, error);
+        throw error;
+    }
+}
+
+async function updateOrderStatus(id, status) {
+    try {
+        const response = await apiCall(`/admin/orders/${id}/status?status=${status}`, 'PUT');
+        // The API returns { order: ..., message: "..." }
+        return response && response.order ? response.order : null;
+    } catch (error) {
+        console.error(`Error updating order ${id} status:`, error);
+        throw error;
+    }
+}
+
+// ==============================
+// NOTIFICATIONS API
+// ==============================
+
+async function getNotifications(userId) {
+    return apiCall(`/notifications?userId=${userId}`);
+}
+
+async function getUnreadNotifications(userId) {
+    return apiCall(`/notifications/unread?userId=${userId}`);
+}
+
+async function getUnreadCount(userId) {
+    try {
+        const response = await apiCall(`/notifications/unread-count?userId=${userId}`);
+        return response && response.count ? response.count : 0;
+    } catch (error) {
+        console.error('Error getting unread count:', error);
+        return 0;
+    }
+}
+
+async function markNotificationAsRead(id) {
+    return apiCall(`/notifications/${id}/read`, 'PUT');
+}
+
+async function markAllNotificationsAsRead(userId) {
+    return apiCall(`/notifications/mark-all-read?userId=${userId}`, 'PUT');
+}
+
 // Expose all API functions to global scope for use in other scripts
 if (typeof window !== 'undefined') {
     window.fetchBooks = fetchBooks;
@@ -184,5 +251,13 @@ if (typeof window !== 'undefined') {
     window.getPendingReviews = getPendingReviews;
     window.approveReview = approveReview;
     window.deleteReview = deleteReview;
+    window.fetchOrders = fetchOrders;
+    window.getOrderById = getOrderById;
+    window.updateOrderStatus = updateOrderStatus;
+    window.getNotifications = getNotifications;
+    window.getUnreadNotifications = getUnreadNotifications;
+    window.getUnreadCount = getUnreadCount;
+    window.markNotificationAsRead = markNotificationAsRead;
+    window.markAllNotificationsAsRead = markAllNotificationsAsRead;
     window.apiCall = apiCall;
 }

@@ -572,8 +572,8 @@ html {
 }
 
 /* ================================
-   STATUS BADGES
-   ================================ */
+    STATUS BADGES
+    ================================ */
 
 .badge {
     display: inline-block;
@@ -591,6 +591,26 @@ html {
 .badge-danger {
     background-color: #fed7d7;
     color: #c53030;
+}
+
+.badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.badge-info {
+    background-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+.badge-primary {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-secondary {
+    background-color: #e2e8f0;
+    color: #334155;
 }
 
 /* ================================

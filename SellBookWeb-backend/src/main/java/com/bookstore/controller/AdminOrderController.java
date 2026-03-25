@@ -38,9 +38,25 @@ public class AdminOrderController {
     public ResponseEntity<Map<String, Object>> updateOrderStatus(
             @PathVariable String id,
             @RequestParam String status) {
+        // Validate status value
+        if (!isValidOrderStatus(status)) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", "Invalid status. Allowed values: PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
         Map<String, Object> response = new HashMap<>();
         response.put("order", orderService.updateOrderStatus(id, status));
         response.put("message", "Order status updated successfully");
         return ResponseEntity.ok(response);
+    }
+    
+    private boolean isValidOrderStatus(String status) {
+        return status != null && 
+               (status.equals("PENDING") || 
+                status.equals("CONFIRMED") || 
+                status.equals("SHIPPED") || 
+                status.equals("DELIVERED") || 
+                status.equals("CANCELLED"));
     }
 }

@@ -1,6 +1,7 @@
 package com.bookstore.service;
 
 import com.bookstore.dto.OrderDTO;
+import com.bookstore.dto.UserDTO;
 import com.bookstore.model.Order;
 import com.bookstore.repository.OrderRepository;
 import org.springframework.data.domain.PageRequest;
@@ -13,9 +14,13 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final UserService userService;
+    private final NotificationService notificationService;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, UserService userService, NotificationService notificationService) {
         this.orderRepository = orderRepository;
+        this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -66,10 +71,21 @@ public class OrderService {
         Order order = orderRepository.findById(id).orElse(null);
         if (order == null) return null;
 
+        String oldStatus = order.getStatus();
         order.setStatus(status);
         order.setUpdatedAt(LocalDateTime.now());
 
         Order updated = orderRepository.save(order);
+        
+        // Send notification if status changed
+        if (!oldStatus.equals(status)) {
+            System.out.println("NOTIFICATION: Order #" + id + " status changed from '" + oldStatus + 
+                               "' to '" + status + "' for user ID: " + order.getUserId());
+            
+            // Create notification for user
+            notificationService.createOrderStatusNotification(order.getUserId(), id, oldStatus, status);
+        }
+
         return convertToDTO(updated);
     }
 

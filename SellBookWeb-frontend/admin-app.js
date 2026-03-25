@@ -52,6 +52,9 @@ function showSection(sectionId) {
         case 'reviews':
             loadReviews();
             break;
+        case 'orders':
+            loadOrders();
+            break;
     }
 }
 
@@ -771,6 +774,352 @@ function showAlert(message) {
 
 function closeAlert() {
     document.getElementById('alertModal').classList.add('hidden');
+}
+
+// Close alert when clicking outside the modal
+document.addEventListener('click', (event) => {
+    const modal = document.getElementById('alertModal');
+    if (event.target === modal) {
+        closeAlert();
+    }
+});
+
+// ==============================
+// ORDERS MANAGEMENT
+// ==============================
+
+let ordersData = [];
+
+async function loadOrders() {
+    try {
+        showAlert('Đang tải danh sách đơn hàng...');
+        ordersData = await fetchOrders();
+        closeAlert(); // Hide the alert after successful load
+        renderOrders(ordersData);
+    } catch (error) {
+        closeAlert();
+        showAlert('Lỗi khi tải danh sách đơn hàng: ' + error.message);
+        console.error('Order loading error:', error);
+    }
+}
+
+function renderOrders(orders) {
+    const tbody = document.querySelector('#ordersList tbody');
+    tbody.innerHTML = '';
+
+    if (!Array.isArray(orders) || orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #999;">Không có đơn hàng</td></tr>';
+        return;
+    }
+
+    orders.forEach(order => {
+        // Skip if order is null or undefined
+        if (!order) {
+            return;
+        }
+
+        const row = document.createElement('tr');
+        // Safely access properties with fallback values
+        const orderId = order.id || '';
+        const userId = order.userId || '-'; // Use userId instead of non-existent userName
+        const phone = order.phone || '-';
+        const createdAt = order.createdAt ? 
+            (new Date(order.createdAt).toLocaleString() || '-') : 
+            '-';
+        const totalPrice = formatPrice(order.totalPrice || 0);
+        const status = order.status || 'UNKNOWN';
+        const statusBadgeClass = getOrderStatusBadgeClass(status);
+        const statusText = getOrderStatusText(status);
+        
+        row.innerHTML = `
+            <td>${orderId}</td>
+            <td>${userId}</td>
+            <td>${phone}</td>
+            <td>${createdAt}</td>
+            <td>${totalPrice}</td>
+            <td>
+                <span class="badge ${statusBadgeClass}">
+                    ${statusText}
+                </span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn btn-info btn-sm" onclick="viewOrderDetails('${orderId}')">Chi tiết</button>
+                    <button class="btn btn-warning btn-sm" onclick="showUpdateStatusForm('${orderId}')">Cập nhật trạng thái</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function getOrderStatusBadgeClass(status) {
+    switch(status) {
+        case 'PENDING': return 'badge-warning';
+        case 'CONFIRMED': return 'badge-info';
+        case 'SHIPPED': return 'badge-primary';
+        case 'DELIVERED': return 'badge-success';
+        case 'CANCELLED': return 'badge-danger';
+        default: return 'badge-secondary';
+    }
+}
+
+function getOrderStatusText(status) {
+    switch(status) {
+        case 'PENDING': return 'Chờ xác nhận';
+        case 'CONFIRMED': return 'Đã xác nhận';
+        case 'SHIPPED': return 'Đang vận chuyển';
+        case 'DELIVERED': return 'Đã giao';
+        case 'CANCELLED': return 'Đã hủy';
+        default: return status;
+    }
+}
+
+function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    // Show selected section
+    document.getElementById(sectionId).classList.add('active');
+    currentSection = sectionId;
+
+    // Load data for the section
+    switch(sectionId) {
+        case 'dashboard':
+            loadDashboard();
+            break;
+        case 'books':
+            loadBooks();
+            break;
+        case 'categories':
+            loadCategories();
+            break;
+        case 'users':
+            loadUsers();
+            break;
+        case 'reviews':
+            loadReviews();
+            break;
+        case 'orders':
+            loadOrders();
+            break;
+    }
+}
+
+async function viewOrderDetails(orderId) {
+    try {
+        const response = await getOrderById(orderId);
+        // API returns {order: ..., message: "..."}
+        const order = response && response.order ? response.order : response;
+        showOrderDetailsModal(order);
+    } catch (error) {
+        showAlert('Lỗi khi tải chi tiết đơn hàng: ' + error.message);
+    }
+}
+
+function showOrderDetailsModal(order) {
+    // Create modal if it doesn't exist
+    let modal = document.getElementById('orderDetailsModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'orderDetailsModal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Chi tiết đơn hàng #${order.id}</h3>
+                    <button class="btn btn-close" onclick="closeOrderDetailsModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="order-info">
+                        <p><strong>Mã đơn hàng:</strong> ${order.id}</p>
+                        <p><strong>Khách hàng:</strong> ${order.userName || '-'}</p>
+                        <p><strong>Email:</strong> ${order.userEmail || '-'}</p>
+                        <p><strong>Số điện thoại:</strong> ${order.phone || '-'}</p>
+                        <p><strong>Địa chỉ giao hàng:</strong> ${order.shippingAddress || '-'}</p>
+                        <p><strong>Ngày đặt:</strong> ${order.createdAt ? new Date(order.createdAt).toLocaleString() : '-'}</p>
+                        <p><strong>Phương thức thanh toán:</strong> ${getPaymentMethodText(order.paymentMethod)}</p>
+                    </div>
+                    
+                    <div class="order-items">
+                        <h4>Sản phẩm trong đơn hàng:</h4>
+                        <div class="items-list">
+                            ${order.items && order.items.length > 0 ? 
+                                order.items.map(item => `
+                                    <div class="item">
+                                        <span>${item.title || ''}</span>
+                                        <span>${item.quantity || 0} × ${formatPrice(item.price)}</span>
+                                    </div>
+                                `).join('') : 
+                                '<p>Không có thông tin sản phẩm</p>'
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="order-summary">
+                        <p><strong>Tạm tính:</strong> ${formatPrice(order.totalPrice)}</p>
+                        <p><strong>Phí ship:</strong> ${formatPrice(order.shippingFee || 0)}</p>
+                        <p><strong>Tổng cộng:</strong> <strong>${formatPrice(order.totalAmount || order.totalPrice)}</strong></p>
+                    </div>
+                    
+                    <div class="order-status">
+                        <p><strong>Trạng thái hiện tại:</strong> 
+                            <span class="badge ${getOrderStatusBadgeClass(order.status)}">
+                                ${getOrderStatusText(order.status)}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeOrderDetailsModal()">Đóng</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    // Show modal
+    modal.classList.remove('hidden');
+}
+
+function closeOrderDetailsModal() {
+    const modal = document.getElementById('orderDetailsModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+async function showUpdateStatusForm(orderId) {
+    try {
+        const response = await apiCall(`/admin/orders/${orderId}`);
+        // API returns {order: ..., message: "..."}
+        const order = response && response.order ? response.order : response;
+        showUpdateStatusModal(order);
+    } catch (error) {
+        showAlert('Lỗi khi tải thông tin đơn hàng: ' + error.message);
+    }
+}
+
+function showUpdateStatusModal(order) {
+    // Create modal if it doesn't exist
+    let modal = document.getElementById('updateStatusModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'updateStatusModal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Cập nhật trạng thái đơn hàng #${order.id}</h3>
+                    <button class="btn btn-close" onclick="closeUpdateStatusModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="order-info">
+                        <p><strong>Mã đơn hàng:</strong> ${order.id}</p>
+                        <p><strong>Khách hàng:</strong> ${order.userName || '-'}</p>
+                        <p><strong>Trạng thái hiện tại:</strong> 
+                            <span class="badge ${getOrderStatusBadgeClass(order.status)}">
+                                ${getOrderStatusText(order.status)}
+                            </span>
+                        </p>
+                    </div>
+                    
+                    <form onsubmit="updateOrderStatus(event, '${order.id}')">
+                        <div class="form-group">
+                            <label>Trạng thái mới:</label>
+                            <select id="newStatus" required>
+                                <option value="PENDING">Chờ xác nhận</option>
+                                <option value="CONFIRMED">Đã xác nhận</option>
+                                <option value="SHIPPED">Đang vận chuyển</option>
+                                <option value="DELIVERED">Đã giao</option>
+                                <option value="CANCELLED">Đã hủy</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="submit" class="btn btn-success">Cập nhật</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeUpdateStatusModal()">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    // Set current status as selected
+    setTimeout(() => {
+        const select = document.getElementById('newStatus');
+        if (select) {
+            select.value = order.status;
+        }
+    }, 100);
+    
+    // Show modal
+    modal.classList.remove('hidden');
+}
+
+async function updateOrderStatus(event, orderId) {
+    event.preventDefault();
+    
+    const newStatus = document.getElementById('newStatus').value;
+    
+    try {
+        const response = await apiCall(`/admin/orders/${orderId}/status?status=${newStatus}`, 'PUT');
+        // API returns {order: ..., message: "..."}
+        console.log('Update status response:', response);
+        showAlert('Cập nhật trạng thái đơn hàng thành công!');
+        closeUpdateStatusModal();
+        // Refresh orders list
+        if (currentSection === 'orders') {
+            loadOrders();
+        }
+    } catch (error) {
+        console.error('Update status error:', error);
+        showAlert('Lỗi: ' + error.message);
+    }
+}
+
+function closeUpdateStatusModal() {
+    const modal = document.getElementById('updateStatusModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function getPaymentMethodText(method) {
+    switch(method) {
+        case 'COD': return 'Thanh toán khi nhận hàng';
+        case 'CARD': return 'Thẻ ngân hàng';
+        case 'TRANSFER': return 'Chuyển khoản';
+        default: return method || '-';
+    }
+}
+
+function searchOrders() {
+    const searchTerm = document.getElementById('searchOrder').value.toLowerCase();
+    const filtered = ordersData.filter(order => 
+        (order.id && order.id.toLowerCase().includes(searchTerm)) ||
+        (order.userName && order.userName.toLowerCase().includes(searchTerm)) ||
+        (order.phone && order.phone.toLowerCase().includes(searchTerm))
+    );
+    renderOrders(filtered);
+}
+
+function filterByStatus() {
+    const status = document.getElementById('statusFilter').value;
+    if (status) {
+        const filtered = ordersData.filter(order => order.status === status);
+        renderOrders(filtered);
+    } else {
+        renderOrders(ordersData);
+    }
+}
+
+function refreshOrders() {
+    loadOrders();
 }
 
 // Close alert when clicking outside the modal
