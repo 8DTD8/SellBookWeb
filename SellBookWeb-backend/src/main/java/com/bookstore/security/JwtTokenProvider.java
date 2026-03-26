@@ -6,12 +6,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    @Value("${jwt.secret:MySecretKeyForJWTTokenGenerationBookstore2024VeryLongAndSecure}")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Value("${jwt.access-token-expiration:3600000}")
@@ -19,6 +20,22 @@ public class JwtTokenProvider {
 
     @Value("${jwt.refresh-token-expiration:604800000}")
     private long refreshTokenExpiration;
+
+    // ✅ Validate JWT secret on startup
+    @PostConstruct
+    public void validateSecret() {
+        if (jwtSecret == null || jwtSecret.isEmpty()) {
+            throw new IllegalStateException(
+                "JWT_SECRET environment variable must be set. " +
+                "Set it with: export JWT_SECRET=$(openssl rand -base64 32)"
+            );
+        }
+        if (jwtSecret.length() < 32) {
+            throw new IllegalStateException(
+                "JWT_SECRET must be at least 32 characters. Current length: " + jwtSecret.length()
+            );
+        }
+    }
 
     private Key key() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());

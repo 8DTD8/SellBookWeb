@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sellbookweb - Cửa hàng sách trực tuyến</title>
-    <link rel="stylesheet" href="customer-styles.css">
+    <link rel="stylesheet" href="../css/customer-styles.css">
+    <link rel="stylesheet" href="../css/validation-and-cart.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -318,15 +319,15 @@
                 <form onsubmit="saveProfile(event)">
                     <div class="form-group">
                         <label>Tên:</label>
-                        <input type="text" id="editName" required>
+                        <input type="text" id="editName" required minlength="2" data-validate="name">
                     </div>
                     <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" id="editEmail" required>
+                        <input type="email" id="editEmail" required data-validate="email">
                     </div>
                     <div class="form-group">
                         <label>Điện thoại:</label>
-                        <input type="tel" id="editPhone">
+                        <input type="tel" id="editPhone" pattern="[0-9]{10}" data-validate="phone">
                     </div>
                     <div class="form-buttons">
                         <button type="submit" class="btn btn-success">Lưu</button>
@@ -389,16 +390,16 @@
                             <div class="checkout-form-row">
                                 <div class="checkout-form-group">
                                     <label>Họ và tên <span class="required">*</span></label>
-                                    <input type="text" id="checkoutName" placeholder="Nguyễn Văn A">
+                                    <input type="text" id="checkoutName" placeholder="Nguyễn Văn A" required minlength="2" data-validate="name">
                                 </div>
                                 <div class="checkout-form-group">
                                     <label>Số điện thoại <span class="required">*</span></label>
-                                    <input type="tel" id="checkoutPhone" placeholder="VD: 0367897220">
+                                    <input type="tel" id="checkoutPhone" placeholder="VD: 0367897220" required pattern="[0-9]{10}" data-validate="phone">
                                 </div>
                             </div>
                             <div class="checkout-form-group">
                                 <label>Email <span class="required">*</span></label>
-                                <input type="email" id="checkoutEmail" placeholder="email@example.com">
+                                <input type="email" id="checkoutEmail" placeholder="email@example.com" required data-validate="email">
                                 <small class="form-hint">Chúng tôi sẽ gửi thông tin đơn hàng qua email này</small>
                             </div>
                         </div>
@@ -414,7 +415,7 @@
                             <div class="checkout-form-row checkout-form-row-3">
                                 <div class="checkout-form-group">
                                     <label>Tỉnh/Thành phố <span class="required">*</span></label>
-                                    <select id="checkoutProvince">
+                                    <select id="checkoutProvince" required data-validate="required">
                                         <option value="">Chọn tỉnh/thành</option>
                                         <option value="hanoi">Hà Nội</option>
                                         <option value="hcm">TP. Hồ Chí Minh</option>
@@ -442,7 +443,7 @@
                             </div>
                             <div class="checkout-form-group">
                                 <label>Địa chỉ cụ thể <span class="required">*</span></label>
-                                <input type="text" id="checkoutAddress" placeholder="Số nhà, tên đường...">
+                                <input type="text" id="checkoutAddress" placeholder="Số nhà, tên đường..." required data-validate="required">
                             </div>
                             <div class="checkout-form-group">
                                 <label>Ghi chú cho người giao hàng</label>
@@ -651,8 +652,12 @@
         </div>
     </div>
 
-    <script src="auth.js"></script>
-    <script src="api.js"></script>
-    <script src="customer-app.js"></script>
+    <script src="/js/constants.js"></script>
+    <script src="/js/utils/validator-utils.js"></script>
+    <script src="/js/utils/enhanced-validation.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/customer-app.js"></script>
+    <script src="/js/validation-integration.js"></script>
 </body>
 </html>

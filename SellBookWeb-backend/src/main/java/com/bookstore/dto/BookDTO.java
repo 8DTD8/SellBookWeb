@@ -2,26 +2,70 @@ package com.bookstore.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import javax.validation.constraints.*;
 
+/**
+ * ✅ Book DTO với input validation
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookDTO {
     private String id;
+
+    @NotNull(message = "Tiêu đề không được null")
+    @NotBlank(message = "Tiêu đề không được trống")
+    @Size(min = 3, max = 255, message = "Tiêu đề phải từ 3-255 ký tự")
     private String title;
+
+    @NotNull(message = "Tác giả không được null")
+    @NotBlank(message = "Tác giả không được trống")
+    @Size(min = 2, max = 100, message = "Tác giả phải từ 2-100 ký tự")
     private String author;
+
+    @Size(max = 1000, message = "Mô tả không được > 1000 ký tự")
     private String description;
+
+    @NotNull(message = "Giá không được null")
+    @PositiveOrZero(message = "Giá phải >= 0")
+    @Max(value = 10000000, message = "Giá không được > 10 triệu")
     private Double price;
+
+    @Min(value = 0, message = "Số lượng phải >= 0")
+    @Max(value = 10000, message = "Số lượng không được > 10000")
     private Integer quantity;
+
+    @NotNull(message = "Danh mục không được null")
+    @NotBlank(message = "Danh mục không được trống")
     private String categoryId;
+
     private String image;
+
+    @Min(value = 0, message = "Rating phải >= 0")
+    @Max(value = 5, message = "Rating không được > 5")
     private Double rating;
+
+    @Size(max = 100, message = "Tên nhà cung cấp không được > 100 ký tự")
     private String supplierName;
+
+    @Size(max = 50, message = "Loại bìa không được > 50 ký tự")
     private String coverType;
+
+    @Size(max = 100, message = "Tên dịch giả không được > 100 ký tự")
     private String translator;
+
+    @Size(max = 100, message = "Tên nhà xuất bản không được > 100 ký tự")
     private String publisher;
+
+    @PositiveOrZero(message = "Giảm giá phải >= 0")
+    @Max(value = 100, message = "Giảm giá không được > 100%")
     private Double discount;
+
+    @Size(max = 50, message = "Mã giảm giá không được > 50 ký tự")
     private String discountCode;
+
+    @Min(value = 0, message = "Số lần bán phải >= 0")
     private Integer salesCount;
+
     private Boolean active;
 
     public String getId() {

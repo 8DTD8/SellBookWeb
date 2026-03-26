@@ -243,12 +243,12 @@
             <form id="loginForm" class="form-container active" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email:</label>
-                    <input type="email" id="loginEmail" required>
+                    <input type="email" id="loginEmail" required data-validate="email">
                 </div>
 
                 <div class="form-group">
                     <label>Mật khẩu:</label>
-                    <input type="password" id="loginPassword" required>
+                    <input type="password" id="loginPassword" required minlength="6" data-validate="password">
                 </div>
 
                 <input type="hidden" id="loginRole" value="">
@@ -264,27 +264,27 @@
             <form id="registerForm" class="form-container" onsubmit="handleRegister(event)">
                 <div class="form-group">
                     <label>Tên:</label>
-                    <input type="text" id="registerName" required>
+                    <input type="text" id="registerName" required minlength="2" data-validate="name">
                 </div>
 
                 <div class="form-group">
                     <label>Email:</label>
-                    <input type="email" id="registerEmail" required>
+                    <input type="email" id="registerEmail" required data-validate="email">
                 </div>
 
                 <div class="form-group">
                     <label>Mật khẩu:</label>
-                    <input type="password" id="registerPassword" required>
+                    <input type="password" id="registerPassword" required minlength="6" data-validate="password">
                 </div>
 
                 <div class="form-group">
                     <label>Xác nhận mật khẩu:</label>
-                    <input type="password" id="registerPasswordConfirm" required>
+                    <input type="password" id="registerPasswordConfirm" required minlength="6">
                 </div>
 
                 <div class="form-group">
                     <label>Điện thoại:</label>
-                    <input type="tel" id="registerPhone">
+                    <input type="tel" id="registerPhone" pattern="[0-9]{10}" data-validate="phone">
                 </div>
 
                 <button type="submit" class="submit-btn" id="registerBtn">Đăng ký</button>
@@ -296,6 +296,11 @@
         </div>
     </div>
 
-    <script src="auth.js"></script>
+    <script src="/js/constants.js"></script>
+    <script src="/js/utils/validator-utils.js"></script>
+    <script src="/js/utils/enhanced-validation.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/login-validation-integration.js"></script>
 </body>
 </html>

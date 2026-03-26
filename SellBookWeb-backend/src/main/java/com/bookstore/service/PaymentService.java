@@ -32,7 +32,9 @@ public class PaymentService {
 
     public PaymentDTO updatePaymentStatus(String paymentId, String status) {
         Payment payment = paymentRepository.findById(paymentId).orElse(null);
-        if (payment == null) return null;
+        if (payment == null) {
+            return null;
+        }
 
         payment.setPaymentStatus(status);
         if (status.equals("COMPLETED")) {

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Cửa hàng bán sách</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/validation-and-cart.css">
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -77,23 +78,23 @@
                     <input type="hidden" id="bookId">
                     <div class="form-group">
                         <label>Tiêu đề:</label>
-                        <input type="text" id="bookTitle" required>
+                        <input type="text" id="bookTitle" required minlength="1" data-validate="required">
                     </div>
                     <div class="form-group">
                         <label>Tác giả:</label>
-                        <input type="text" id="bookAuthor" required>
+                        <input type="text" id="bookAuthor" required minlength="1" data-validate="required">
                     </div>
                     <div class="form-group">
                         <label>ISBN:</label>
-                        <input type="text" id="bookIsbn" required>
+                        <input type="text" id="bookIsbn" required pattern="(\d{10}|\d{13})" data-validate="isbn">
                     </div>
                     <div class="form-group">
                         <label>Giá bán:</label>
-                        <input type="number" id="bookPrice" step="0.01" required>
+                        <input type="number" id="bookPrice" step="0.01" min="0" required data-validate="price">
                     </div>
                     <div class="form-group">
                         <label>Số lượng:</label>
-                        <input type="number" id="bookQuantity" required>
+                        <input type="number" id="bookQuantity" min="0" required data-validate="quantity">
                     </div>
                     <div class="form-group">
                         <label>Danh mục:</label>
@@ -137,7 +138,7 @@
                     </div>
                     <div class="form-group">
                         <label>Phần trăm giảm giá (%):</label>
-                        <input type="number" id="bookDiscount" step="0.1" min="0" max="100" placeholder="VD: 20">
+                        <input type="number" id="bookDiscount" step="0.1" min="0" max="100" placeholder="VD: 20" data-validate="discount">
                         <small style="color: #666;">Giảm trực tiếp từ giá gốc (VD: nhập 30 cho sách 50đ => còn 35đ)</small>
                     </div>
                     <div class="form-group">
@@ -239,19 +240,20 @@
                     <input type="hidden" id="userId">
                     <div class="form-group">
                         <label>Tên:</label>
-                        <input type="text" id="userName" required>
+                        <input type="text" id="userName" required minlength="2" data-validate="name">
                     </div>
                     <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" id="userEmail" required>
+                        <input type="email" id="userEmail" required data-validate="email">
                     </div>
                     <div class="form-group">
                         <label>Điện thoại:</label>
-                        <input type="tel" id="userPhone">
+                        <input type="tel" id="userPhone" pattern="[0-9]{10}" data-validate="phone">
                     </div>
                     <div class="form-group">
                         <label>Vai trò:</label>
-                        <select id="userRole" required>
+                        <select id="userRole" required data-validate="required">
+                            <option value="">-- Chọn vai trò --</option>
                             <option value="CUSTOMER">Khách hàng</option>
                             <option value="ADMIN">Quản trị viên</option>
                             <option value="STAFF">Nhân viên</option>
@@ -355,8 +357,12 @@
         </div>
     </div>
 
-    <script src="auth.js"></script>
-    <script src="api.js"></script>
-    <script src="admin-app.js"></script>
+    <script src="/js/constants.js"></script>
+    <script src="/js/utils/validator-utils.js"></script>
+    <script src="/js/utils/enhanced-validation.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/admin-app.js"></script>
+    <script src="/js/admin-validation-integration.js"></script>
 </body>
 </html>

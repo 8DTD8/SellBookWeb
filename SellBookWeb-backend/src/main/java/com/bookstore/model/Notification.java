@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "notifications")
-public class Notification {
+public class Notification extends BaseEntity {
     @Id
     private String id;
     private String userId;
@@ -18,7 +18,6 @@ public class Notification {
     private String title;
     private String message;
     private boolean read;
-    private LocalDateTime createdAt;
     private LocalDateTime readAt;
 
     // Getters and Setters

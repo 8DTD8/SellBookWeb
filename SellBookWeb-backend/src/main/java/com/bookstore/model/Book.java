@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "books")
-public class Book {
+public class Book extends BaseEntity {
     @Id
     private String id;
     private String title;
@@ -21,7 +20,6 @@ public class Book {
     private String categoryId;
     private String image;
     private Double rating;
-    private List<String> tags;
     private String supplierName; // Nhà cung cấp
     private String coverType;    // Hình thức bìa (Bìa cứng / Bìa Mềm)
     private String translator;   // Người dịch
@@ -30,8 +28,6 @@ public class Book {
     private String discountCode; // Mã giảm giá
     private Integer salesCount;  // Số lượng đã bán
     private Boolean active;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public String getId() {
         return id;
@@ -129,14 +125,6 @@ public class Book {
         this.rating = rating;
     }
 
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
     public String getPublisher() {
         return publisher;
     }
@@ -175,21 +163,5 @@ public class Book {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

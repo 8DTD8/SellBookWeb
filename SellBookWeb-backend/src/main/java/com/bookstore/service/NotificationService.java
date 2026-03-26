@@ -48,6 +48,9 @@ public class NotificationService {
     }
 
     public Notification markAsRead(String notificationId) {
+        if (notificationId == null || notificationId.isEmpty()) {
+            return null;
+        }
         Notification notification = notificationRepository.findById(notificationId).orElse(null);
         if (notification != null && !notification.isRead()) {
             notification.setRead(true);
