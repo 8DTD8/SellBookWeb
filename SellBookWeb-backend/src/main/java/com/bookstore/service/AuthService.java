@@ -1,6 +1,10 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.UserDTO;
+import com.bookstore.common.constant.Constants;
+import com.bookstore.dto.mapper.UserMapper;
+import com.bookstore.dto.request.LoginRequest;
+import com.bookstore.dto.request.RegisterRequest;
+import com.bookstore.dto.response.AuthResponse;
 import com.bookstore.model.User;
 import com.bookstore.repository.UserRepository;
 import com.bookstore.security.JwtTokenProvider;
@@ -21,119 +25,91 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole("CUSTOMER");
-        user.setActive(true);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
-
-        User savedUser = userRepository.save(user);
-
-        String accessToken = jwtTokenProvider.generateAccessToken(savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(savedUser.getId(), savedUser.getEmail());
-
-        return new AuthResponse(accessToken, refreshToken, convertToDTO(savedUser));
+        validateEmailNotExists(request.getEmail());
+        
+        User newUser = createNewUser(request);
+        User savedUser = userRepository.save(newUser);
+        
+        return buildAuthResponse(savedUser);
     }
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(Constants.ERROR_USER_NOT_FOUND));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId(), user.getEmail());
-
-        return new AuthResponse(accessToken, refreshToken, convertToDTO(user));
+        validatePassword(request.getPassword(), user.getPassword());
+        
+        return buildAuthResponse(user);
     }
 
     public AuthResponse refreshToken(String refreshToken) {
+        validateRefreshToken(refreshToken);
+        
+        String userId = jwtTokenProvider.getUserIdFromToken(refreshToken);
+        validateUserId(userId);
+        
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException(Constants.ERROR_USER_NOT_FOUND));
+
+        String newAccessToken = jwtTokenProvider.generateAccessToken(
+            userId, 
+            jwtTokenProvider.getEmailFromToken(refreshToken), 
+            user.getRole()
+        );
+        
+        return new AuthResponse(newAccessToken, refreshToken, UserMapper.toDTO(user), 3600);
+    }
+
+    // ✅ PRIVATE HELPER METHODS - Extracted for readability
+
+    private void validateEmailNotExists(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new RuntimeException(Constants.ERROR_EMAIL_ALREADY_EXISTS);
+        }
+    }
+
+    private User createNewUser(RegisterRequest request) {
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPhone(request.getPhone());
+        user.setRole(Constants.USER_ROLE_CUSTOMER);
+        user.setActive(true);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        return user;
+    }
+
+    private void validatePassword(String rawPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
+            throw new RuntimeException(Constants.ERROR_INVALID_PASSWORD);
+        }
+    }
+
+    private void validateRefreshToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            throw new RuntimeException("Refresh token cannot be null or empty");
+        }
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             throw new RuntimeException("Invalid refresh token");
         }
-
-        String userId = jwtTokenProvider.getUserIdFromToken(refreshToken);
-        String email = jwtTokenProvider.getEmailFromToken(refreshToken);
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        String newAccessToken = jwtTokenProvider.generateAccessToken(userId, email, user.getRole());
-
-        return new AuthResponse(newAccessToken, refreshToken, convertToDTO(user));
     }
 
-    public static class RegisterRequest {
-        private String name;
-        private String email;
-        private String password;
-
-        public RegisterRequest() {}
-
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
-    }
-
-    public static class LoginRequest {
-        private String email;
-        private String password;
-
-        public LoginRequest() {}
-
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
-    }
-
-    public static class AuthResponse {
-        private String accessToken;
-        private String refreshToken;
-        private UserDTO user;
-
-        public AuthResponse(String accessToken, String refreshToken, UserDTO user) {
-            this.accessToken = accessToken;
-            this.refreshToken = refreshToken;
-            this.user = user;
+    private void validateUserId(String userId) {
+        if (userId == null || userId.isEmpty()) {
+            throw new RuntimeException("Invalid user ID from token");
         }
-
-        public String getAccessToken() { return accessToken; }
-        public void setAccessToken(String accessToken) { this.accessToken = accessToken; }
-
-        public String getRefreshToken() { return refreshToken; }
-        public void setRefreshToken(String refreshToken) { this.refreshToken = refreshToken; }
-
-        public UserDTO getUser() { return user; }
-        public void setUser(UserDTO user) { this.user = user; }
     }
 
-    private UserDTO convertToDTO(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
-        dto.setAvatar(user.getAvatar());
-        dto.setRole(user.getRole());
-        dto.setActive(user.getActive());
-        dto.setCreatedAt(user.getCreatedAt());
-        dto.setUpdatedAt(user.getUpdatedAt());
-        return dto;
+    private AuthResponse buildAuthResponse(User user) {
+        String accessToken = jwtTokenProvider.generateAccessToken(
+            user.getId(), 
+            user.getEmail(), 
+            user.getRole()
+        );
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId(), user.getEmail());
+        
+        return new AuthResponse(accessToken, refreshToken, UserMapper.toDTO(user), 3600);
     }
 }

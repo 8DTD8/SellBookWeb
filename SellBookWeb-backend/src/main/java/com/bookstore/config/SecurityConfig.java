@@ -2,14 +2,17 @@ package com.bookstore.config;
 
 import com.bookstore.security.JwtAuthenticationFilter;
 import com.bookstore.security.JwtTokenProvider;
+import com.bookstore.security.RateLimitingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -24,13 +27,41 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .cors().and()
-            .csrf().disable()
+            // ✅ CSRF protection enabled
+            .csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .ignoringAntMatchers("/api/auth/login", "/api/auth/register", "/api/health")
+            .and()
             .authorizeRequests()
-                .antMatchers("/api/health", "/api/auth/**", "/api/books", "/api/categories", "/api/books/**", "/api/categories/**").permitAll()
+                // ✅ Static files (HTML, JS, CSS) - No authentication needed
+                .antMatchers("/", "/index.html", "/src/**", "/pages/**", "/js/**", "/css/**", "/public/**").permitAll()
+                // ✅ Public read endpoints only
+                .antMatchers(HttpMethod.GET, "/api/health").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/books").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/categories").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/coupons/code/**").permitAll()
+                // ✅ Public auth endpoints
+                .antMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                // ✅ Write operations need ADMIN
+                .antMatchers(HttpMethod.POST, "/api/books").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/books/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/books/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/categories").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/categories/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/categories/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                // ✅ Admin endpoints
                 .antMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                // ✅ All other requests need authentication
                 .anyRequest().authenticated()
             .and()
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(new RateLimitingFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+            // ✅ Security headers
+            .headers()
+                .frameOptions().deny();
     }
     
     @Bean

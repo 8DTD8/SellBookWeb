@@ -1,6 +1,9 @@
 package com.bookstore.service;
 
+import com.bookstore.common.constant.Constants;
+import com.bookstore.common.validator.ValidationUtil;
 import com.bookstore.dto.OrderDTO;
+import com.bookstore.dto.mapper.OrderMapper;
 import com.bookstore.model.Order;
 import com.bookstore.repository.OrderRepository;
 import org.springframework.data.domain.PageRequest;
@@ -13,90 +16,76 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final UserService userService;
+    private final NotificationService notificationService;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, UserService userService, NotificationService notificationService) {
         this.orderRepository = orderRepository;
+        this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        Order order = new Order();
-        order.setUserId(orderDTO.getUserId());
-        order.setItems(orderDTO.getItems().stream()
-                .map(itemDTO -> {
-                    Order.OrderItem item = new Order.OrderItem();
-                    item.setBookId(itemDTO.getBookId());
-                    item.setTitle(itemDTO.getTitle());
-                    item.setPrice(itemDTO.getPrice());
-                    item.setQuantity(itemDTO.getQuantity());
-                    return item;
-                })
-                .collect(Collectors.toList()));
-        order.setTotalPrice(orderDTO.getTotalPrice());
-        order.setStatus("PENDING");
-        order.setPaymentMethod(orderDTO.getPaymentMethod());
-        order.setShippingAddress(orderDTO.getShippingAddress());
-        order.setPhone(orderDTO.getPhone());
+        Order order = OrderMapper.toEntity(orderDTO);
+        order.setStatus(Constants.ORDER_STATUS_PENDING);
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
-
+        
         Order savedOrder = orderRepository.save(order);
-        return convertToDTO(savedOrder);
+        return OrderMapper.toDTO(savedOrder);
     }
 
     public OrderDTO getOrderById(String id) {
+        if (!ValidationUtil.isValidId(id)) {
+            throw new IllegalArgumentException(Constants.ERROR_INVALID_ID);
+        }
         return orderRepository.findById(id)
-                .map(this::convertToDTO)
+                .map(OrderMapper::toDTO)
                 .orElse(null);
     }
 
     public List<OrderDTO> getAllOrders(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return orderRepository.findAll(pageable).stream()
-                .map(this::convertToDTO)
+                .map(OrderMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public List<OrderDTO> getOrdersByUserId(String userId) {
         return orderRepository.findByUserId(userId).stream()
-                .map(this::convertToDTO)
+                .map(OrderMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public OrderDTO updateOrderStatus(String id, String status) {
-        Order order = orderRepository.findById(id).orElse(null);
-        if (order == null) return null;
-
-        order.setStatus(status);
+    public OrderDTO updateOrderStatus(String id, String newStatus) {
+        if (!ValidationUtil.isValidId(id)) {
+            throw new IllegalArgumentException(Constants.ERROR_INVALID_ID);
+        }
+        
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(Constants.ERROR_ORDER_NOT_FOUND));
+        
+        String oldStatus = order.getStatus();
+        order.setStatus(newStatus);
         order.setUpdatedAt(LocalDateTime.now());
-
+        
         Order updated = orderRepository.save(order);
-        return convertToDTO(updated);
+        
+        // ✅ Send notification if status changed
+        if (!oldStatus.equals(newStatus)) {
+            notifyOrderStatusChange(order.getUserId(), id, oldStatus, newStatus);
+        }
+        
+        return OrderMapper.toDTO(updated);
     }
 
     public OrderDTO cancelOrder(String id) {
-        return updateOrderStatus(id, "CANCELLED");
+        return updateOrderStatus(id, Constants.ORDER_STATUS_CANCELLED);
     }
 
-    private OrderDTO convertToDTO(Order order) {
-        OrderDTO dto = new OrderDTO();
-        dto.setId(order.getId());
-        dto.setUserId(order.getUserId());
-        dto.setItems(order.getItems().stream()
-                .map(item -> {
-                    OrderDTO.OrderItemDTO itemDTO = new OrderDTO.OrderItemDTO();
-                    itemDTO.setBookId(item.getBookId());
-                    itemDTO.setTitle(item.getTitle());
-                    itemDTO.setPrice(item.getPrice());
-                    itemDTO.setQuantity(item.getQuantity());
-                    return itemDTO;
-                })
-                .collect(Collectors.toList()));
-        dto.setTotalPrice(order.getTotalPrice());
-        dto.setStatus(order.getStatus());
-        dto.setPaymentMethod(order.getPaymentMethod());
-        dto.setShippingAddress(order.getShippingAddress());
-        dto.setPhone(order.getPhone());
-        dto.setCreatedAt(order.getCreatedAt());
-        return dto;
+    // ✅ PRIVATE HELPER METHOD - Extracted for readability
+    
+    private void notifyOrderStatusChange(String userId, String orderId, String oldStatus, String newStatus) {
+        notificationService.createOrderStatusNotification(userId, orderId, oldStatus, newStatus);
     }
 }

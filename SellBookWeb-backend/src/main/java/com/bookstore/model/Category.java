@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "categories")
-public class Category {
+public class Category extends BaseEntity {
     @Id
     private String id;
     private String name;
@@ -17,8 +17,6 @@ public class Category {
     private String icon;
     private String parentId; // For hierarchical categories
     private Boolean active;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public String getId() {
         return id;
@@ -66,21 +64,5 @@ public class Category {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

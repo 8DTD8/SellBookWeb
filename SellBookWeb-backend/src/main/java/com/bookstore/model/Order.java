@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "orders")
-public class Order {
+public class Order extends BaseEntity {
     @Id
     private String id;
     private String userId;
@@ -20,8 +20,6 @@ public class Order {
     private String paymentMethod; // COD, CARD, TRANSFER
     private String shippingAddress;
     private String phone;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public String getId() {
         return id;

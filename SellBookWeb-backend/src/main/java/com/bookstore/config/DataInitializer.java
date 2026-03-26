@@ -1,8 +1,10 @@
 package com.bookstore.config;
 
 import com.bookstore.model.Category;
+import com.bookstore.model.Coupon;
 import com.bookstore.model.User;
 import com.bookstore.repository.CategoryRepository;
+import com.bookstore.repository.CouponRepository;
 import com.bookstore.repository.UserRepository;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,17 +18,20 @@ public class DataInitializer {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CategoryRepository categoryRepository;
+    private final CouponRepository couponRepository;
 
-    public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder, CategoryRepository categoryRepository) {
+    public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder, CategoryRepository categoryRepository, CouponRepository couponRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.categoryRepository = categoryRepository;
+        this.couponRepository = couponRepository;
     }
 
     @PostConstruct
     public void initializeData() {
         initializeAdminUser();
         initializeCategories();
+        initializeCoupons();
     }
 
     private void initializeAdminUser() {
@@ -172,6 +177,23 @@ public class DataInitializer {
             "fas fa-pray", lifestyleId, now, categoryIds);
         
         System.out.println("✓ Categories initialized successfully!");
+    }
+
+    private void initializeCoupons() {
+        createCouponIfNotExists("SALE10", "Giảm 10% đơn hàng", 10.0, "PERCENTAGE");
+        createCouponIfNotExists("SALE20", "Giảm 20% đơn hàng", 20.0, "PERCENTAGE");
+        System.out.println("✓ Coupons initialized successfully!");
+    }
+
+    private void createCouponIfNotExists(String code, String description, Double discountValue, String discountType) {
+        if (couponRepository.findByCode(code).isEmpty()) {
+            Coupon coupon = new Coupon(code, description, discountValue, discountType);
+            coupon.setMaxUsage(1000);
+            coupon.setCurrentUsage(0);
+            coupon.setMinimumAmount(0.0);
+            couponRepository.save(coupon);
+            System.out.println("  Created coupon: " + code);
+        }
     }
 
     private String createCategoryIfNotExists(String name, String description, String icon, String parentId, LocalDateTime now, Map<String, String> categoryIds) {

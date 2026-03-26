@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Document(collection = "purchase_orders")
-public class PurchaseOrder {
+public class PurchaseOrder extends BaseEntity {
     @Id
     private String id;
     private String supplierId;
@@ -17,8 +17,6 @@ public class PurchaseOrder {
     private LocalDateTime expectedDate;
     private LocalDateTime receivedDate;
     private String notes;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public PurchaseOrder() {
     }
@@ -27,8 +25,6 @@ public class PurchaseOrder {
         this.supplierId = supplierId;
         this.status = "PENDING";
         this.orderDate = LocalDateTime.now();
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 
     public static class OrderItem {

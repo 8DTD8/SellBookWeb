@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Document(collection = "payments")
-public class Payment {
+public class Payment extends BaseEntity {
     @Id
     private String id;
     private String orderId;
@@ -14,8 +14,6 @@ public class Payment {
     private String paymentStatus; // PENDING, COMPLETED, FAILED
     private String transactionId;
     private LocalDateTime paymentDate;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public Payment() {
     }
@@ -83,21 +81,5 @@ public class Payment {
 
     public void setPaymentDate(LocalDateTime paymentDate) {
         this.paymentDate = paymentDate;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

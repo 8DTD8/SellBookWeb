@@ -1,0 +1,1131 @@
+// ==============================
+// ADMIN APP - GLOBAL VARIABLES
+// ==============================
+
+let currentSection = 'dashboard';
+let booksData = [];
+let categoriesData = [];
+let usersData = [];
+let currentReviewsView = 'pending';
+
+// ==============================
+// PAGE INITIALIZATION
+// ==============================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Display user info
+    const user = auth.getUser();
+    document.getElementById('adminName').textContent = `👤 ${user.name} (${user.role})`;
+    
+    loadDashboard();
+    loadCategories();
+});
+
+// ==============================
+// SECTION MANAGEMENT
+// ==============================
+
+function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    // Show selected section
+    document.getElementById(sectionId).classList.add('active');
+    currentSection = sectionId;
+
+    // Load data for the section
+    switch(sectionId) {
+        case 'dashboard':
+            loadDashboard();
+            break;
+        case 'books':
+            loadBooks();
+            break;
+        case 'categories':
+            loadCategories();
+            break;
+        case 'users':
+            loadUsers();
+            break;
+        case 'reviews':
+            loadReviews();
+            break;
+        case 'orders':
+            loadOrders();
+            break;
+    }
+}
+
+function handleLogout() {
+    if (confirm('Bạn chắc chắn muốn đăng xuất?')) {
+        auth.logout();
+    }
+}
+
+// ==============================
+// DASHBOARD
+// ==============================
+
+async function loadDashboard() {
+    try {
+        const books = await fetchBooks();
+        const categories = await fetchCategories();
+        const users = await fetchUsers();
+        const reviews = await getPendingReviews();
+
+        document.getElementById('totalBooks').textContent = Array.isArray(books) ? books.length : 0;
+        document.getElementById('totalCategories').textContent = Array.isArray(categories) ? categories.length : 0;
+        document.getElementById('totalUsers').textContent = Array.isArray(users) ? users.length : 0;
+        document.getElementById('pendingReviews').textContent = Array.isArray(reviews) ? reviews.length : 0;
+    } catch (error) {
+        showAlert('Lỗi khi tải bảng điều khiển: ' + error.message);
+    }
+}
+
+// ==============================
+// BOOKS MANAGEMENT
+// ==============================
+
+async function loadBooks() {
+    try {
+        booksData = await fetchBooks();
+        renderBooks(booksData);
+        await loadCategoriesForFilter();
+    } catch (error) {
+        showAlert('Lỗi khi tải danh sách sách: ' + error.message);
+    }
+}
+
+function renderBooks(books) {
+    const tbody = document.querySelector('#booksList tbody');
+    tbody.innerHTML = '';
+
+    if (!Array.isArray(books) || books.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #999;">Không có sách</td></tr>';
+        return;
+    }
+
+    books.forEach(book => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${book.title || ''}</td>
+            <td>${book.author || ''}</td>
+            <td>${book.isbn || ''}</td>
+            <td>${formatPrice(book.price)}</td>
+            <td>${book.quantity || 0}</td>
+            <td>${getCategoryName(book.categoryId)}</td>
+            <td>${book.supplierName || book.publisher || ''}</td>
+            <td>${book.coverType || 'Bìa Mềm'}</td>
+            <td>${book.translator || 'N/A'}</td>
+            <td>${book.rating ? book.rating.toFixed(1) : '-'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn btn-warning btn-sm" onclick="editBook('${book.id}')">Sửa</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteBookConfirm('${book.id}')">Xóa</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function showAddBookForm() {
+    document.getElementById('bookId').value = '';
+    document.getElementById('bookTitle').value = '';
+    document.getElementById('bookAuthor').value = '';
+    document.getElementById('bookIsbn').value = '';
+    document.getElementById('bookPrice').value = '';
+    document.getElementById('bookQuantity').value = '';
+    document.getElementById('bookCategory').value = '';
+    document.getElementById('bookDescription').value = '';
+    document.getElementById('bookImage').value = '';
+    document.getElementById('bookSupplier').value = '';
+    document.getElementById('bookCoverType').value = 'Bìa Mềm';
+    document.getElementById('bookTranslator').value = '';
+    document.getElementById('bookPublisher').value = '';
+    document.getElementById('bookDiscountCode').value = '';
+    document.getElementById('bookDiscount').value = '';
+    document.getElementById('bookActive').checked = true;
+    document.getElementById('bookFormTitle').textContent = 'Thêm sách mới';
+    document.getElementById('bookForm').classList.remove('hidden');
+}
+
+function hideBookForm() {
+    document.getElementById('bookForm').classList.add('hidden');
+}
+
+async function editBook(id) {
+    try {
+        const book = await getBookById(id);
+        document.getElementById('bookId').value = book.id;
+        document.getElementById('bookTitle').value = book.title;
+        document.getElementById('bookAuthor').value = book.author;
+        document.getElementById('bookIsbn').value = book.isbn;
+        document.getElementById('bookPrice').value = book.price;
+        document.getElementById('bookQuantity').value = book.quantity;
+        document.getElementById('bookCategory').value = book.categoryId;
+        document.getElementById('bookDescription').value = book.description || '';
+        document.getElementById('bookImage').value = book.image || '';
+        document.getElementById('bookSupplier').value = book.supplierName || book.publisher || '';
+        document.getElementById('bookCoverType').value = book.coverType || 'Bìa Mềm';
+        document.getElementById('bookTranslator').value = book.translator || '';
+        document.getElementById('bookPublisher').value = book.publisher || '';
+        document.getElementById('bookDiscountCode').value = book.discountCode || '';
+        document.getElementById('bookDiscount').value = book.discount || '';
+        document.getElementById('bookActive').checked = book.active !== false;
+        document.getElementById('bookFormTitle').textContent = 'Chỉnh sửa sách';
+        document.getElementById('bookForm').classList.remove('hidden');
+    } catch (error) {
+        showAlert('Lỗi khi tải thông tin sách: ' + error.message);
+    }
+}
+
+async function saveBook(event) {
+    event.preventDefault();
+
+    const bookId = document.getElementById('bookId').value;
+    const discountCode = document.getElementById('bookDiscountCode').value.trim();
+    const discount = document.getElementById('bookDiscount').value ? parseFloat(document.getElementById('bookDiscount').value) : null;
+    const publisherValue = document.getElementById('bookPublisher').value;
+    const supplierValue = document.getElementById('bookSupplier').value;
+    const supplierName = supplierValue || publisherValue || null;
+    const coverTypeValue = document.getElementById('bookCoverType').value || 'Bìa Mềm';
+    
+    const bookData = {
+        title: document.getElementById('bookTitle').value,
+        author: document.getElementById('bookAuthor').value,
+        isbn: document.getElementById('bookIsbn').value,
+        price: parseFloat(document.getElementById('bookPrice').value),
+        quantity: parseInt(document.getElementById('bookQuantity').value),
+        categoryId: document.getElementById('bookCategory').value,
+        description: document.getElementById('bookDescription').value,
+        image: document.getElementById('bookImage').value,
+        supplierName: supplierName,
+        coverType: coverTypeValue,
+        translator: document.getElementById('bookTranslator').value || null,
+        publisher: publisherValue || null,
+        discountCode: discountCode || null,
+        discount: discount || null,
+        active: document.getElementById('bookActive').checked
+    };
+
+    try {
+        if (bookId) {
+            await updateBook(bookId, bookData);
+            showAlert('Cập nhật sách thành công!');
+        } else {
+            await createBook(bookData);
+            showAlert('Thêm sách thành công!');
+        }
+        hideBookForm();
+        loadBooks();
+    } catch (error) {
+        showAlert('Lỗi: ' + error.message);
+    }
+}
+
+async function deleteBookConfirm(id) {
+    if (confirm('Bạn chắc chắn muốn xóa sách này?')) {
+        try {
+            await deleteBook(id);
+            showAlert('Xóa sách thành công!');
+            loadBooks();
+        } catch (error) {
+            showAlert('Lỗi: ' + error.message);
+        }
+    }
+}
+
+function searchBooks() {
+    const searchTerm = document.getElementById('searchBook').value.toLowerCase();
+    const filtered = booksData.filter(book =>
+        book.title.toLowerCase().includes(searchTerm) ||
+        book.author.toLowerCase().includes(searchTerm) ||
+        book.isbn.includes(searchTerm)
+    );
+    renderBooks(filtered);
+}
+
+async function loadCategoriesForFilter() {
+    try {
+        const categories = await fetchCategories();
+        const select = document.getElementById('categoryFilter');
+        select.innerHTML = '<option value="">-- Tất cả danh mục --</option>';
+        if (Array.isArray(categories)) {
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id;
+                option.textContent = cat.name;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading categories:', error);
+    }
+}
+
+async function filterByCategory() {
+    const categoryId = document.getElementById('categoryFilter').value;
+    if (categoryId) {
+        try {
+            const books = await getBooksByCategory(categoryId);
+            renderBooks(books);
+        } catch (error) {
+            showAlert('Lỗi khi lọc sách: ' + error.message);
+        }
+    } else {
+        renderBooks(booksData);
+    }
+}
+
+function getCategoryName(categoryId) {
+    const category = categoriesData.find(cat => cat.id === categoryId);
+    return category ? category.name : '-';
+}
+
+// ==============================
+// CATEGORIES MANAGEMENT
+// ==============================
+
+async function loadCategories() {
+    try {
+        categoriesData = await fetchCategories();
+        renderCategories(categoriesData);
+        populateCategorySelect();
+    } catch (error) {
+        showAlert('Lỗi khi tải danh mục: ' + error.message);
+    }
+}
+
+function renderCategories(categories) {
+    const container = document.getElementById('categoriesList');
+    container.innerHTML = '';
+
+    if (!Array.isArray(categories) || categories.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #999;">Không có danh mục</p>';
+        return;
+    }
+
+    // Separate parent and child categories
+    const parentCategories = categories.filter(c => !c.parentId);
+    const childCategories = categories.filter(c => c.parentId);
+
+    // Render parent categories first
+    parentCategories.forEach(category => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.borderLeft = '4px solid #667eea';
+        card.innerHTML = `
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+                <i class="${category.icon || 'fas fa-book'}"></i>
+            </div>
+            <h3>${category.name}</h3>
+            <p>${category.description || 'Không có mô tả'}</p>
+            <p style="font-size: 0.85rem; color: #999;">
+                <span class="badge ${category.active ? 'badge-success' : 'badge-danger'}">
+                    ${category.active ? 'Hoạt động' : 'Không hoạt động'}
+                </span>
+                <span class="badge badge-info" style="margin-left: 0.5rem;">Nhóm chính</span>
+            </p>
+            <div class="card-buttons">
+                <button class="btn btn-warning btn-sm" onclick="editCategory('${category.id}')">Sửa</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteCategoryConfirm('${category.id}')">Xóa</button>
+            </div>
+        `;
+        container.appendChild(card);
+
+        // Render child categories under this parent
+        const children = childCategories.filter(c => c.parentId === category.id);
+        if (children.length > 0) {
+            const childrenContainer = document.createElement('div');
+            childrenContainer.style.marginLeft = '2rem';
+            childrenContainer.style.marginTop = '1rem';
+            childrenContainer.style.paddingLeft = '1rem';
+            childrenContainer.style.borderLeft = '2px solid #e0e0e0';
+            
+            children.forEach(child => {
+                const childCard = document.createElement('div');
+                childCard.className = 'card';
+                childCard.style.marginBottom = '0.75rem';
+                childCard.style.backgroundColor = '#f8f9fa';
+                childCard.innerHTML = `
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="${child.icon || 'fas fa-book'}"></i>
+                        <span style="font-size: 1rem; color: #666;">→</span>
+                    </div>
+                    <h4 style="font-size: 1rem; margin: 0.5rem 0;">${child.name}</h4>
+                    <p style="font-size: 0.85rem; color: #666; margin: 0.25rem 0;">${child.description || 'Không có mô tả'}</p>
+                    <p style="font-size: 0.75rem; color: #999;">
+                        <span class="badge ${child.active ? 'badge-success' : 'badge-danger'}">
+                            ${child.active ? 'Hoạt động' : 'Không hoạt động'}
+                        </span>
+                    </p>
+                    <div class="card-buttons">
+                        <button class="btn btn-warning btn-sm" onclick="editCategory('${child.id}')">Sửa</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteCategoryConfirm('${child.id}')">Xóa</button>
+                    </div>
+                `;
+                childrenContainer.appendChild(childCard);
+            });
+            container.appendChild(childrenContainer);
+        }
+    });
+
+    // Render orphaned child categories (if any)
+    const orphaned = childCategories.filter(c => {
+        const parentExists = categories.some(p => p.id === c.parentId);
+        return !parentExists;
+    });
+    
+    if (orphaned.length > 0) {
+        orphaned.forEach(category => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.borderLeft = '4px solid #ffc107';
+            card.innerHTML = `
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+                    <i class="${category.icon || 'fas fa-book'}"></i>
+                </div>
+                <h3>${category.name}</h3>
+                <p>${category.description || 'Không có mô tả'}</p>
+                <p style="font-size: 0.85rem; color: #999;">
+                    <span class="badge ${category.active ? 'badge-success' : 'badge-danger'}">
+                        ${category.active ? 'Hoạt động' : 'Không hoạt động'}
+                    </span>
+                    <span class="badge badge-warning" style="margin-left: 0.5rem;">Parent không tồn tại</span>
+                </p>
+                <div class="card-buttons">
+                    <button class="btn btn-warning btn-sm" onclick="editCategory('${category.id}')">Sửa</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteCategoryConfirm('${category.id}')">Xóa</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+}
+
+function showAddCategoryForm() {
+    document.getElementById('categoryId').value = '';
+    document.getElementById('categoryName').value = '';
+    document.getElementById('categoryDescription').value = '';
+    document.getElementById('categoryIcon').value = '';
+    document.getElementById('categoryParentId').value = '';
+    document.getElementById('categoryActive').checked = true;
+    document.getElementById('categoryFormTitle').textContent = 'Thêm danh mục mới';
+    populateParentCategorySelect();
+    document.getElementById('categoryForm').classList.remove('hidden');
+}
+
+function hideCategoryForm() {
+    document.getElementById('categoryForm').classList.add('hidden');
+}
+
+async function editCategory(id) {
+    try {
+        const category = await getCategoryById(id);
+        document.getElementById('categoryId').value = category.id;
+        document.getElementById('categoryName').value = category.name;
+        document.getElementById('categoryDescription').value = category.description || '';
+        document.getElementById('categoryIcon').value = category.icon || '';
+        populateParentCategorySelect(category.id); // Exclude current category from parent list
+        document.getElementById('categoryParentId').value = category.parentId || '';
+        document.getElementById('categoryActive').checked = category.active !== false;
+        document.getElementById('categoryFormTitle').textContent = 'Chỉnh sửa danh mục';
+        document.getElementById('categoryForm').classList.remove('hidden');
+    } catch (error) {
+        showAlert('Lỗi khi tải danh mục: ' + error.message);
+    }
+}
+
+async function saveCategory(event) {
+    event.preventDefault();
+
+    const categoryId = document.getElementById('categoryId').value;
+    const parentId = document.getElementById('categoryParentId').value;
+    const categoryData = {
+        name: document.getElementById('categoryName').value,
+        description: document.getElementById('categoryDescription').value,
+        icon: document.getElementById('categoryIcon').value,
+        parentId: parentId || null,
+        active: document.getElementById('categoryActive').checked
+    };
+
+    try {
+        if (categoryId) {
+            await updateCategory(categoryId, categoryData);
+            showAlert('Cập nhật danh mục thành công!');
+        } else {
+            await createCategory(categoryData);
+            showAlert('Thêm danh mục thành công!');
+        }
+        hideCategoryForm();
+        loadCategories();
+    } catch (error) {
+        showAlert('Lỗi: ' + error.message);
+    }
+}
+
+async function deleteCategoryConfirm(id) {
+    if (confirm('Bạn chắc chắn muốn xóa danh mục này?')) {
+        try {
+            await deleteCategory(id);
+            showAlert('Xóa danh mục thành công!');
+            loadCategories();
+        } catch (error) {
+            showAlert('Lỗi: ' + error.message);
+        }
+    }
+}
+
+function populateCategorySelect() {
+    const select = document.getElementById('bookCategory');
+    select.innerHTML = '<option value="">-- Chọn danh mục --</option>';
+    if (Array.isArray(categoriesData)) {
+        categoriesData.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+        });
+    }
+}
+
+function populateParentCategorySelect(excludeId = null) {
+    const select = document.getElementById('categoryParentId');
+    if (!select) return;
+    
+    // Keep the first option (empty)
+    const firstOption = select.querySelector('option[value=""]');
+    select.innerHTML = '';
+    if (firstOption) {
+        select.appendChild(firstOption);
+    } else {
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = '-- Không có (Nhóm chính) --';
+        select.appendChild(emptyOption);
+    }
+    
+    if (Array.isArray(categoriesData)) {
+        // Only show parent categories (those without parentId)
+        const parentCategories = categoriesData.filter(cat => !cat.parentId && cat.id !== excludeId);
+        parentCategories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+        });
+    }
+}
+
+// ==============================
+// USERS MANAGEMENT
+// ==============================
+
+async function loadUsers() {
+    try {
+        usersData = await fetchUsers();
+        renderUsers(usersData);
+    } catch (error) {
+        showAlert('Lỗi khi tải danh sách người dùng: ' + error.message);
+    }
+}
+
+function renderUsers(users) {
+    const tbody = document.querySelector('#usersList tbody');
+    tbody.innerHTML = '';
+
+    if (!Array.isArray(users) || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">Không có người dùng</td></tr>';
+        return;
+    }
+
+    users.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${user.name || ''}</td>
+            <td>${user.email || ''}</td>
+            <td>${user.phone || '-'}</td>
+            <td>${user.role || 'CUSTOMER'}</td>
+            <td>
+                <span class="badge ${user.active ? 'badge-success' : 'badge-danger'}">
+                    ${user.active ? 'Hoạt động' : 'Không hoạt động'}
+                </span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn btn-warning btn-sm" onclick="editUser('${user.id}')">Sửa</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUserConfirm('${user.id}')">Xóa</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function showAddUserForm() {
+    document.getElementById('userId').value = '';
+    document.getElementById('userName').value = '';
+    document.getElementById('userEmail').value = '';
+    document.getElementById('userPhone').value = '';
+    document.getElementById('userRole').value = 'CUSTOMER';
+    document.getElementById('userActive').checked = true;
+    document.getElementById('userFormTitle').textContent = 'Thêm người dùng';
+    document.getElementById('userForm').classList.remove('hidden');
+}
+
+function hideUserForm() {
+    document.getElementById('userForm').classList.add('hidden');
+}
+
+async function editUser(id) {
+    try {
+        const user = await getUserById(id);
+        document.getElementById('userId').value = user.id;
+        document.getElementById('userName').value = user.name;
+        document.getElementById('userEmail').value = user.email;
+        document.getElementById('userPhone').value = user.phone || '';
+        document.getElementById('userRole').value = user.role;
+        document.getElementById('userActive').checked = user.active !== false;
+        document.getElementById('userFormTitle').textContent = 'Chỉnh sửa người dùng';
+        document.getElementById('userForm').classList.remove('hidden');
+    } catch (error) {
+        showAlert('Lỗi khi tải thông tin người dùng: ' + error.message);
+    }
+}
+
+async function saveUser(event) {
+    event.preventDefault();
+
+    const userId = document.getElementById('userId').value;
+    const userData = {
+        name: document.getElementById('userName').value,
+        email: document.getElementById('userEmail').value,
+        phone: document.getElementById('userPhone').value,
+        role: document.getElementById('userRole').value,
+        active: document.getElementById('userActive').checked
+    };
+
+    try {
+        if (userId) {
+            await updateUser(userId, userData);
+            showAlert('Cập nhật người dùng thành công!');
+        } else {
+            await registerUser(userData);
+            showAlert('Thêm người dùng thành công!');
+        }
+        hideUserForm();
+        loadUsers();
+    } catch (error) {
+        showAlert('Lỗi: ' + error.message);
+    }
+}
+
+async function deleteUserConfirm(id) {
+    if (confirm('Bạn chắc chắn muốn xóa người dùng này?')) {
+        try {
+            await deleteUser(id);
+            showAlert('Xóa người dùng thành công!');
+            loadUsers();
+        } catch (error) {
+            showAlert('Lỗi: ' + error.message);
+        }
+    }
+}
+
+// ==============================
+// REVIEWS MANAGEMENT
+// ==============================
+
+async function loadReviews() {
+    try {
+        if (currentReviewsView === 'pending') {
+            const reviews = await getPendingReviews();
+            renderReviews(reviews);
+        } else {
+            await showAllReviews();
+        }
+    } catch (error) {
+        showAlert('Lỗi khi tải đánh giá: ' + error.message);
+    }
+}
+
+function showReviewTab(tab) {
+    currentReviewsView = tab;
+    
+    // Update tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    loadReviews();
+}
+
+async function showAllReviews() {
+    try {
+        const books = await fetchBooks();
+        let allReviews = [];
+        
+        if (Array.isArray(books)) {
+            for (const book of books) {
+                const reviews = await getReviewsByBook(book.id);
+                if (Array.isArray(reviews)) {
+                    allReviews.push(...reviews);
+                }
+            }
+        }
+        
+        renderReviews(allReviews);
+    } catch (error) {
+        showAlert('Lỗi khi tải đánh giá: ' + error.message);
+    }
+}
+
+function renderReviews(reviews) {
+    const container = document.getElementById('reviewsList');
+    container.innerHTML = '';
+
+    if (!Array.isArray(reviews) || reviews.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #999;">Không có đánh giá</p>';
+        return;
+    }
+
+    reviews.forEach(review => {
+        const card = document.createElement('div');
+        card.className = 'review-card';
+        
+        const stars = '⭐'.repeat(review.rating || 0);
+        const statusClass = review.approved ? 'approved' : 'pending';
+        const statusText = review.approved ? 'Đã duyệt' : 'Chờ duyệt';
+        
+        let actionButtons = `<button class="btn btn-danger btn-sm" onclick="deleteReviewConfirm('${review.id}')">Xóa</button>`;
+        if (!review.approved) {
+            actionButtons = `
+                <button class="btn btn-success btn-sm" onclick="approveReviewConfirm('${review.id}')">Duyệt</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteReviewConfirm('${review.id}')">Xóa</button>
+            `;
+        }
+        
+        card.innerHTML = `
+            <div class="review-header">
+                <div>
+                    <p class="review-book">📖 ${getBookTitleById(review.bookId)}</p>
+                    <p class="review-user">👤 ${review.userName || 'Ẩn danh'}</p>
+                </div>
+                <span class="review-status ${statusClass}">${statusText}</span>
+            </div>
+            <div class="review-rating">${stars}</div>
+            <p class="review-comment">${review.comment || 'Không có bình luận'}</p>
+            <div class="review-buttons">
+                ${actionButtons}
+            </div>
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
+function getBookTitleById(bookId) {
+    const book = booksData.find(b => b.id === bookId);
+    return book ? book.title : 'Sách chưa xác định';
+}
+
+async function approveReviewConfirm(id) {
+    if (confirm('Bạn chắc chắn muốn duyệt đánh giá này?')) {
+        try {
+            await approveReview(id);
+            showAlert('Duyệt đánh giá thành công!');
+            loadReviews();
+        } catch (error) {
+            showAlert('Lỗi: ' + error.message);
+        }
+    }
+}
+
+async function deleteReviewConfirm(id) {
+    if (confirm('Bạn chắc chắn muốn xóa đánh giá này?')) {
+        try {
+            await deleteReview(id);
+            showAlert('Xóa đánh giá thành công!');
+            loadReviews();
+        } catch (error) {
+            showAlert('Lỗi: ' + error.message);
+        }
+    }
+}
+
+// ==============================
+// UTILITY FUNCTIONS
+// ==============================
+
+function formatPrice(price) {
+    if (!price) return '0 ₫';
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+    }).format(price);
+}
+
+function showAlert(message) {
+    document.getElementById('alertText').textContent = message;
+    document.getElementById('alertModal').classList.remove('hidden');
+}
+
+function closeAlert() {
+    document.getElementById('alertModal').classList.add('hidden');
+}
+
+// Close alert when clicking outside the modal
+document.addEventListener('click', (event) => {
+    const modal = document.getElementById('alertModal');
+    if (event.target === modal) {
+        closeAlert();
+    }
+});
+
+// ==============================
+// ORDERS MANAGEMENT
+// ==============================
+
+let ordersData = [];
+
+async function loadOrders() {
+    try {
+        showAlert('Đang tải danh sách đơn hàng...');
+        ordersData = await fetchOrders();
+        closeAlert(); // Hide the alert after successful load
+        renderOrders(ordersData);
+    } catch (error) {
+        closeAlert();
+        showAlert('Lỗi khi tải danh sách đơn hàng: ' + error.message);
+        console.error('Order loading error:', error);
+    }
+}
+
+function renderOrders(orders) {
+    const tbody = document.querySelector('#ordersList tbody');
+    tbody.innerHTML = '';
+
+    if (!Array.isArray(orders) || orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #999;">Không có đơn hàng</td></tr>';
+        return;
+    }
+
+    orders.forEach(order => {
+        // Skip if order is null or undefined
+        if (!order) {
+            return;
+        }
+
+        const row = document.createElement('tr');
+        // Safely access properties with fallback values
+        const orderId = order.id || '';
+        const userId = order.userId || '-'; // Use userId instead of non-existent userName
+        const phone = order.phone || '-';
+        const createdAt = order.createdAt ? 
+            (new Date(order.createdAt).toLocaleString() || '-') : 
+            '-';
+        const totalPrice = formatPrice(order.totalPrice || 0);
+        const status = order.status || 'UNKNOWN';
+        const statusBadgeClass = getOrderStatusBadgeClass(status);
+        const statusText = getOrderStatusText(status);
+        
+        row.innerHTML = `
+            <td>${orderId}</td>
+            <td>${userId}</td>
+            <td>${phone}</td>
+            <td>${createdAt}</td>
+            <td>${totalPrice}</td>
+            <td>
+                <span class="badge ${statusBadgeClass}">
+                    ${statusText}
+                </span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn btn-info btn-sm" onclick="viewOrderDetails('${orderId}')">Chi tiết</button>
+                    <button class="btn btn-warning btn-sm" onclick="showUpdateStatusForm('${orderId}')">Cập nhật trạng thái</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function getOrderStatusBadgeClass(status) {
+    switch(status) {
+        case 'PENDING': return 'badge-warning';
+        case 'CONFIRMED': return 'badge-info';
+        case 'SHIPPED': return 'badge-primary';
+        case 'DELIVERED': return 'badge-success';
+        case 'CANCELLED': return 'badge-danger';
+        default: return 'badge-secondary';
+    }
+}
+
+function getOrderStatusText(status) {
+    switch(status) {
+        case 'PENDING': return 'Chờ xác nhận';
+        case 'CONFIRMED': return 'Đã xác nhận';
+        case 'SHIPPED': return 'Đang vận chuyển';
+        case 'DELIVERED': return 'Đã giao';
+        case 'CANCELLED': return 'Đã hủy';
+        default: return status;
+    }
+}
+
+function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    // Show selected section
+    document.getElementById(sectionId).classList.add('active');
+    currentSection = sectionId;
+
+    // Load data for the section
+    switch(sectionId) {
+        case 'dashboard':
+            loadDashboard();
+            break;
+        case 'books':
+            loadBooks();
+            break;
+        case 'categories':
+            loadCategories();
+            break;
+        case 'users':
+            loadUsers();
+            break;
+        case 'reviews':
+            loadReviews();
+            break;
+        case 'orders':
+            loadOrders();
+            break;
+    }
+}
+
+async function viewOrderDetails(orderId) {
+    try {
+        const response = await getOrderById(orderId);
+        // API returns {order: ..., message: "..."}
+        const order = response && response.order ? response.order : response;
+        showOrderDetailsModal(order);
+    } catch (error) {
+        showAlert('Lỗi khi tải chi tiết đơn hàng: ' + error.message);
+    }
+}
+
+function showOrderDetailsModal(order) {
+    // Create modal if it doesn't exist
+    let modal = document.getElementById('orderDetailsModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'orderDetailsModal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Chi tiết đơn hàng #${order.id}</h3>
+                    <button class="btn btn-close" onclick="closeOrderDetailsModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="order-info">
+                        <p><strong>Mã đơn hàng:</strong> ${order.id}</p>
+                        <p><strong>Khách hàng:</strong> ${order.userName || '-'}</p>
+                        <p><strong>Email:</strong> ${order.userEmail || '-'}</p>
+                        <p><strong>Số điện thoại:</strong> ${order.phone || '-'}</p>
+                        <p><strong>Địa chỉ giao hàng:</strong> ${order.shippingAddress || '-'}</p>
+                        <p><strong>Ngày đặt:</strong> ${order.createdAt ? new Date(order.createdAt).toLocaleString() : '-'}</p>
+                        <p><strong>Phương thức thanh toán:</strong> ${getPaymentMethodText(order.paymentMethod)}</p>
+                    </div>
+                    
+                    <div class="order-items">
+                        <h4>Sản phẩm trong đơn hàng:</h4>
+                        <div class="items-list">
+                            ${order.items && order.items.length > 0 ? 
+                                order.items.map(item => `
+                                    <div class="item">
+                                        <span>${item.title || ''}</span>
+                                        <span>${item.quantity || 0} × ${formatPrice(item.price)}</span>
+                                    </div>
+                                `).join('') : 
+                                '<p>Không có thông tin sản phẩm</p>'
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="order-summary">
+                        <p><strong>Tạm tính:</strong> ${formatPrice(order.totalPrice)}</p>
+                        <p><strong>Phí ship:</strong> ${formatPrice(order.shippingFee || 0)}</p>
+                        <p><strong>Tổng cộng:</strong> <strong>${formatPrice(order.totalAmount || order.totalPrice)}</strong></p>
+                    </div>
+                    
+                    <div class="order-status">
+                        <p><strong>Trạng thái hiện tại:</strong> 
+                            <span class="badge ${getOrderStatusBadgeClass(order.status)}">
+                                ${getOrderStatusText(order.status)}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeOrderDetailsModal()">Đóng</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    // Show modal
+    modal.classList.remove('hidden');
+}
+
+function closeOrderDetailsModal() {
+    const modal = document.getElementById('orderDetailsModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+async function showUpdateStatusForm(orderId) {
+    try {
+        const response = await apiCall(`/admin/orders/${orderId}`);
+        // API returns {order: ..., message: "..."}
+        const order = response && response.order ? response.order : response;
+        showUpdateStatusModal(order);
+    } catch (error) {
+        showAlert('Lỗi khi tải thông tin đơn hàng: ' + error.message);
+    }
+}
+
+function showUpdateStatusModal(order) {
+    // Create modal if it doesn't exist
+    let modal = document.getElementById('updateStatusModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'updateStatusModal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Cập nhật trạng thái đơn hàng #${order.id}</h3>
+                    <button class="btn btn-close" onclick="closeUpdateStatusModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="order-info">
+                        <p><strong>Mã đơn hàng:</strong> ${order.id}</p>
+                        <p><strong>Khách hàng:</strong> ${order.userName || '-'}</p>
+                        <p><strong>Trạng thái hiện tại:</strong> 
+                            <span class="badge ${getOrderStatusBadgeClass(order.status)}">
+                                ${getOrderStatusText(order.status)}
+                            </span>
+                        </p>
+                    </div>
+                    
+                    <form onsubmit="updateOrderStatus(event, '${order.id}')">
+                        <div class="form-group">
+                            <label>Trạng thái mới:</label>
+                            <select id="newStatus" required>
+                                <option value="PENDING">Chờ xác nhận</option>
+                                <option value="CONFIRMED">Đã xác nhận</option>
+                                <option value="SHIPPED">Đang vận chuyển</option>
+                                <option value="DELIVERED">Đã giao</option>
+                                <option value="CANCELLED">Đã hủy</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="submit" class="btn btn-success">Cập nhật</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeUpdateStatusModal()">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    // Set current status as selected
+    setTimeout(() => {
+        const select = document.getElementById('newStatus');
+        if (select) {
+            select.value = order.status;
+        }
+    }, 100);
+    
+    // Show modal
+    modal.classList.remove('hidden');
+}
+
+async function updateOrderStatus(event, orderId) {
+    event.preventDefault();
+    
+    const newStatus = document.getElementById('newStatus').value;
+    
+    try {
+        const response = await apiCall(`/admin/orders/${orderId}/status?status=${newStatus}`, 'PUT');
+        // API returns {order: ..., message: "..."}
+        console.log('Update status response:', response);
+        showAlert('Cập nhật trạng thái đơn hàng thành công!');
+        closeUpdateStatusModal();
+        // Refresh orders list
+        if (currentSection === 'orders') {
+            loadOrders();
+        }
+    } catch (error) {
+        console.error('Update status error:', error);
+        showAlert('Lỗi: ' + error.message);
+    }
+}
+
+function closeUpdateStatusModal() {
+    const modal = document.getElementById('updateStatusModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function getPaymentMethodText(method) {
+    switch(method) {
+        case 'COD': return 'Thanh toán khi nhận hàng';
+        case 'CARD': return 'Thẻ ngân hàng';
+        case 'TRANSFER': return 'Chuyển khoản';
+        default: return method || '-';
+    }
+}
+
+function searchOrders() {
+    const searchTerm = document.getElementById('searchOrder').value.toLowerCase();
+    const filtered = ordersData.filter(order => 
+        (order.id && order.id.toLowerCase().includes(searchTerm)) ||
+        (order.userName && order.userName.toLowerCase().includes(searchTerm)) ||
+        (order.phone && order.phone.toLowerCase().includes(searchTerm))
+    );
+    renderOrders(filtered);
+}
+
+function filterByStatus() {
+    const status = document.getElementById('statusFilter').value;
+    if (status) {
+        const filtered = ordersData.filter(order => order.status === status);
+        renderOrders(filtered);
+    } else {
+        renderOrders(ordersData);
+    }
+}
+
+function refreshOrders() {
+    loadOrders();
+}
+
+// Close alert when clicking outside the modal
+document.addEventListener('click', (event) => {
+    const modal = document.getElementById('alertModal');
+    if (event.target === modal) {
+        closeAlert();
+    }
+});

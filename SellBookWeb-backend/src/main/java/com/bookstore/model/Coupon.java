@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Document(collection = "coupons")
-public class Coupon {
+public class Coupon extends BaseEntity {
     @Id
     private String id;
     private String code;
@@ -18,8 +18,6 @@ public class Coupon {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Boolean active;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public Coupon() {
     }
@@ -30,8 +28,6 @@ public class Coupon {
         this.discountValue = discountValue;
         this.discountType = discountType;
         this.active = true;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 
     public String getId() {

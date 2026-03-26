@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "reviews")
-public class Review {
+public class Review extends BaseEntity {
     @Id
     private String id;
     private String bookId;
@@ -18,8 +18,6 @@ public class Review {
     private Integer rating;
     private String comment;
     private Boolean approved;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public String getId() {
         return id;
@@ -75,21 +73,5 @@ public class Review {
 
     public void setApproved(Boolean approved) {
         this.approved = approved;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }
