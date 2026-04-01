@@ -37,15 +37,6 @@ function validatePhone(phone) {
     };
 }
 
-// ISBN: 10 or 13 digits
-function validateISBN(isbn) {
-    const regex = /^(\d{10}|\d{13})$/;
-    return {
-        isValid: regex.test(isbn),
-        error: regex.test(isbn) ? null : 'ISBN phải là 10 hoặc 13 chữ số'
-    };
-}
-
 // Price: Must be positive number
 function validatePrice(price) {
     const num = parseFloat(price);
@@ -288,7 +279,7 @@ function validateCheckoutAddress(province, address) {
 }
 
 // Admin Book Form
-function validateAdminBookForm(title, author, isbn, price, quantity, category) {
+function validateAdminBookForm(title, author, price, quantity, category) {
     const errors = [];
     
     const titleVal = validateRequired(title, 'Tiêu đề');
@@ -296,9 +287,6 @@ function validateAdminBookForm(title, author, isbn, price, quantity, category) {
     
     const authorVal = validateRequired(author, 'Tác giả');
     if (!authorVal.isValid) errors.push(authorVal.error);
-    
-    const isbnVal = validateISBN(isbn);
-    if (!isbnVal.isValid) errors.push(isbnVal.error);
     
     const priceVal = validatePrice(price);
     if (!priceVal.isValid) errors.push(priceVal.error);

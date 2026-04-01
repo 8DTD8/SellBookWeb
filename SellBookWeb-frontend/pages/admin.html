@@ -20,6 +20,7 @@
                 <li><a href="#" data-ui-action="show-section" data-section="books">Sách</a></li>
                 <li><a href="#" data-ui-action="show-section" data-section="categories">Danh mục</a></li>
                 <li><a href="#" data-ui-action="show-section" data-section="users">Người dùng</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="orders">Shopcart</a></li>
                 <li><a href="#" data-ui-action="show-section" data-section="reviews">Đánh giá</a></li>
                 <li><a href="#" data-ui-action="logout" style="color: #5f6875;">Đăng xuất</a></li>
             </ul>
@@ -83,10 +84,6 @@
                     <div class="form-group">
                         <label>Tác giả:</label>
                         <input type="text" id="bookAuthor" required minlength="1" data-validate="required">
-                    </div>
-                    <div class="form-group">
-                        <label>ISBN:</label>
-                        <input type="text" id="bookIsbn" required pattern="(\d{10}|\d{13})" data-validate="isbn">
                     </div>
                     <div class="form-group">
                         <label>Giá bán:</label>
@@ -158,7 +155,6 @@
                     <thead>
                         <tr>
                             <th>Tiêu đề</th>
-                            <th>ISBN</th>
                             <th>Giá</th>
                             <th>Số lượng</th>
                             <th>Hành động</th>

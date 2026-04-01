@@ -12,7 +12,6 @@ function setupAdminBookFormValidation() {
     
     const bookTitle = document.getElementById('bookTitle');
     const bookAuthor = document.getElementById('bookAuthor');
-    const bookIsbn = document.getElementById('bookIsbn');
     const bookPrice = document.getElementById('bookPrice');
     const bookQuantity = document.getElementById('bookQuantity');
     const bookDiscount = document.getElementById('bookDiscount');
@@ -36,17 +35,6 @@ function setupAdminBookFormValidation() {
         bookAuthor.addEventListener('input', () => {
             const result = validateRequired(bookAuthor.value);
             applyFieldValidation(bookAuthor, result);
-        });
-    }
-    
-    if (bookIsbn) {
-        bookIsbn.addEventListener('blur', () => {
-            const result = bookIsbn.value ? validateISBN(bookIsbn.value) : { isValid: true, error: null };
-            applyFieldValidation(bookIsbn, result);
-        });
-        bookIsbn.addEventListener('input', () => {
-            const result = bookIsbn.value ? validateISBN(bookIsbn.value) : { isValid: true, error: null };
-            applyFieldValidation(bookIsbn, result);
         });
     }
     
@@ -192,7 +180,6 @@ function showFieldError(field, errorMessage) {
 function validateAdminBookFormFull() {
     const bookTitle = document.getElementById('bookTitle');
     const bookAuthor = document.getElementById('bookAuthor');
-    const bookIsbn = document.getElementById('bookIsbn');
     const bookPrice = document.getElementById('bookPrice');
     const bookQuantity = document.getElementById('bookQuantity');
     const bookDiscount = document.getElementById('bookDiscount');
@@ -212,14 +199,6 @@ function validateAdminBookFormFull() {
         if (!authorResult.isValid) {
             errors.push('Vui lòng nhập tác giả');
             applyFieldValidation(bookAuthor, authorResult);
-        }
-    }
-    
-    if (bookIsbn && bookIsbn.value) {
-        const isbnResult = validateISBN(bookIsbn.value);
-        if (!isbnResult.isValid) {
-            errors.push(isbnResult.error);
-            applyFieldValidation(bookIsbn, isbnResult);
         }
     }
     

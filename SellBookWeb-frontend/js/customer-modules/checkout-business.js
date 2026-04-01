@@ -96,12 +96,32 @@
             const { showAlert, formatPrice, cart, selectedCartItems, apiBaseUrl } = deps;
             const code = document.getElementById('checkoutCouponInput').value.trim();
             if (!code) { showAlert('Vui lòng nhập mã giảm giá'); return; }
+            const normalizedCode = code.toUpperCase();
+            document.getElementById('checkoutCouponInput').value = normalizedCode;
 
             const baseUrl = apiBaseUrl || 'http://localhost:8080/api';
-            fetch(`${baseUrl}/coupons/code/${encodeURIComponent(code)}`)
-                .then(res => {
-                    if (!res.ok) throw new Error('Mã giảm giá không tồn tại');
-                    return res.json();
+            fetch(`${baseUrl}/coupons/code/${encodeURIComponent(normalizedCode)}`)
+                .then(async res => {
+                    if (!res.ok) {
+                        throw new Error('Mã giảm giá không tồn tại hoặc đã hết hạn');
+                    }
+
+                    const contentType = res.headers.get('content-type') || '';
+                    const bodyText = await res.text();
+
+                    if (!bodyText.trim()) {
+                        throw new Error('Mã giảm giá không tồn tại hoặc đã hết hạn');
+                    }
+
+                    if (!contentType.includes('application/json')) {
+                        throw new Error('Phản hồi mã giảm giá không hợp lệ');
+                    }
+
+                    try {
+                        return JSON.parse(bodyText);
+                    } catch (error) {
+                        throw new Error('Dữ liệu mã giảm giá không hợp lệ');
+                    }
                 })
                 .then(coupon => {
                     if (!coupon || !coupon.active) {

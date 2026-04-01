@@ -15,8 +15,14 @@
             const { fetchBooks, renderBooks, loadCategoriesForFilter, showAlert, setBooksData } = deps;
             try {
                 const books = await fetchBooks();
-                if (typeof setBooksData === 'function') setBooksData(books);
-                renderBooks(books);
+                const normalizedBooks = Array.isArray(books)
+                    ? books.map((book) => {
+                        const { isbn, ...rest } = (book || {});
+                        return rest;
+                    })
+                    : [];
+                if (typeof setBooksData === 'function') setBooksData(normalizedBooks);
+                renderBooks(normalizedBooks);
                 await loadCategoriesForFilter();
             } catch (error) {
                 showAlert('Lỗi khi tải danh sách sách: ' + error.message);
@@ -33,18 +39,16 @@
             tbody.innerHTML = '';
 
             if (!Array.isArray(books) || books.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">Không có sách</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">Không có sách</td></tr>';
                 return;
             }
 
             books.forEach(book => {
                 const safeBookId = escapeJsString(book.id);
                 const safeBookTitle = escapeHtml(book.title || '');
-                const safeBookIsbn = escapeHtml(book.isbn || '');
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${safeBookTitle}</td>
-                    <td>${safeBookIsbn}</td>
                     <td>${formatPrice(book.price)}</td>
                     <td>${book.quantity || 0}</td>
                     <td>
@@ -69,7 +73,6 @@
                 document.getElementById('bookId').value = book.id;
                 document.getElementById('bookTitle').value = book.title;
                 document.getElementById('bookAuthor').value = book.author;
-                document.getElementById('bookIsbn').value = book.isbn;
                 document.getElementById('bookPrice').value = book.price;
                 document.getElementById('bookQuantity').value = book.quantity;
                 document.getElementById('bookCategory').value = book.categoryId;
@@ -110,7 +113,6 @@
             const bookData = {
                 title: document.getElementById('bookTitle').value,
                 author: document.getElementById('bookAuthor').value,
-                isbn: document.getElementById('bookIsbn').value,
                 price: parseFloat(document.getElementById('bookPrice').value),
                 quantity: parseInt(document.getElementById('bookQuantity').value),
                 categoryId: document.getElementById('bookCategory').value,
@@ -164,8 +166,7 @@
             const term = (searchTerm || '').toLowerCase();
             return (booksData || []).filter(book =>
                 book.title.toLowerCase().includes(term) ||
-                book.author.toLowerCase().includes(term) ||
-                book.isbn.includes(term)
+                book.author.toLowerCase().includes(term)
             );
         },
 

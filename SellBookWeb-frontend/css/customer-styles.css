@@ -2135,6 +2135,10 @@ html {
     resize: vertical;
 }
 
+#checkoutNote {
+    resize: none;
+}
+
 .form-hint {
     font-size: 0.8rem;
     color: #999;
@@ -2474,6 +2478,10 @@ html {
 .modal-content h3 {
     color: #333;
     margin-bottom: 1.5rem;
+}
+
+#alertText {
+    white-space: pre-line;
 }
 
 /* ================================

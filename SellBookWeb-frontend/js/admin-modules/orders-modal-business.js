@@ -22,10 +22,25 @@
          * deps: { getOrderById, showAlert, escapeHtml, escapeJsString, getOrderStatusBadgeClass, getOrderStatusText, formatPrice }
          */
         async viewOrderDetails(orderId, deps) {
-            const { getOrderById, showAlert } = deps;
+            const { getOrderById, getUserById, showAlert } = deps;
             try {
                 const response = await getOrderById(orderId);
                 const order = response && response.order ? response.order : response;
+
+                // Backfill buyer information when order payload does not include user profile fields.
+                if (order && order.userId && (!order.userName || !order.userEmail) && typeof getUserById === 'function') {
+                    try {
+                        const user = await getUserById(order.userId);
+                        if (user) {
+                            order.userName = order.userName || user.name || '-';
+                            order.userEmail = order.userEmail || user.email || '-';
+                            order.phone = order.phone || user.phone || '-';
+                        }
+                    } catch (error) {
+                        // Keep order details visible even if user profile lookup fails.
+                    }
+                }
+
                 AdminOrdersModalBusiness.showOrderDetailsModal(order, deps);
             } catch (error) {
                 showAlert('Lỗi khi tải chi tiết đơn hàng: ' + error.message);
@@ -41,67 +56,70 @@
 
             let modal = document.getElementById('orderDetailsModal');
             if (!modal) {
-                const safeOrderId = escapeHtml(order.id || '-');
-                const safeUserName = escapeHtml(order.userName || '-');
-                const safeUserEmail = escapeHtml(order.userEmail || '-');
-                const safePhone = escapeHtml(order.phone || '-');
-                const safeAddress = escapeHtml(order.shippingAddress || '-');
-                const safeCreatedAt = escapeHtml(order.createdAt ? new Date(order.createdAt).toLocaleString() : '-');
-                const safePayment = escapeHtml(AdminOrdersModalBusiness.getPaymentMethodText(order.paymentMethod));
-
                 modal = document.createElement('div');
                 modal.id = 'orderDetailsModal';
                 modal.className = 'modal';
-                modal.innerHTML = `
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3>Chi tiết đơn hàng #${safeOrderId}</h3>
-                            <button class="btn btn-close" data-modal-action="close-order-details">×</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="order-info">
-                                <p><strong>Mã đơn hàng:</strong> ${safeOrderId}</p>
-                                <p><strong>Khách hàng:</strong> ${safeUserName}</p>
-                                <p><strong>Email:</strong> ${safeUserEmail}</p>
-                                <p><strong>Số điện thoại:</strong> ${safePhone}</p>
-                                <p><strong>Địa chỉ giao hàng:</strong> ${safeAddress}</p>
-                                <p><strong>Ngày đặt:</strong> ${safeCreatedAt}</p>
-                                <p><strong>Phương thức thanh toán:</strong> ${safePayment}</p>
-                            </div>
-                            <div class="order-items">
-                                <h4>Sản phẩm trong đơn hàng:</h4>
-                                <div class="items-list">
-                                    ${order.items && order.items.length > 0
-                                        ? order.items.map(item => `
-                                            <div class="item">
-                                                <span>${escapeHtml(item.title || '')}</span>
-                                                <span>${item.quantity || 0} × ${formatPrice(item.price)}</span>
-                                            </div>
-                                        `).join('')
-                                        : '<p>Không có thông tin sản phẩm</p>'
-                                    }
-                                </div>
-                            </div>
-                            <div class="order-summary">
-                                <p><strong>Tạm tính:</strong> ${formatPrice(order.totalPrice)}</p>
-                                <p><strong>Phí ship:</strong> ${formatPrice(order.shippingFee || 0)}</p>
-                                <p><strong>Tổng cộng:</strong> <strong>${formatPrice(order.totalAmount || order.totalPrice)}</strong></p>
-                            </div>
-                            <div class="order-status">
-                                <p><strong>Trạng thái hiện tại:</strong>
-                                    <span class="badge ${getOrderStatusBadgeClass(order.status)}">
-                                        ${getOrderStatusText(order.status)}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-modal-action="close-order-details">Đóng</button>
-                        </div>
-                    </div>
-                `;
                 document.body.appendChild(modal);
             }
+
+            const safeOrderId = escapeHtml(order.id || '-');
+            const safeUserName = escapeHtml(order.userName || '-');
+            const safeUserEmail = escapeHtml(order.userEmail || '-');
+            const safePhone = escapeHtml(order.phone || '-');
+            const safeAddress = escapeHtml(order.shippingAddress || '-');
+            const safeCreatedAt = escapeHtml(order.createdAt ? new Date(order.createdAt).toLocaleString() : '-');
+            const safePayment = escapeHtml(AdminOrdersModalBusiness.getPaymentMethodText(order.paymentMethod));
+            const safeUserId = escapeHtml(order.userId || '-');
+
+            const itemsHtml = order.items && order.items.length > 0
+                ? order.items.map(item => `
+                    <div class="order-modal-item-row">
+                        <span class="order-modal-item-name">${escapeHtml(item.title || '')}</span>
+                        <span class="order-modal-item-qty">x${item.quantity || 0}</span>
+                        <span class="order-modal-item-price">${formatPrice((item.quantity || 0) * (item.price || 0))}</span>
+                    </div>
+                `).join('')
+                : '<p>Không có thông tin sản phẩm</p>';
+
+            modal.innerHTML = `
+                <div class="modal-content order-modal">
+                    <div class="modal-header order-modal-header">
+                        <h3>Chi tiết đơn hàng #${safeOrderId}</h3>
+                        <button class="btn btn-close" data-modal-action="close-order-details">×</button>
+                    </div>
+                    <div class="modal-body order-modal-body">
+                        <section class="order-modal-card">
+                            <h4>Thông tin người mua</h4>
+                            <p><strong>Khách hàng:</strong> ${safeUserName}</p>
+                            <p><strong>Email:</strong> ${safeUserEmail}</p>
+                            <p><strong>Số điện thoại:</strong> ${safePhone}</p>
+                            <p><strong>User ID:</strong> ${safeUserId}</p>
+                        </section>
+                        <section class="order-modal-card">
+                            <h4>Thông tin đơn hàng</h4>
+                            <p><strong>Mã đơn hàng:</strong> ${safeOrderId}</p>
+                            <p><strong>Ngày đặt:</strong> ${safeCreatedAt}</p>
+                            <p><strong>Phương thức thanh toán:</strong> ${safePayment}</p>
+                            <p><strong>Địa chỉ giao hàng:</strong> ${safeAddress}</p>
+                            <p><strong>Trạng thái:</strong> <span class="badge ${getOrderStatusBadgeClass(order.status)}">${getOrderStatusText(order.status)}</span></p>
+                        </section>
+                        <section class="order-modal-card order-modal-items">
+                            <h4>Sản phẩm trong đơn</h4>
+                            <div class="order-modal-items-list">${itemsHtml}</div>
+                        </section>
+                        <section class="order-modal-card">
+                            <h4>Tổng kết thanh toán</h4>
+                            <p><strong>Tạm tính:</strong> ${formatPrice(order.totalPrice)}</p>
+                            <p><strong>Phí ship:</strong> ${formatPrice(order.shippingFee || 0)}</p>
+                            <p><strong>Tổng cộng:</strong> <strong>${formatPrice(order.totalAmount || order.totalPrice)}</strong></p>
+                        </section>
+                    </div>
+                    <div class="modal-footer order-modal-footer">
+                        <button class="btn btn-secondary" data-modal-action="close-order-details">Đóng</button>
+                    </div>
+                </div>
+            `;
+
             modal.classList.remove('hidden');
         },
 
@@ -120,6 +138,10 @@
             try {
                 const response = await apiCall(`/admin/orders/${orderId}`);
                 const order = response && response.order ? response.order : response;
+                if (order && order.status === 'CANCELLED') {
+                    showAlert('Đơn hàng đã hủy không thể cập nhật trạng thái nữa.');
+                    return;
+                }
                 AdminOrdersModalBusiness.showUpdateStatusModal(order, deps);
             } catch (error) {
                 showAlert('Lỗi khi tải thông tin đơn hàng: ' + error.message);

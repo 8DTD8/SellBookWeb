@@ -31,6 +31,9 @@ public class CouponController {
     @GetMapping("/code/{code}")
     public ResponseEntity<CouponDTO> getCouponByCode(@PathVariable String code) {
         CouponDTO coupon = couponService.getCouponByCode(code);
+        if (coupon == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         return ResponseEntity.ok(coupon);
     }
 

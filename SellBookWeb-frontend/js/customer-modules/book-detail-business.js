@@ -117,7 +117,7 @@
             const safeAuthor = escapeHtml(book.author || 'Chưa có');
             const safeCoverType = escapeHtml(book.coverType || 'Bìa Mềm');
             const safeTranslator = escapeHtml(book.translator || 'N/A');
-            const safeIsbnOrId = escapeHtml(book.isbn || book.id || 'N/A');
+            const safeBookCode = escapeHtml(book.id || 'N/A');
 
             // Breadcrumbs
             const breadcrumbs = document.getElementById('breadcrumbs');
@@ -261,7 +261,7 @@
             const infoTable = document.getElementById('infoTable');
             if (infoTable) {
                 infoTable.innerHTML = `
-                    <tr><td>Mã hàng</td><td>${safeIsbnOrId}</td></tr>
+                    <tr><td>Mã hàng</td><td>${safeBookCode}</td></tr>
                     <tr><td>Tên Nhà Cung Cấp</td><td>${safeSupplierName}</td></tr>
                     <tr><td>Tác giả</td><td>${safeAuthor}</td></tr>
                     <tr><td>Người Dịch</td><td>${safeTranslator}</td></tr>

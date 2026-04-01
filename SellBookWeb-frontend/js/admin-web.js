@@ -230,14 +230,13 @@ function renderBooks(books) {
         return;
     }
     const tbody = document.querySelector('#booksList tbody');
-    if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">Module chưa tải.</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#999;">Module chưa tải.</td></tr>';
 }
 
 function showAddBookForm() {
     document.getElementById('bookId').value = '';
     document.getElementById('bookTitle').value = '';
     document.getElementById('bookAuthor').value = '';
-    document.getElementById('bookIsbn').value = '';
     document.getElementById('bookPrice').value = '';
     document.getElementById('bookQuantity').value = '';
     document.getElementById('bookCategory').value = '';
@@ -679,7 +678,7 @@ function getOrderStatusText(status) {
 async function viewOrderDetails(orderId) {
     if (window.AdminOrdersModalBusiness && typeof window.AdminOrdersModalBusiness.viewOrderDetails === 'function') {
         await window.AdminOrdersModalBusiness.viewOrderDetails(orderId, {
-            getOrderById, showAlert, escapeHtml, escapeJsString,
+            getOrderById, getUserById, showAlert, escapeHtml, escapeJsString,
             getOrderStatusBadgeClass, getOrderStatusText, formatPrice
         });
         return;

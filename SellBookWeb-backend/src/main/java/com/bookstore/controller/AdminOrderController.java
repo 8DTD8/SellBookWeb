@@ -44,10 +44,16 @@ public class AdminOrderController {
             return ResponseEntity.badRequest().body(response);
         }
         
-        Map<String, Object> response = new HashMap<>();
-        response.put("order", orderService.updateOrderStatus(id, status));
-        response.put("message", "Order status updated successfully");
-        return ResponseEntity.ok(response);
+        try {
+            Map<String, Object> response = new HashMap<>();
+            response.put("order", orderService.updateOrderStatus(id, status));
+            response.put("message", "Order status updated successfully");
+            return ResponseEntity.ok(response);
+        } catch (IllegalStateException ex) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", ex.getMessage());
+            return ResponseEntity.status(409).body(response);
+        }
     }
     
     private boolean isValidOrderStatus(String status) {

@@ -273,21 +273,19 @@ function validateCheckoutForm() {
 }
 
 /**
- * Enhanced checkout function with validation
+ * Validate checkout data when placing order, not when opening checkout form.
  */
-const originalCheckout = window.checkout;
-if (originalCheckout) {
-    window.checkout = function() {
-        // Validate form first
+const originalPlaceOrder = window.placeOrder;
+if (originalPlaceOrder) {
+    window.placeOrder = function() {
         const validation = validateCheckoutForm();
-        
+
         if (!validation.isValid) {
-            showAlert('Vui lòng kiểm tra các trường sau:\\n\\n' + validation.errors.join('\\n'));
+            showAlert('Vui lòng kiểm tra các trường sau:\n\n- ' + validation.errors.join('\n- '));
             return;
         }
-        
-        // Call original checkout function
-        originalCheckout.call(this);
+
+        return originalPlaceOrder.call(this);
     };
 }
 
@@ -298,17 +296,9 @@ function setupAdminFormValidation() {
     console.log('Setting up admin form validation...');
     
     // Book Form
-    const bookIsbn = document.getElementById('bookIsbn');
     const bookPrice = document.getElementById('bookPrice');
     const bookQuantity = document.getElementById('bookQuantity');
     const bookDiscount = document.getElementById('bookDiscount');
-    
-    if (bookIsbn) {
-        bookIsbn.addEventListener('blur', () => {
-            const result = validateISBN(bookIsbn.value);
-            applyFieldValidation(bookIsbn, result);
-        });
-    }
     
     if (bookPrice) {
         bookPrice.addEventListener('blur', () => {

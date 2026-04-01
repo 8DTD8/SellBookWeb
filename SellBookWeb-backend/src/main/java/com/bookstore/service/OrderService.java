@@ -66,6 +66,10 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException(Constants.ERROR_ORDER_NOT_FOUND));
         
         String oldStatus = order.getStatus();
+        if (Constants.ORDER_STATUS_CANCELLED.equals(oldStatus)) {
+            throw new IllegalStateException("Đơn hàng đã hủy không thể cập nhật trạng thái nữa");
+        }
+
         order.setStatus(newStatus);
         order.setUpdatedAt(LocalDateTime.now());
         

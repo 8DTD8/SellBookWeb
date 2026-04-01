@@ -285,10 +285,16 @@ async function loadBooks() {
         // Backend validates max page size at 100
         const response = await fetchBooks(0, 100);
         if (Array.isArray(response)) {
-            allBooks = response;
+            allBooks = response.map((book) => {
+                const { isbn, ...rest } = (book || {});
+                return rest;
+            });
         } else if (response && Array.isArray(response.content)) {
             // If it's a paginated response
-            allBooks = response.content;
+            allBooks = response.content.map((book) => {
+                const { isbn, ...rest } = (book || {});
+                return rest;
+            });
         } else {
             allBooks = [];
         }

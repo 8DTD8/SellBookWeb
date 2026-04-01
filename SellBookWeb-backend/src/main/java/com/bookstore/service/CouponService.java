@@ -17,7 +17,7 @@ public class CouponService {
 
     public CouponDTO createCoupon(CouponDTO couponDTO) {
         Coupon coupon = new Coupon();
-        coupon.setCode(couponDTO.getCode());
+        coupon.setCode(couponDTO.getCode() == null ? null : couponDTO.getCode().trim().toUpperCase());
         coupon.setDescription(couponDTO.getDescription());
         coupon.setDiscountValue(couponDTO.getDiscountValue());
         coupon.setDiscountType(couponDTO.getDiscountType());
@@ -39,7 +39,11 @@ public class CouponService {
     }
 
     public CouponDTO getCouponByCode(String code) {
-        return couponRepository.findByCode(code)
+        if (code == null || code.trim().isEmpty()) {
+            return null;
+        }
+
+        return couponRepository.findByCodeIgnoreCase(code.trim())
                 .map(this::convertToDTO)
                 .orElse(null);
     }
@@ -55,7 +59,7 @@ public class CouponService {
         Coupon coupon = couponRepository.findById(id).orElse(null);
         if (coupon == null) return null;
 
-        coupon.setCode(couponDTO.getCode());
+        coupon.setCode(couponDTO.getCode() == null ? null : couponDTO.getCode().trim().toUpperCase());
         coupon.setDescription(couponDTO.getDescription());
         coupon.setDiscountValue(couponDTO.getDiscountValue());
         coupon.setDiscountType(couponDTO.getDiscountType());
