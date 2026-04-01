@@ -19,6 +19,7 @@
                 <li><a href="#" data-ui-action="show-section" data-section="dashboard">Trang chủ</a></li>
                 <li><a href="#" data-ui-action="show-section" data-section="books">Sách</a></li>
                 <li><a href="#" data-ui-action="show-section" data-section="categories">Danh mục</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="coupons">Mã giảm giá</a></li>
                 <li><a href="#" data-ui-action="show-section" data-section="users">Người dùng</a></li>
                 <li><a href="#" data-ui-action="show-section" data-section="orders">Shopcart</a></li>
                 <li><a href="#" data-ui-action="show-section" data-section="reviews">Đánh giá</a></li>
@@ -129,11 +130,6 @@
                         <input type="text" id="bookPublisher" placeholder="VD: Nhà xuất bản Văn Học">
                     </div>
                     <div class="form-group">
-                        <label>Mã giảm giá:</label>
-                        <input type="text" id="bookDiscountCode" placeholder="VD: SALE20">
-                        <small style="color: #666;">Mã coupon (tùy chọn), không ảnh hưởng đến badge giảm giá phần trăm</small>
-                    </div>
-                    <div class="form-group">
                         <label>Phần trăm giảm giá (%):</label>
                         <input type="number" id="bookDiscount" step="0.1" min="0" max="100" placeholder="VD: 20" data-validate="discount">
                         <small style="color: #666;">Giảm trực tiếp từ giá gốc (VD: nhập 30 cho sách 50đ => còn 35đ)</small>
@@ -157,6 +153,80 @@
                             <th>Tiêu đề</th>
                             <th>Giá</th>
                             <th>Số lượng</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Coupons Section -->
+        <section id="coupons" class="section">
+            <div class="section-header">
+                <h2>Quản lý mã giảm giá</h2>
+                <button class="btn btn-primary" data-ui-action="show-add-coupon-form">+ Thêm mã</button>
+            </div>
+
+            <div id="couponForm" class="form-container hidden">
+                <h3 id="couponFormTitle">Thêm mã giảm giá mới</h3>
+                <form id="couponFormData" data-submit-action="save-coupon">
+                    <input type="hidden" id="couponId">
+                    <div class="form-group">
+                        <label>Mã coupon:</label>
+                        <input type="text" id="couponCode" placeholder="VD: SALE20" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả:</label>
+                        <input type="text" id="couponDescription" placeholder="VD: Giảm 20% cho đơn từ 200k">
+                    </div>
+                    <div class="form-group">
+                        <label>Loại giảm:</label>
+                        <select id="couponDiscountType">
+                            <option value="PERCENTAGE">Phần trăm (%)</option>
+                            <option value="FIXED">Giảm cố định (VND)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Giá trị giảm:</label>
+                        <input type="number" id="couponDiscountValue" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Đơn tối thiểu:</label>
+                        <input type="number" id="couponMinimumAmount" min="0" step="0.01" placeholder="VD: 100000">
+                    </div>
+                    <div class="form-group">
+                        <label>Giới hạn lượt dùng:</label>
+                        <input type="number" id="couponMaxUsage" min="1" placeholder="VD: 100">
+                    </div>
+                    <div class="form-group">
+                        <label>Thời gian bắt đầu:</label>
+                        <input type="datetime-local" id="couponStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Thời gian kết thúc:</label>
+                        <input type="datetime-local" id="couponEndDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Đang hoạt động:</label>
+                        <input type="checkbox" id="couponActive" checked>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-ui-action="hide-coupon-form">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <table id="couponsList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Loại/Giá trị</th>
+                            <th>Lượt dùng</th>
+                            <th>Trạng thái</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -368,6 +438,7 @@
     <script src="../js/admin-modules/reviews-business.js"></script>
     <script src="../js/admin-modules/books-business.js"></script>
     <script src="../js/admin-modules/categories-business.js"></script>
+    <script src="../js/admin-modules/coupons-business.js"></script>
     <script src="../js/admin-modules/users-business.js"></script>
     <script src="../js/admin-modules/orders-modal-business.js"></script>
     <script src="../js/auth.js"></script>

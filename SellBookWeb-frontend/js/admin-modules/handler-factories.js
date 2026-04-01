@@ -25,6 +25,10 @@
             'hide-book-form': () => deps.hideBookForm(),
             'show-add-category-form': () => deps.showAddCategoryForm(),
             'hide-category-form': () => deps.hideCategoryForm(),
+            'show-add-coupon-form': () => deps.showAddCouponForm(),
+            'hide-coupon-form': () => deps.hideCouponForm(),
+            'edit-coupon': ({ element }) => deps.editCoupon(element.dataset.couponId),
+            'delete-coupon': ({ element }) => deps.deleteCouponConfirm(element.dataset.couponId),
             'hide-user-form': () => deps.hideUserForm(),
             'refresh-orders': () => deps.refreshOrders(),
             'close-alert': () => deps.closeAlert()
@@ -43,6 +47,7 @@
         const submitActionRouter = createRouter({
             'save-book': ({ event }) => deps.saveBook(event),
             'save-category': ({ event }) => deps.saveCategory(event),
+            'save-coupon': ({ event }) => deps.saveCoupon(event),
             'save-user': ({ event }) => deps.saveUser(event)
         });
 

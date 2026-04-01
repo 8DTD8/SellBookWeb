@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/coupons")
@@ -17,9 +18,13 @@ public class CouponController {
     }
 
     @PostMapping
-    public ResponseEntity<CouponDTO> createCoupon(@RequestBody CouponDTO couponDTO) {
-        CouponDTO created = couponService.createCoupon(couponDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<?> createCoupon(@RequestBody CouponDTO couponDTO) {
+        try {
+            CouponDTO created = couponService.createCoupon(couponDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(Map.of("message", ex.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")
@@ -29,12 +34,16 @@ public class CouponController {
     }
 
     @GetMapping("/code/{code}")
-    public ResponseEntity<CouponDTO> getCouponByCode(@PathVariable String code) {
-        CouponDTO coupon = couponService.getCouponByCode(code);
-        if (coupon == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<?> getCouponByCode(@PathVariable String code) {
+        try {
+            CouponDTO coupon = couponService.getCouponByCode(code);
+            if (coupon == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.ok(coupon);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(Map.of("message", ex.getMessage()));
         }
-        return ResponseEntity.ok(coupon);
     }
 
     @GetMapping
@@ -44,9 +53,13 @@ public class CouponController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CouponDTO> updateCoupon(@PathVariable String id, @RequestBody CouponDTO couponDTO) {
-        CouponDTO updated = couponService.updateCoupon(id, couponDTO);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<?> updateCoupon(@PathVariable String id, @RequestBody CouponDTO couponDTO) {
+        try {
+            CouponDTO updated = couponService.updateCoupon(id, couponDTO);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(Map.of("message", ex.getMessage()));
+        }
     }
 
     @DeleteMapping("/{id}")

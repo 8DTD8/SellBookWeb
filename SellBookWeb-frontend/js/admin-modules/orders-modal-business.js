@@ -142,6 +142,10 @@
                     showAlert('Đơn hàng đã hủy không thể cập nhật trạng thái nữa.');
                     return;
                 }
+                if (order && order.status === 'DELIVERED') {
+                    showAlert('Đơn hàng đã giao không thể cập nhật trạng thái nữa.');
+                    return;
+                }
                 AdminOrdersModalBusiness.showUpdateStatusModal(order, deps);
             } catch (error) {
                 showAlert('Lỗi khi tải thông tin đơn hàng: ' + error.message);

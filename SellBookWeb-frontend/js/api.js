@@ -52,8 +52,17 @@ async function parseErrorMessage(response) {
 
     try {
         const errorPayload = JSON.parse(responseText);
-        return errorPayload.message || errorPayload.error || '';
+        const rawMessage = errorPayload.message || errorPayload.error || '';
+        const springValidationMatch = rawMessage.match(/default message \[(.*?)\]/);
+        if (springValidationMatch && springValidationMatch[1]) {
+            return springValidationMatch[1];
+        }
+        return rawMessage;
     } catch {
+        const springValidationMatch = responseText.match(/default message \[(.*?)\]/);
+        if (springValidationMatch && springValidationMatch[1]) {
+            return springValidationMatch[1];
+        }
         return responseText;
     }
 }
@@ -160,6 +169,30 @@ async function updateCategory(id, categoryData) {
 
 async function deleteCategory(id) {
     return apiCall(`/categories/${id}`, 'DELETE');
+}
+
+// ==============================
+// COUPONS API
+// ==============================
+
+async function fetchCoupons() {
+    return apiCall('/coupons');
+}
+
+async function getCouponById(id) {
+    return apiCall(`/coupons/${id}`);
+}
+
+async function createCoupon(couponData) {
+    return apiCall('/coupons', 'POST', couponData);
+}
+
+async function updateCoupon(id, couponData) {
+    return apiCall(`/coupons/${id}`, 'PUT', couponData);
+}
+
+async function deleteCoupon(id) {
+    return apiCall(`/coupons/${id}`, 'DELETE');
 }
 
 // ==============================
@@ -284,6 +317,11 @@ if (typeof window !== 'undefined') {
     window.createCategory = createCategory;
     window.updateCategory = updateCategory;
     window.deleteCategory = deleteCategory;
+    window.fetchCoupons = fetchCoupons;
+    window.getCouponById = getCouponById;
+    window.createCoupon = createCoupon;
+    window.updateCoupon = updateCoupon;
+    window.deleteCoupon = deleteCoupon;
     window.fetchUsers = fetchUsers;
     window.getUserById = getUserById;
     window.registerUser = registerUser;

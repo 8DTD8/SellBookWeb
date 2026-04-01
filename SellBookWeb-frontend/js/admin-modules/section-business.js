@@ -7,6 +7,7 @@
             loadDashboard,
             loadBooks,
             loadCategories,
+            loadCoupons,
             loadUsers,
             loadReviews,
             loadOrders
@@ -33,6 +34,9 @@
                     break;
                 case 'categories':
                     loadCategories();
+                    break;
+                case 'coupons':
+                    loadCoupons();
                     break;
                 case 'users':
                     loadUsers();

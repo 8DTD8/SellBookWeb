@@ -12,6 +12,7 @@
 	}
 
 	function statusLabel(status) {
+		const normalizedStatus = String(status || '').toUpperCase();
 		const statusMap = {
 			PENDING: 'Chờ xác nhận',
 			CONFIRMED: 'Đã xác nhận',
@@ -19,10 +20,11 @@
 			DELIVERED: 'Đã giao',
 			CANCELLED: 'Đã hủy'
 		};
-		return statusMap[status] || status || 'N/A';
+		return statusMap[normalizedStatus] || normalizedStatus || 'N/A';
 	}
 
 	function statusClass(status) {
+		const normalizedStatus = String(status || '').toUpperCase();
 		const classMap = {
 			PENDING: 'badge-warning',
 			CONFIRMED: 'badge-info',
@@ -30,7 +32,7 @@
 			DELIVERED: 'badge-success',
 			CANCELLED: 'badge-danger'
 		};
-		return classMap[status] || 'badge-secondary';
+		return classMap[normalizedStatus] || 'badge-secondary';
 	}
 
 	function renderOrderItems(order, escapeHtml, formatPrice) {
@@ -74,17 +76,18 @@
 
 			container.innerHTML = orders.map((order) => {
 				const orderId = escapeHtml(order.id || 'N/A');
-				const label = statusLabel(order.status);
-				const badgeClass = statusClass(order.status);
+				const normalizedStatus = String(order.status || 'PENDING').toUpperCase();
+				const label = statusLabel(normalizedStatus);
+				const badgeClass = statusClass(normalizedStatus);
 				const total = formatPrice(Number(order.totalPrice || 0));
 				const createdAt = formatDate(order.createdAt);
-				const canCancel = order.status === 'PENDING' || order.status === 'CONFIRMED';
+				const canCancel = normalizedStatus === 'PENDING' || normalizedStatus === 'CONFIRMED';
 
 				return `
 					<article style="background:#fff;border:1px solid #e5eaf2;border-radius:10px;padding:14px 16px;margin-bottom:14px;">
 						<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
 							<h4 style="margin:0;">Đơn #${orderId}</h4>
-							<span class="badge ${badgeClass}">${escapeHtml(label)}</span>
+							<span class="order-status-badge ${badgeClass}">${escapeHtml(label)}</span>
 						</div>
 						<div style="color:#666;font-size:0.9rem;margin:6px 0 10px;">Ngày đặt: ${escapeHtml(createdAt)}</div>
 						<div>${renderOrderItems(order, escapeHtml, formatPrice)}</div>

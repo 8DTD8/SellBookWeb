@@ -40,9 +40,10 @@ function validatePhone(phone) {
 // Price: Must be positive number
 function validatePrice(price) {
     const num = parseFloat(price);
+    const isValid = !isNaN(num) && num >= 0 && num <= 10000000;
     return {
-        isValid: num > 0 && !isNaN(num),
-        error: (num > 0 && !isNaN(num)) ? null : 'Giá phải lớn hơn 0'
+        isValid,
+        error: isValid ? null : 'Giá phải từ 0 đến 10.000.000 VND'
     };
 }
 

@@ -18,6 +18,7 @@ public class Order extends BaseEntity {
     private Double totalPrice;
     private String status; // PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
     private String paymentMethod; // COD, CARD, TRANSFER
+    private String couponCode;
     private String shippingAddress;
     private String phone;
 
@@ -67,6 +68,14 @@ public class Order extends BaseEntity {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getCouponCode() {
+        return couponCode;
+    }
+
+    public void setCouponCode(String couponCode) {
+        this.couponCode = couponCode;
     }
 
     public String getShippingAddress() {

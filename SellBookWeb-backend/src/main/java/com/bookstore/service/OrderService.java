@@ -18,14 +18,22 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final NotificationService notificationService;
+    private final CouponService couponService;
 
-    public OrderService(OrderRepository orderRepository, UserService userService, NotificationService notificationService) {
+    public OrderService(OrderRepository orderRepository, UserService userService, NotificationService notificationService, CouponService couponService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.notificationService = notificationService;
+        this.couponService = couponService;
     }
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
+        if (orderDTO.getCouponCode() != null && !orderDTO.getCouponCode().trim().isEmpty()) {
+            String normalizedCouponCode = orderDTO.getCouponCode().trim().toUpperCase();
+            orderDTO.setCouponCode(normalizedCouponCode);
+            couponService.consumeCouponUsage(normalizedCouponCode);
+        }
+
         Order order = OrderMapper.toEntity(orderDTO);
         order.setStatus(Constants.ORDER_STATUS_PENDING);
         order.setCreatedAt(LocalDateTime.now());
@@ -68,6 +76,9 @@ public class OrderService {
         String oldStatus = order.getStatus();
         if (Constants.ORDER_STATUS_CANCELLED.equals(oldStatus)) {
             throw new IllegalStateException("Đơn hàng đã hủy không thể cập nhật trạng thái nữa");
+        }
+        if (Constants.ORDER_STATUS_DELIVERED.equals(oldStatus)) {
+            throw new IllegalStateException("Đơn hàng đã giao không thể cập nhật trạng thái nữa");
         }
 
         order.setStatus(newStatus);

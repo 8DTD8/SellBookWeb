@@ -10,6 +10,7 @@ public class OrderDTO {
     private Double totalPrice;
     private String status;
     private String paymentMethod;
+    private String couponCode;
     private String shippingAddress;
     private String phone;
     private LocalDateTime createdAt;
@@ -55,6 +56,9 @@ public class OrderDTO {
 
     public String getPaymentMethod() { return paymentMethod; }
     public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+
+    public String getCouponCode() { return couponCode; }
+    public void setCouponCode(String couponCode) { this.couponCode = couponCode; }
 
     public String getShippingAddress() { return shippingAddress; }
     public void setShippingAddress(String shippingAddress) { this.shippingAddress = shippingAddress; }

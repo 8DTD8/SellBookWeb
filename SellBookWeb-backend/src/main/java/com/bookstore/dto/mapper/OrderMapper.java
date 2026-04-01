@@ -31,6 +31,7 @@ public class OrderMapper {
         dto.setTotalPrice(order.getTotalPrice());
         dto.setStatus(order.getStatus());
         dto.setPaymentMethod(order.getPaymentMethod());
+        dto.setCouponCode(order.getCouponCode());
         dto.setShippingAddress(order.getShippingAddress());
         dto.setPhone(order.getPhone());
         dto.setCreatedAt(order.getCreatedAt());
@@ -57,6 +58,7 @@ public class OrderMapper {
         order.setTotalPrice(dto.getTotalPrice());
         order.setStatus(dto.getStatus() != null ? dto.getStatus() : "PENDING");
         order.setPaymentMethod(dto.getPaymentMethod());
+        order.setCouponCode(dto.getCouponCode());
         order.setShippingAddress(dto.getShippingAddress());
         order.setPhone(dto.getPhone());
         return order;

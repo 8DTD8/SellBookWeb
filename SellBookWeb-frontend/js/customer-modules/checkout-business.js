@@ -103,6 +103,17 @@
             fetch(`${baseUrl}/coupons/code/${encodeURIComponent(normalizedCode)}`)
                 .then(async res => {
                     if (!res.ok) {
+                        const rawError = await res.text();
+                        if (rawError) {
+                            let parsedMessage = '';
+                            try {
+                                const parsedError = JSON.parse(rawError);
+                                parsedMessage = parsedError.message || '';
+                            } catch (parseError) {
+                                parsedMessage = '';
+                            }
+                            throw new Error(parsedMessage || rawError);
+                        }
                         throw new Error('Mã giảm giá không tồn tại hoặc đã hết hạn');
                     }
 
@@ -246,6 +257,7 @@
                 totalPrice: totalPrice,
                 status: 'PENDING',
                 paymentMethod: paymentMethod,
+                couponCode: window.appliedCheckoutCoupon?.code || null,
                 shippingAddress: fullAddress + (note ? ' | Ghi chú: ' + note : ''),
                 phone: phone
             };

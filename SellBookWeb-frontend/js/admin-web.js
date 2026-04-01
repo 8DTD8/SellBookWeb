@@ -5,6 +5,7 @@
 let currentSection = 'dashboard';
 let booksData = [];
 let categoriesData = [];
+let couponsData = [];
 let usersData = [];
 let currentReviewsView = 'pending';
 let adminActionEventsBound = false;
@@ -57,6 +58,8 @@ function setupAdminStaticDelegation() {
         hideBookForm,
         showAddCategoryForm,
         hideCategoryForm,
+        showAddCouponForm,
+        hideCouponForm,
         hideUserForm,
         refreshOrders,
         closeAlert,
@@ -66,11 +69,14 @@ function setupAdminStaticDelegation() {
         filterByStatus,
         saveBook,
         saveCategory,
+        saveCoupon,
         saveUser,
         editBook,
         deleteBookConfirm,
         editCategory,
         deleteCategoryConfirm,
+        editCoupon,
+        deleteCouponConfirm,
         showReviewTab
     };
 
@@ -150,6 +156,7 @@ function showSection(sectionId) {
             loadDashboard,
             loadBooks,
             loadCategories,
+            loadCoupons,
             loadUsers,
             loadReviews,
             loadOrders
@@ -246,7 +253,6 @@ function showAddBookForm() {
     document.getElementById('bookCoverType').value = 'Bìa Mềm';
     document.getElementById('bookTranslator').value = '';
     document.getElementById('bookPublisher').value = '';
-    document.getElementById('bookDiscountCode').value = '';
     document.getElementById('bookDiscount').value = '';
     document.getElementById('bookActive').checked = true;
     document.getElementById('bookFormTitle').textContent = 'Thêm sách mới';
@@ -397,6 +403,85 @@ function populateParentCategorySelect(excludeId = null) {
         window.AdminCategoriesBusiness.populateParentCategorySelect(categoriesData, excludeId);
         return;
     }
+}
+
+// ==============================
+// COUPONS MANAGEMENT
+// ==============================
+
+async function loadCoupons() {
+    if (window.AdminCouponsBusiness && typeof window.AdminCouponsBusiness.loadCoupons === 'function') {
+        await window.AdminCouponsBusiness.loadCoupons({
+            fetchCoupons,
+            renderCoupons,
+            showAlert,
+            setCouponsData: (data) => { couponsData = data; }
+        });
+        return;
+    }
+    showAlert('Không thể tải mã giảm giá do thiếu module business.');
+}
+
+function renderCoupons(coupons) {
+    if (window.AdminCouponsBusiness && typeof window.AdminCouponsBusiness.renderCoupons === 'function') {
+        window.AdminCouponsBusiness.renderCoupons(coupons, { escapeHtml, escapeJsString, formatPrice });
+        return;
+    }
+    const tbody = document.querySelector('#couponsList tbody');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">Module chưa tải.</td></tr>';
+}
+
+function showAddCouponForm() {
+    document.getElementById('couponId').value = '';
+    document.getElementById('couponCode').value = '';
+    document.getElementById('couponDescription').value = '';
+    document.getElementById('couponDiscountType').value = 'PERCENTAGE';
+    document.getElementById('couponDiscountValue').value = '';
+    document.getElementById('couponMinimumAmount').value = '';
+    document.getElementById('couponMaxUsage').value = '';
+    document.getElementById('couponStartDate').value = '';
+    document.getElementById('couponEndDate').value = '';
+    document.getElementById('couponActive').checked = true;
+    document.getElementById('couponFormTitle').textContent = 'Thêm mã giảm giá mới';
+    document.getElementById('couponForm').classList.remove('hidden');
+}
+
+function hideCouponForm() {
+    document.getElementById('couponForm').classList.add('hidden');
+}
+
+async function editCoupon(id) {
+    if (window.AdminCouponsBusiness && typeof window.AdminCouponsBusiness.editCoupon === 'function') {
+        await window.AdminCouponsBusiness.editCoupon(id, { getCouponById, showAlert });
+        return;
+    }
+    showAlert('Không thể chỉnh sửa mã giảm giá do thiếu module business.');
+}
+
+async function saveCoupon(event) {
+    if (window.AdminCouponsBusiness && typeof window.AdminCouponsBusiness.saveCoupon === 'function') {
+        await window.AdminCouponsBusiness.saveCoupon(event, {
+            createCoupon,
+            updateCoupon,
+            showAlert,
+            hideCouponForm,
+            reloadCoupons: loadCoupons
+        });
+        return;
+    }
+    showAlert('Không thể lưu mã giảm giá do thiếu module business.');
+}
+
+async function deleteCouponConfirm(id) {
+    if (window.AdminCouponsBusiness && typeof window.AdminCouponsBusiness.deleteCouponConfirm === 'function') {
+        await window.AdminCouponsBusiness.deleteCouponConfirm(id, {
+            deleteCoupon,
+            showAlert,
+            reloadCoupons: loadCoupons
+        });
+        return;
+    }
+    showAlert('Không thể xóa mã giảm giá do thiếu module business.');
 }
 
 // ==============================

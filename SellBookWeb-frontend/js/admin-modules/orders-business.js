@@ -46,7 +46,7 @@
             const status = order.status || 'UNKNOWN';
             const statusBadgeClass = getOrderStatusBadgeClass(status);
             const statusText = getOrderStatusText(status);
-            const isCancelled = status === 'CANCELLED';
+            const isLockedStatus = status === 'CANCELLED' || status === 'DELIVERED';
             const safeOrderId = escapeHtml(orderId);
             const safeUserId = escapeHtml(userId);
             const safePhone = escapeHtml(phone);
@@ -65,7 +65,7 @@
                 <td>
                     <div class="action-buttons">
                         <button class="btn btn-info btn-sm" data-order-action="detail" data-order-id="${safeOrderIdJs}">Chi tiết</button>
-                        <button class="btn btn-warning btn-sm" data-order-action="update-status" data-order-id="${safeOrderIdJs}" ${isCancelled ? 'disabled title="Đơn đã hủy không thể cập nhật"' : ''}>Cập nhật trạng thái</button>
+                        <button class="btn btn-warning btn-sm" data-order-action="update-status" data-order-id="${safeOrderIdJs}" ${isLockedStatus ? 'disabled title="Đơn đã hoàn tất hoặc đã hủy, không thể cập nhật"' : ''}>Cập nhật trạng thái</button>
                     </div>
                 </td>
             `;

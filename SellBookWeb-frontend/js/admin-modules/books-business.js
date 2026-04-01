@@ -82,7 +82,6 @@
                 document.getElementById('bookCoverType').value = book.coverType || 'Bìa Mềm';
                 document.getElementById('bookTranslator').value = book.translator || '';
                 document.getElementById('bookPublisher').value = book.publisher || '';
-                document.getElementById('bookDiscountCode').value = book.discountCode || '';
                 document.getElementById('bookDiscount').value = book.discount || '';
                 document.getElementById('bookActive').checked = book.active !== false;
                 document.getElementById('bookFormTitle').textContent = 'Chỉnh sửa sách';
@@ -100,8 +99,15 @@
             event.preventDefault();
             const { updateBook, createBook, showAlert, hideBookForm, reloadBooks } = deps;
 
+            if (typeof validateAdminBookFormFull === 'function') {
+                const formValidation = validateAdminBookFormFull();
+                if (!formValidation.isValid) {
+                    showAlert(formValidation.errors[0] || 'Vui lòng kiểm tra lại thông tin sách');
+                    return;
+                }
+            }
+
             const bookId = document.getElementById('bookId').value;
-            const discountCode = document.getElementById('bookDiscountCode').value.trim();
             const discount = document.getElementById('bookDiscount').value
                 ? parseFloat(document.getElementById('bookDiscount').value)
                 : null;
@@ -122,10 +128,14 @@
                 coverType: coverTypeValue,
                 translator: document.getElementById('bookTranslator').value || null,
                 publisher: publisherValue || null,
-                discountCode: discountCode || null,
                 discount: discount || null,
                 active: document.getElementById('bookActive').checked
             };
+
+            if (!Number.isFinite(bookData.price) || bookData.price < 0 || bookData.price > 10000000) {
+                showAlert('Giá phải từ 0 đến 10.000.000 VND');
+                return;
+            }
 
             try {
                 if (bookId) {
