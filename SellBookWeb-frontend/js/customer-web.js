@@ -1235,24 +1235,93 @@ function showProfile() {
 // Expose to window for onclick handlers
 window.showProfile = showProfile;
 
+function setProfileView(view) {
+    const profileInfo = document.getElementById('profileInfo');
+    const editProfileForm = document.getElementById('editProfileForm');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+
+    if (profileInfo) {
+        profileInfo.style.display = view === 'info' ? 'block' : 'none';
+    }
+    if (editProfileForm) {
+        editProfileForm.classList.toggle('hidden', view !== 'edit');
+    }
+    if (changePasswordForm) {
+        changePasswordForm.classList.toggle('hidden', view !== 'password');
+    }
+}
+
 function showEditProfile() {
     const user = auth.getUser();
     document.getElementById('editName').value = user.name;
     document.getElementById('editEmail').value = user.email;
     document.getElementById('editPhone').value = user.phone || '';
-    
-    const profileInfo = document.getElementById('profileInfo');
-    if (profileInfo) {
-        profileInfo.style.display = 'none';
-    }
-    document.getElementById('editProfileForm').classList.remove('hidden');
+    setProfileView('edit');
 }
 
 function hideEditProfile() {
-    document.getElementById('editProfileForm').classList.add('hidden');
-    const profileInfo = document.getElementById('profileInfo');
-    if (profileInfo) {
-        profileInfo.style.display = 'block';
+    setProfileView('info');
+}
+
+function showChangePasswordForm() {
+    const form = document.getElementById('changePasswordForm');
+    if (form) {
+        form.querySelector('form')?.reset();
+    }
+    setProfileView('password');
+}
+
+function hideChangePasswordForm() {
+    const form = document.getElementById('changePasswordForm');
+    if (form) {
+        form.querySelector('form')?.reset();
+    }
+    setProfileView('info');
+}
+
+function isStrongPassword(password) {
+    return typeof password === 'string'
+        && password.length >= 8
+        && /[A-Z]/.test(password)
+        && /[a-z]/.test(password)
+        && /\d/.test(password)
+        && /[!@#$%^&*]/.test(password);
+}
+
+async function handleChangePasswordSubmit(event) {
+    event.preventDefault();
+
+    const currentPassword = document.getElementById('currentPassword')?.value || '';
+    const newPassword = document.getElementById('newPassword')?.value || '';
+    const confirmNewPassword = document.getElementById('confirmNewPassword')?.value || '';
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+        showAlert('Vui lòng nhập đầy đủ thông tin đổi mật khẩu.');
+        return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+        showAlert('Xác nhận mật khẩu mới không khớp.');
+        return;
+    }
+
+    if (!isStrongPassword(newPassword)) {
+        showAlert('Mật khẩu mới phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (!@#$%^&*).');
+        return;
+    }
+
+    if (currentPassword === newPassword) {
+        showAlert('Mật khẩu mới không được trùng mật khẩu hiện tại.');
+        return;
+    }
+
+    try {
+        await window.changePassword(currentPassword, newPassword);
+        showAlert('Đổi mật khẩu thành công!');
+        hideChangePasswordForm();
+    } catch (error) {
+        console.error('Error changing password:', error);
+        showAlert('Lỗi: ' + error.message);
     }
 }
 
@@ -1531,6 +1600,9 @@ window.changeShippingAddress = changeShippingAddress;
 window.filterReviews = filterReviews;
 window.showEditProfile = showEditProfile;
 window.hideEditProfile = hideEditProfile;
+window.showChangePasswordForm = showChangePasswordForm;
+window.hideChangePasswordForm = hideChangePasswordForm;
+window.handleChangePasswordSubmit = handleChangePasswordSubmit;
 window.closeAlert = closeAlert;
 window.closeReviewModal = closeReviewModal;
 window.showLoginPrompt = showLoginPrompt;

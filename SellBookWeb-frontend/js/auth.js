@@ -205,6 +205,34 @@ function showAlert(message) {
     showMessage(message, 'success');
 }
 
+function showForgotPasswordMessage(message, type = 'error') {
+    const box = document.getElementById('forgotPasswordMessage');
+    if (!box) {
+        showMessage(message, type);
+        return;
+    }
+
+    box.textContent = message;
+    box.classList.remove('error-type', 'success-type', 'info-type');
+    if (type === 'success') {
+        box.classList.add('success-type');
+    } else if (type === 'info') {
+        box.classList.add('info-type');
+    } else {
+        box.classList.add('error-type');
+    }
+
+    box.classList.add('show');
+}
+
+function clearForgotPasswordMessage() {
+    const box = document.getElementById('forgotPasswordMessage');
+    if (!box) return;
+
+    box.textContent = '';
+    box.classList.remove('show', 'error-type', 'success-type', 'info-type');
+}
+
 function isStrongPasswordInput(password) {
     return typeof password === 'string'
         && password.length >= 8
@@ -255,6 +283,7 @@ function openForgotPasswordModal() {
     const modal = document.getElementById('forgotPasswordModal');
     forgotPasswordOtpVerified = false;
     updateForgotPasswordStepUI();
+    clearForgotPasswordMessage();
     if (modal) {
         modal.classList.add('show');
     }
@@ -273,10 +302,11 @@ function closeForgotPasswordModal() {
 
     forgotPasswordOtpVerified = false;
     updateForgotPasswordStepUI();
+    clearForgotPasswordMessage();
 }
 
 async function requestForgotPasswordOtp() {
-    clearError();
+    clearForgotPasswordMessage();
 
     forgotPasswordOtpVerified = false;
     updateForgotPasswordStepUI();
@@ -284,12 +314,12 @@ async function requestForgotPasswordOtp() {
     const email = (document.getElementById('forgotEmail')?.value || '').trim();
 
     if (!email) {
-        showError('Vui lòng nhập email để đặt lại mật khẩu');
+        showForgotPasswordMessage('Vui lòng nhập email để đặt lại mật khẩu');
         return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showError('Vui lòng nhập email đúng định dạng (ví dụ: ten@domain.com)');
+        showForgotPasswordMessage('Vui lòng nhập email đúng định dạng (ví dụ: ten@domain.com)');
         return;
     }
 
@@ -309,30 +339,30 @@ async function requestForgotPasswordOtp() {
             throw new Error(payload.error || payload.message || 'Không thể gửi OTP. Vui lòng thử lại sau.');
         }
 
-        showMessage(payload.message || 'OTP đã được gửi đến email của bạn.', 'info');
+        showForgotPasswordMessage(payload.message || 'OTP đã được gửi đến email của bạn.', 'info');
     } catch (error) {
-        showError(error.message || 'Không thể gửi OTP. Vui lòng thử lại sau.');
+        showForgotPasswordMessage(error.message || 'Không thể gửi OTP. Vui lòng thử lại sau.');
     }
 }
 
 async function verifyForgotPasswordOtp() {
-    clearError();
+    clearForgotPasswordMessage();
 
     const email = (document.getElementById('forgotEmail')?.value || '').trim();
     const otp = (document.getElementById('forgotOtp')?.value || '').trim();
 
     if (!email) {
-        showError('Vui lòng nhập email để xác thực OTP');
+        showForgotPasswordMessage('Vui lòng nhập email để xác thực OTP');
         return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showError('Vui lòng nhập email đúng định dạng (ví dụ: ten@domain.com)');
+        showForgotPasswordMessage('Vui lòng nhập email đúng định dạng (ví dụ: ten@domain.com)');
         return;
     }
 
     if (!/^\d{6}$/.test(otp)) {
-        showError('OTP phải gồm đúng 6 chữ số');
+        showForgotPasswordMessage('OTP phải gồm đúng 6 chữ số');
         return;
     }
 
@@ -355,17 +385,17 @@ async function verifyForgotPasswordOtp() {
 
         forgotPasswordOtpVerified = true;
         updateForgotPasswordStepUI();
-        showMessage(payload.message || 'OTP hợp lệ. Vui lòng nhập mật khẩu mới.', 'success');
+        showForgotPasswordMessage(payload.message || 'OTP hợp lệ. Vui lòng nhập mật khẩu mới.', 'success');
     } catch (error) {
         forgotPasswordOtpVerified = false;
         updateForgotPasswordStepUI();
-        showError(error.message || 'OTP không hợp lệ hoặc đã hết hạn.');
+        showForgotPasswordMessage(error.message || 'OTP không hợp lệ hoặc đã hết hạn.');
     }
 }
 
 async function handleForgotPasswordReset(event) {
     event.preventDefault();
-    clearError();
+    clearForgotPasswordMessage();
 
     const email = (document.getElementById('forgotEmail')?.value || '').trim();
     const otp = (document.getElementById('forgotOtp')?.value || '').trim();
@@ -373,37 +403,37 @@ async function handleForgotPasswordReset(event) {
     const confirmPassword = document.getElementById('forgotConfirmPassword')?.value || '';
 
     if (!forgotPasswordOtpVerified) {
-        showError('Vui lòng xác nhận OTP trước khi đổi mật khẩu');
+        showForgotPasswordMessage('Vui lòng xác nhận OTP trước khi đổi mật khẩu');
         return;
     }
 
     if (!email) {
-        showError('Vui lòng nhập email để đặt lại mật khẩu');
+        showForgotPasswordMessage('Vui lòng nhập email để đặt lại mật khẩu');
         return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showError('Vui lòng nhập email đúng định dạng (ví dụ: ten@domain.com)');
+        showForgotPasswordMessage('Vui lòng nhập email đúng định dạng (ví dụ: ten@domain.com)');
         return;
     }
 
     if (!otp) {
-        showError('Vui lòng nhập mã OTP');
+        showForgotPasswordMessage('Vui lòng nhập mã OTP');
         return;
     }
 
     if (!/^\d{6}$/.test(otp)) {
-        showError('OTP phải gồm đúng 6 chữ số');
+        showForgotPasswordMessage('OTP phải gồm đúng 6 chữ số');
         return;
     }
 
     if (!isStrongPasswordInput(newPassword)) {
-        showError('Mật khẩu mới phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (!@#$%^&*)');
+        showForgotPasswordMessage('Mật khẩu mới phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (!@#$%^&*)');
         return;
     }
 
     if (newPassword !== confirmPassword) {
-        showError('Xác nhận mật khẩu mới không khớp');
+        showForgotPasswordMessage('Xác nhận mật khẩu mới không khớp');
         return;
     }
 
@@ -428,7 +458,7 @@ async function handleForgotPasswordReset(event) {
         closeForgotPasswordModal();
         showAlert(payload.message || 'Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.');
     } catch (error) {
-        showError(error.message || 'Không thể đặt lại mật khẩu, vui lòng thử lại');
+        showForgotPasswordMessage(error.message || 'Không thể đặt lại mật khẩu, vui lòng thử lại');
     }
 }
 

@@ -186,6 +186,13 @@ async function deleteUser(id) {
     return apiCall(`/admin/users/${id}`, 'DELETE');
 }
 
+async function changePassword(currentPassword, newPassword) {
+    return apiCall('/auth/change-password', 'POST', {
+        currentPassword,
+        newPassword
+    });
+}
+
 // ==============================
 // REVIEWS API
 // ==============================
@@ -282,6 +289,7 @@ if (typeof window !== 'undefined') {
     window.registerUser = registerUser;
     window.updateUser = updateUser;
     window.deleteUser = deleteUser;
+    window.changePassword = changePassword;
     window.createReview = createReview;
     window.getReviewsByBook = getReviewsByBook;
     window.getUserReviews = getUserReviews;

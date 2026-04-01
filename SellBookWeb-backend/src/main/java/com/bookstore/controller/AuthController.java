@@ -1,5 +1,6 @@
 package com.bookstore.controller;
 
+import com.bookstore.dto.request.ChangePasswordRequest;
 import com.bookstore.dto.request.RegisterRequest;
 import com.bookstore.dto.request.LoginRequest;
 import com.bookstore.dto.request.ForgotPasswordRequest;
@@ -11,6 +12,7 @@ import com.bookstore.security.RateLimitingFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -158,6 +160,19 @@ public class AuthController {
         try {
             authService.forgotPassword(request);
             return ResponseEntity.ok(new SuccessResponse("Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Authentication authentication
+    ) {
+        try {
+            authService.changePassword(authentication.getName(), request);
+            return ResponseEntity.ok(new SuccessResponse("Đổi mật khẩu thành công."));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }

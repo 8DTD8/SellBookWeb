@@ -552,6 +552,16 @@ html {
     background-color: #a0aec0;
 }
 
+.btn-warning {
+    background-color: #ed8936;
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #dd6b20;
+    transform: translateY(-2px);
+}
+
 .btn-sm {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;

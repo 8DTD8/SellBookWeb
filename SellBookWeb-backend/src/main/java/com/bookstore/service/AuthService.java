@@ -2,6 +2,7 @@ package com.bookstore.service;
 
 import com.bookstore.common.constant.Constants;
 import com.bookstore.dto.mapper.UserMapper;
+import com.bookstore.dto.request.ChangePasswordRequest;
 import com.bookstore.dto.request.ForgotPasswordRequest;
 import com.bookstore.dto.request.ForgotPasswordOtpRequest;
 import com.bookstore.dto.request.ForgotPasswordVerifyOtpRequest;
@@ -113,6 +114,22 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Email hoặc OTP không hợp lệ"));
         validateOtp(user, request.getOtp());
+    }
+
+    public void changePassword(String userId, ChangePasswordRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
+        validatePassword(request.getCurrentPassword(), user.getPassword());
+        validateNewPassword(request.getNewPassword());
+
+        if (request.getCurrentPassword().equals(request.getNewPassword())) {
+            throw new RuntimeException("Mật khẩu mới không được trùng mật khẩu hiện tại");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
     }
 
     // ✅ PRIVATE HELPER METHODS - Extracted for readability

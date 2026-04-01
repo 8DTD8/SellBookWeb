@@ -310,6 +310,7 @@
                 </div>
                 <div class="profile-actions">
                     <button class="btn btn-primary" onclick="showEditProfile()">Chỉnh sửa</button>
+                    <button class="btn btn-warning" onclick="showChangePasswordForm()">Đổi mật khẩu</button>
                     <button class="btn btn-secondary" onclick="showSection('home')">Quay lại</button>
                 </div>
             </div>
@@ -333,6 +334,29 @@
                     <div class="form-buttons">
                         <button type="submit" class="btn btn-success">Lưu</button>
                         <button type="button" class="btn btn-secondary" onclick="hideEditProfile()">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Change Password Form -->
+            <div id="changePasswordForm" class="profile-container hidden">
+                <h2>Đổi mật khẩu</h2>
+                <form onsubmit="handleChangePasswordSubmit(event)">
+                    <div class="form-group">
+                        <label>Mật khẩu hiện tại:</label>
+                        <input type="password" id="currentPassword" required minlength="8">
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu mới:</label>
+                        <input type="password" id="newPassword" required minlength="8">
+                    </div>
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu mới:</label>
+                        <input type="password" id="confirmNewPassword" required minlength="8">
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Cập nhật mật khẩu</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideChangePasswordForm()">Hủy</button>
                     </div>
                 </form>
             </div>
