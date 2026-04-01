@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/purchase-orders")
-@CrossOrigin(origins = "*")
 public class AdminPurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
 

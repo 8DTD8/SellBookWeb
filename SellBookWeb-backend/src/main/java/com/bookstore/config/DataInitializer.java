@@ -41,17 +41,25 @@ public class DataInitializer {
             adminUser.setName("Admin User");
             adminUser.setEmail("admin@bookstore.com");
             adminUser.setPassword(passwordEncoder.encode("Admin@123456"));
-            adminUser.setRole("ADMIN");
+            adminUser.setRole("SUPER_ADMIN");
             adminUser.setActive(true);
             adminUser.setCreatedAt(LocalDateTime.now());
             adminUser.setUpdatedAt(LocalDateTime.now());
             
             userRepository.save(adminUser);
-            System.out.println("✓ Admin user created successfully!");
+            System.out.println("✓ Super admin account created successfully!");
             System.out.println("  Email: admin@bookstore.com");
             System.out.println("  Password: Admin@123456");
         } else {
-            System.out.println("✓ Admin user already exists");
+            User adminUser = userRepository.findByEmail("admin@bookstore.com").orElse(null);
+            if (adminUser != null && !"SUPER_ADMIN".equalsIgnoreCase(adminUser.getRole())) {
+                adminUser.setRole("SUPER_ADMIN");
+                adminUser.setUpdatedAt(LocalDateTime.now());
+                userRepository.save(adminUser);
+                System.out.println("✓ Upgraded admin@bookstore.com to SUPER_ADMIN");
+            } else {
+                System.out.println("✓ Super admin account already exists");
+            }
         }
     }
 

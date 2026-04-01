@@ -63,13 +63,15 @@ function validateLoginForm(email, password) {
     const errors = [];
     
     if (!email || email.trim() === '') {
-        errors.push('Email là bắt buộc');
+        errors.push('Vui lòng nhập email đăng nhập');
     } else if (!isValidEmail(email)) {
-        errors.push(ERROR_MESSAGES.INVALID_EMAIL);
+        errors.push('Vui lòng nhập email đúng định dạng (ví dụ: ten@domain.com)');
     }
     
     if (!password || password === '') {
-        errors.push('Mật khẩu là bắt buộc');
+        errors.push('Vui lòng nhập mật khẩu đăng nhập');
+    } else if (password.length < PASSWORD_CONFIG.MIN_LENGTH) {
+        errors.push(`Mật khẩu phải có ít nhất ${PASSWORD_CONFIG.MIN_LENGTH} ký tự`);
     }
     
     return {
@@ -85,11 +87,11 @@ function validateRegisterForm(name, email, password, confirmPassword, phone = ''
     const errors = [];
     
     if (!name || !isValidName(name)) {
-        errors.push('Tên phải có ít nhất 2 ký tự');
+        errors.push('Họ và tên phải có ít nhất 2 ký tự');
     }
     
     if (!email || !isValidEmail(email)) {
-        errors.push(ERROR_MESSAGES.INVALID_EMAIL);
+        errors.push('Vui lòng nhập email đúng định dạng (ví dụ: ten@domain.com)');
     }
     
     if (!password || !isStrongPassword(password)) {
@@ -97,11 +99,11 @@ function validateRegisterForm(name, email, password, confirmPassword, phone = ''
     }
     
     if (password !== confirmPassword) {
-        errors.push(ERROR_MESSAGES.PASSWORD_MISMATCH);
+        errors.push('Xác nhận mật khẩu không khớp');
     }
     
     if (phone && !isValidPhone(phone)) {
-        errors.push('Số điện thoại không hợp lệ');
+        errors.push('Số điện thoại phải gồm đúng 10 chữ số');
     }
     
     return {
@@ -117,11 +119,11 @@ function validateOrderForm(address, city, phone) {
     const errors = [];
     
     if (!address || address.trim() === '') {
-        errors.push('Địa chỉ là bắt buộc');
+        errors.push('Vui lòng nhập địa chỉ giao hàng');
     }
     
     if (!city || city.trim() === '') {
-        errors.push('Thành phố là bắt buộc');
+        errors.push('Vui lòng nhập thành phố');
     }
     
     if (!phone || !isValidPhone(phone)) {

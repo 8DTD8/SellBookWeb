@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
-@CrossOrigin(maxAge = 3600)
 public class BookController {
     private final BookService bookService;
 

@@ -3,7 +3,7 @@ package com.bookstore.controller;
 import com.bookstore.dto.UserDTO;
 import com.bookstore.model.User;
 import com.bookstore.service.UserService;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,7 +11,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/users")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class AdminUserController {
     private final UserService userService;
 
@@ -31,22 +30,35 @@ public class AdminUserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
-        UserDTO createdUser = userService.createUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateUser(
+            @PathVariable String id,
+            @RequestBody User user,
+            Authentication authentication
+    ) {
+        String currentUserId = authentication.getName();
+        UserDTO updatedUser = userService.updateUserByAdmin(id, user, currentUserId);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @PutMapping("/{id}/role")
-    public ResponseEntity<UserDTO> updateUserRole(@PathVariable String id, @RequestBody Map<String, String> roleRequest) {
+    public ResponseEntity<UserDTO> updateUserRole(
+            @PathVariable String id,
+            @RequestBody Map<String, String> roleRequest,
+            Authentication authentication
+    ) {
         String newRole = roleRequest.get("role");
-        UserDTO updatedUser = userService.updateUserRole(id, newRole);
+        User updatePayload = new User();
+        updatePayload.setRole(newRole);
+        String currentUserId = authentication.getName();
+        UserDTO updatedUser = userService.updateUserByAdmin(id, updatePayload, currentUserId);
         return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-        userService.deleteUser(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable String id, Authentication authentication) {
+        String currentUserId = authentication.getName();
+        userService.deleteUserByAdmin(id, currentUserId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "users")
@@ -18,6 +20,8 @@ public class User extends BaseEntity {
     private String avatar;
     private String role; // ADMIN, CUSTOMER
     private Boolean active;
+    private String forgotPasswordOtp;
+    private LocalDateTime forgotPasswordOtpExpiry;
 
     public String getId() {
         return id;
@@ -81,5 +85,21 @@ public class User extends BaseEntity {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public String getForgotPasswordOtp() {
+        return forgotPasswordOtp;
+    }
+
+    public void setForgotPasswordOtp(String forgotPasswordOtp) {
+        this.forgotPasswordOtp = forgotPasswordOtp;
+    }
+
+    public LocalDateTime getForgotPasswordOtpExpiry() {
+        return forgotPasswordOtpExpiry;
+    }
+
+    public void setForgotPasswordOtpExpiry(LocalDateTime forgotPasswordOtpExpiry) {
+        this.forgotPasswordOtpExpiry = forgotPasswordOtpExpiry;
     }
 }

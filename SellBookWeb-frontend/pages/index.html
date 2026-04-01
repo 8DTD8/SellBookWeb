@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SellBookWeb - Cửa hàng bán sách trực tuyến</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <style>
         * {
             margin: 0;
@@ -65,13 +66,13 @@
             if (userInfo) {
                 const user = JSON.parse(userInfo);
                 if (user.role === 'ADMIN') {
-                    window.location.href = './src/pages/admin.html';
+                    window.location.href = './admin.html';
                 } else {
-                    window.location.href = './src/pages/customer.html';
+                    window.location.href = './customer.html';
                 }
             } else {
                 // Redirect to login page
-                window.location.href = './src/pages/login.html';
+                window.location.href = './login.html';
             }
         });
     </script>

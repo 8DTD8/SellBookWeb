@@ -30,7 +30,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // ✅ CSRF protection enabled
             .csrf()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringAntMatchers("/api/auth/login", "/api/auth/register", "/api/health")
+                .ignoringAntMatchers(
+                    "/api/**",
+                    "/api/auth/login",
+                    "/api/auth/register",
+                    "/api/auth/forgot-password/request-otp",
+                    "/api/auth/forgot-password/verify-otp",
+                    "/api/auth/forgot-password/reset",
+                    "/api/health"
+                )
             .and()
             .authorizeRequests()
                 // ✅ Static files (HTML, JS, CSS) - No authentication needed
@@ -45,6 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // ✅ Public auth endpoints
                 .antMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/forgot-password/request-otp").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/forgot-password/verify-otp").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/forgot-password/reset").permitAll()
                 // ✅ Write operations need ADMIN
                 .antMatchers(HttpMethod.POST, "/api/books").hasAnyRole("ADMIN", "SUPER_ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/books/**").hasAnyRole("ADMIN", "SUPER_ADMIN")

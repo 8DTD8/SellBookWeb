@@ -1,50 +1,105 @@
-// API Base URL is already defined in auth.js (loaded before this file)
-// We just use it directly - no need to redeclare
+const DEFAULT_API_BASE_URL = 'http://localhost:8080/api';
+const ROLE_ADMIN = 'ADMIN';
+const ROLE_SUPER_ADMIN = 'SUPER_ADMIN';
 
-// Helper function to make API calls
+function getBaseApiUrl() {
+    if (window.WEB_CONFIG && window.WEB_CONFIG.API_BASE_URL) {
+        return window.WEB_CONFIG.API_BASE_URL;
+    }
+    return typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : DEFAULT_API_BASE_URL;
+}
+
+function getAuthToken() {
+    return (typeof auth !== 'undefined' && auth.token) ? auth.token : null;
+}
+
+function getCurrentRole() {
+    if (typeof auth === 'undefined' || typeof auth.getRole !== 'function') {
+        return '';
+    }
+    return (auth.getRole() || '').toUpperCase();
+}
+
+function hasAdminPrivileges(role) {
+    return role === ROLE_ADMIN || role === ROLE_SUPER_ADMIN;
+}
+
+function buildRequestOptions(method, data) {
+    const requestOptions = {
+        method,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const token = getAuthToken();
+    if (token) {
+        requestOptions.headers.Authorization = `Bearer ${token}`;
+    }
+
+    if (data !== null && data !== undefined) {
+        requestOptions.body = JSON.stringify(data);
+    }
+
+    return requestOptions;
+}
+
+async function parseErrorMessage(response) {
+    const responseText = await response.text().catch(() => '');
+    if (!responseText) {
+        return '';
+    }
+
+    try {
+        const errorPayload = JSON.parse(responseText);
+        return errorPayload.message || errorPayload.error || '';
+    } catch {
+        return responseText;
+    }
+}
+
+function throwAuthError(statusCode, errorMessage) {
+    if (statusCode === 401) {
+        if (typeof auth !== 'undefined') {
+            auth.logout();
+        }
+        throw new Error('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
+    }
+
+    if (statusCode === 403) {
+        throw new Error(errorMessage || 'Bạn không có quyền truy cập hoặc phiên đăng nhập không hợp lệ');
+    }
+}
+
+async function parseSuccessResponse(response) {
+    const contentType = response.headers.get('content-type');
+    if (response.status === 204 || !contentType) {
+        return null;
+    }
+
+    if (contentType.includes('application/json')) {
+        return response.json();
+    }
+
+    return response.text();
+}
+
+function buildUserEndpoint(userId) {
+    return hasAdminPrivileges(getCurrentRole()) ? `/admin/users/${userId}` : `/users/${userId}`;
+}
+
 async function apiCall(endpoint, method = 'GET', data = null) {
     try {
-        const options = {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        };
-
-        // Add authorization token if available
-        if (typeof auth !== 'undefined' && auth.token) {
-            options.headers['Authorization'] = `Bearer ${auth.token}`;
-        }
-
-        if (data) {
-            options.body = JSON.stringify(data);
-        }
-
-        // Use API_BASE_URL from auth.js, or fallback to default
-        const baseUrl = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://localhost:8080/api');
-        const response = await fetch(`${baseUrl}${endpoint}`, options);
-        
-        if (response.status === 401) {
-            // Token expired or invalid
-            if (typeof auth !== 'undefined') {
-                auth.logout();
-            }
-            throw new Error('Phiên đăng nhập đã hết hạn');
-        }
+        const url = `${getBaseApiUrl()}${endpoint}`;
+        const response = await fetch(url, buildRequestOptions(method, data));
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `Error: ${response.statusText}`);
+            const errorMessage = await parseErrorMessage(response);
+            throwAuthError(response.status, errorMessage);
+            throw new Error(errorMessage || `Error ${response.status}: ${response.statusText}`);
         }
 
-        const contentType = response.headers.get('content-type');
-        if (response.status === 204 || !contentType) {
-            return null;
-        }
-        if (contentType.includes('application/json')) {
-            return await response.json();
-        }
-        return await response.text();
+        return parseSuccessResponse(response);
     } catch (error) {
         console.error('API Error:', error);
         throw error;
@@ -112,11 +167,11 @@ async function deleteCategory(id) {
 // ==============================
 
 async function fetchUsers() {
-    return apiCall('/users');
+    return apiCall('/admin/users');
 }
 
 async function getUserById(id) {
-    return apiCall(`/users/${id}`);
+    return apiCall(buildUserEndpoint(id));
 }
 
 async function registerUser(userData) {
@@ -124,11 +179,11 @@ async function registerUser(userData) {
 }
 
 async function updateUser(id, userData) {
-    return apiCall(`/users/${id}`, 'PUT', userData);
+    return apiCall(buildUserEndpoint(id), 'PUT', userData);
 }
 
 async function deleteUser(id) {
-    return apiCall(`/users/${id}`, 'DELETE');
+    return apiCall(`/admin/users/${id}`, 'DELETE');
 }
 
 // ==============================
@@ -164,36 +219,18 @@ async function deleteReview(id) {
 // ==============================
 
 async function fetchOrders(page = 0, size = 20) {
-    try {
-        const response = await apiCall(`/admin/orders?page=${page}&size=${size}`);
-        // The API returns { orders: [...], message: "..." }
-        return response && response.orders ? response.orders : [];
-    } catch (error) {
-        console.error('Error fetching orders:', error);
-        throw error;
-    }
+    const response = await apiCall(`/admin/orders?page=${page}&size=${size}`);
+    return response && response.orders ? response.orders : [];
 }
 
 async function getOrderById(id) {
-    try {
-        const response = await apiCall(`/admin/orders/${id}`);
-        // The API returns { order: ..., message: "..." }
-        return response && response.order ? response.order : null;
-    } catch (error) {
-        console.error(`Error fetching order ${id}:`, error);
-        throw error;
-    }
+    const response = await apiCall(`/admin/orders/${id}`);
+    return response && response.order ? response.order : null;
 }
 
 async function updateOrderStatus(id, status) {
-    try {
-        const response = await apiCall(`/admin/orders/${id}/status?status=${status}`, 'PUT');
-        // The API returns { order: ..., message: "..." }
-        return response && response.order ? response.order : null;
-    } catch (error) {
-        console.error(`Error updating order ${id} status:`, error);
-        throw error;
-    }
+    const response = await apiCall(`/admin/orders/${id}/status?status=${status}`, 'PUT');
+    return response && response.order ? response.order : null;
 }
 
 // ==============================

@@ -112,7 +112,9 @@ function setupAdminUserFormValidation() {
             applyFieldValidation(userEmail, result);
         });
         userEmail.addEventListener('input', () => {
-            const result = validateEmail(userEmail.value);
+            const value = (userEmail.value || '').trim();
+            const shouldValidate = value.includes('@') || value.includes('.');
+            const result = shouldValidate ? validateEmail(value) : { isValid: true, error: null };
             applyFieldValidation(userEmail, result);
         });
     }
@@ -141,15 +143,27 @@ function setupAdminUserFormValidation() {
  */
 function applyFieldValidation(field, validationResult) {
     if (!field) return;
+    let feedbackEl = field.nextElementSibling;
+    if (!feedbackEl || !feedbackEl.classList.contains('validation-feedback')) {
+        feedbackEl = document.createElement('div');
+        feedbackEl.className = 'validation-feedback hidden';
+        field.parentElement.insertBefore(feedbackEl, field.nextElementSibling);
+    }
     
     const isEmpty = !field.value || field.value.trim() === '';
     
     if (isEmpty && !field.hasAttribute('required')) {
         // Optional field and empty, remove validation classes
         field.classList.remove('is-valid', 'is-invalid');
+        feedbackEl.textContent = '';
+        feedbackEl.classList.add('hidden');
+        feedbackEl.classList.remove('invalid');
     } else if (validationResult.isValid) {
         field.classList.remove('is-invalid');
         field.classList.add('is-valid');
+        feedbackEl.textContent = '';
+        feedbackEl.classList.add('hidden');
+        feedbackEl.classList.remove('invalid');
     } else {
         field.classList.remove('is-valid');
         field.classList.add('is-invalid');
@@ -188,7 +202,7 @@ function validateAdminBookFormFull() {
     if (bookTitle) {
         const titleResult = validateRequired(bookTitle.value);
         if (!titleResult.isValid) {
-            errors.push('Tên sách là bắt buộc');
+            errors.push('Vui lòng nhập tên sách');
             applyFieldValidation(bookTitle, titleResult);
         }
     }
@@ -196,7 +210,7 @@ function validateAdminBookFormFull() {
     if (bookAuthor) {
         const authorResult = validateRequired(bookAuthor.value);
         if (!authorResult.isValid) {
-            errors.push('Tác giả là bắt buộc');
+            errors.push('Vui lòng nhập tác giả');
             applyFieldValidation(bookAuthor, authorResult);
         }
     }
@@ -318,9 +332,9 @@ const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
             // Re-initialize validation if forms are added to DOM
-            mutations.addedNodes.forEach(node => {
+            mutation.addedNodes.forEach(node => {
                 if (node.nodeType === 1) { // Element node
-                    if (node.querySelector('.book-form') || node.querySelector('.user-form')) {
+                    if (typeof node.querySelector === 'function' && (node.querySelector('.book-form') || node.querySelector('.user-form'))) {
                         setTimeout(() => {
                             setupAdminBookFormValidation();
                             setupAdminUserFormValidation();

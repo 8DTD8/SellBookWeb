@@ -3,6 +3,27 @@
 // ==============================
 // This module handles validation for login and register forms
 
+function hideFieldError(field) {
+    if (!field) return;
+
+    const feedbackEl = field.nextElementSibling;
+    field.classList.remove('is-invalid');
+    if (feedbackEl && feedbackEl.classList.contains('validation-feedback')) {
+        feedbackEl.textContent = '';
+        feedbackEl.classList.add('hidden');
+        feedbackEl.classList.remove('invalid');
+    }
+}
+
+function clearOtherFieldErrors(activeField) {
+    const fields = document.querySelectorAll('#loginForm input, #registerForm input');
+    fields.forEach((field) => {
+        if (field !== activeField) {
+            hideFieldError(field);
+        }
+    });
+}
+
 /**
  * Setup validation for login form
  */
@@ -13,23 +34,35 @@ function setupLoginFormValidation() {
     const loginPassword = document.getElementById('loginPassword');
     
     if (loginEmail) {
+        loginEmail.addEventListener('focus', () => {
+            clearOtherFieldErrors(loginEmail);
+        });
         loginEmail.addEventListener('blur', () => {
             const result = validateEmail(loginEmail.value);
             applyFieldValidation(loginEmail, result);
         });
         loginEmail.addEventListener('input', () => {
-            const result = loginEmail.value ? validateEmail(loginEmail.value) : { isValid: true, error: null };
+            const value = (loginEmail.value || '').trim();
+            const shouldValidate = value.includes('@') || value.includes('.');
+            const result = shouldValidate ? validateEmail(value) : { isValid: true, error: null };
             applyFieldValidation(loginEmail, result);
         });
     }
     
     if (loginPassword) {
+        loginPassword.addEventListener('focus', () => {
+            clearOtherFieldErrors(loginPassword);
+        });
         loginPassword.addEventListener('blur', () => {
-            const result = validatePassword(loginPassword.value);
+            const value = loginPassword.value || '';
+            const result = value
+                ? validatePassword(value)
+                : { isValid: false, error: 'Vui lòng nhập mật khẩu đăng nhập' };
             applyFieldValidation(loginPassword, result);
         });
         loginPassword.addEventListener('input', () => {
-            const result = loginPassword.value ? validatePassword(loginPassword.value) : { isValid: true, error: null };
+            const value = loginPassword.value || '';
+            const result = value ? validatePassword(value) : { isValid: true, error: null };
             applyFieldValidation(loginPassword, result);
         });
     }
@@ -48,6 +81,9 @@ function setupRegisterFormValidation() {
     const registerPhone = document.getElementById('registerPhone');
     
     if (registerName) {
+        registerName.addEventListener('focus', () => {
+            clearOtherFieldErrors(registerName);
+        });
         registerName.addEventListener('blur', () => {
             const result = validateName(registerName.value);
             applyFieldValidation(registerName, result);
@@ -59,23 +95,35 @@ function setupRegisterFormValidation() {
     }
     
     if (registerEmail) {
+        registerEmail.addEventListener('focus', () => {
+            clearOtherFieldErrors(registerEmail);
+        });
         registerEmail.addEventListener('blur', () => {
             const result = validateEmail(registerEmail.value);
             applyFieldValidation(registerEmail, result);
         });
         registerEmail.addEventListener('input', () => {
-            const result = validateEmail(registerEmail.value);
+            const value = (registerEmail.value || '').trim();
+            const shouldValidate = value.includes('@') || value.includes('.');
+            const result = shouldValidate ? validateEmail(value) : { isValid: true, error: null };
             applyFieldValidation(registerEmail, result);
         });
     }
     
     if (registerPassword) {
+        registerPassword.addEventListener('focus', () => {
+            clearOtherFieldErrors(registerPassword);
+        });
         registerPassword.addEventListener('blur', () => {
-            const result = validatePassword(registerPassword.value);
+            const value = registerPassword.value || '';
+            const result = value
+                ? validatePassword(value)
+                : { isValid: false, error: 'Vui lòng nhập mật khẩu đăng ký' };
             applyFieldValidation(registerPassword, result);
         });
         registerPassword.addEventListener('input', () => {
-            const result = validatePassword(registerPassword.value);
+            const value = registerPassword.value || '';
+            const result = value ? validatePassword(value) : { isValid: true, error: null };
             applyFieldValidation(registerPassword, result);
             
             // Also validate confirm password if it has a value
@@ -86,11 +134,17 @@ function setupRegisterFormValidation() {
     }
     
     if (registerPasswordConfirm) {
+        registerPasswordConfirm.addEventListener('focus', () => {
+            clearOtherFieldErrors(registerPasswordConfirm);
+        });
         registerPasswordConfirm.addEventListener('blur', validatePasswordMatch);
         registerPasswordConfirm.addEventListener('input', validatePasswordMatch);
     }
     
     if (registerPhone) {
+        registerPhone.addEventListener('focus', () => {
+            clearOtherFieldErrors(registerPhone);
+        });
         registerPhone.addEventListener('blur', () => {
             const result = validatePhone(registerPhone.value);
             applyFieldValidation(registerPhone, result);
@@ -115,8 +169,8 @@ function validatePasswordMatch() {
     const pwd2 = registerPasswordConfirm.value;
     
     const result = {
-        isValid: pwd1 === pwd2 && pwd1.length >= 6,
-        error: pwd1 !== pwd2 ? 'Mật khẩu không khớp' : (pwd1.length < 6 ? 'Mật khẩu phải có ít nhất 6 ký tự' : null)
+        isValid: pwd1 === pwd2 && pwd1.length >= 8,
+        error: pwd1 !== pwd2 ? 'Xác nhận mật khẩu không khớp' : (pwd1.length < 8 ? 'Mật khẩu phải có ít nhất 8 ký tự' : null)
     };
     
     applyFieldValidation(registerPasswordConfirm, result);
@@ -127,15 +181,27 @@ function validatePasswordMatch() {
  */
 function applyFieldValidation(field, validationResult) {
     if (!field) return;
+    let feedbackEl = field.nextElementSibling;
+    if (!feedbackEl || !feedbackEl.classList.contains('validation-feedback')) {
+        feedbackEl = document.createElement('div');
+        feedbackEl.className = 'validation-feedback hidden';
+        field.parentElement.insertBefore(feedbackEl, field.nextElementSibling);
+    }
     
     const isEmpty = !field.value || field.value.trim() === '';
     
     if (isEmpty && !field.hasAttribute('required')) {
         // Optional field and empty, remove validation classes
         field.classList.remove('is-valid', 'is-invalid');
+        feedbackEl.textContent = '';
+        feedbackEl.classList.add('hidden');
+        feedbackEl.classList.remove('invalid');
     } else if (validationResult.isValid) {
         field.classList.remove('is-invalid');
         field.classList.add('is-valid');
+        feedbackEl.textContent = '';
+        feedbackEl.classList.add('hidden');
+        feedbackEl.classList.remove('invalid');
     } else {
         field.classList.remove('is-valid');
         field.classList.add('is-invalid');
@@ -168,7 +234,10 @@ function validateLoginFormFull() {
     const errors = [];
     
     if (loginEmail) {
-        const emailResult = validateEmail(loginEmail.value);
+        const emailValue = (loginEmail.value || '').trim();
+        const emailResult = emailValue
+            ? validateEmail(emailValue)
+            : { isValid: false, error: 'Vui lòng nhập email đăng nhập' };
         if (!emailResult.isValid) {
             errors.push(emailResult.error);
             applyFieldValidation(loginEmail, emailResult);
@@ -176,7 +245,10 @@ function validateLoginFormFull() {
     }
     
     if (loginPassword) {
-        const passwordResult = validatePassword(loginPassword.value);
+        const passwordValue = loginPassword.value || '';
+        const passwordResult = passwordValue
+            ? validatePassword(passwordValue)
+            : { isValid: false, error: 'Vui lòng nhập mật khẩu đăng nhập' };
         if (!passwordResult.isValid) {
             errors.push(passwordResult.error);
             applyFieldValidation(loginPassword, passwordResult);
@@ -199,7 +271,10 @@ function validateRegisterFormFull() {
     const errors = [];
     
     if (registerName) {
-        const nameResult = validateName(registerName.value);
+        const nameValue = (registerName.value || '').trim();
+        const nameResult = nameValue
+            ? validateName(nameValue)
+            : { isValid: false, error: 'Vui lòng nhập họ và tên' };
         if (!nameResult.isValid) {
             errors.push(nameResult.error);
             applyFieldValidation(registerName, nameResult);
@@ -207,7 +282,10 @@ function validateRegisterFormFull() {
     }
     
     if (registerEmail) {
-        const emailResult = validateEmail(registerEmail.value);
+        const emailValue = (registerEmail.value || '').trim();
+        const emailResult = emailValue
+            ? validateEmail(emailValue)
+            : { isValid: false, error: 'Vui lòng nhập email đăng ký' };
         if (!emailResult.isValid) {
             errors.push(emailResult.error);
             applyFieldValidation(registerEmail, emailResult);
@@ -215,7 +293,10 @@ function validateRegisterFormFull() {
     }
     
     if (registerPassword) {
-        const passwordResult = validatePassword(registerPassword.value);
+        const passwordValue = registerPassword.value || '';
+        const passwordResult = passwordValue
+            ? validatePassword(passwordValue)
+            : { isValid: false, error: 'Vui lòng nhập mật khẩu đăng ký' };
         if (!passwordResult.isValid) {
             errors.push(passwordResult.error);
             applyFieldValidation(registerPassword, passwordResult);
@@ -226,8 +307,8 @@ function validateRegisterFormFull() {
         const pwd = registerPassword?.value || '';
         const confirmPwd = registerPasswordConfirm.value;
         if (pwd !== confirmPwd) {
-            errors.push('Mật khẩu không khớp');
-            applyFieldValidation(registerPasswordConfirm, { isValid: false, error: 'Mật khẩu không khớp' });
+            errors.push('Xác nhận mật khẩu không khớp');
+            applyFieldValidation(registerPasswordConfirm, { isValid: false, error: 'Xác nhận mật khẩu không khớp' });
         }
     }
     

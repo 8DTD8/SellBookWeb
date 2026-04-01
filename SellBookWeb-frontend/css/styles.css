@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+
 /* ================================
    GENERAL STYLES
    ================================ */
@@ -8,8 +10,17 @@
     box-sizing: border-box;
 }
 
+:root {
+    --admin-accent: #2f7be7;
+    --admin-accent-soft: #eaf2ff;
+    --admin-surface: #ffffff;
+    --admin-border: #dfe4ee;
+    --admin-text: #2f3440;
+    --admin-text-soft: #5f6875;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Be Vietnam Pro', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f5f5;
     color: #333;
     line-height: 1.6;
@@ -722,5 +733,381 @@ html {
     .table {
         display: block;
         overflow-x: auto;
+    }
+}
+
+/* ================================
+   ADMIN SCREENSHOT STYLE OVERRIDES
+   ================================ */
+
+.admin-page {
+    background: linear-gradient(180deg, #f3f6fb 0%, #eef2f9 100%);
+    color: var(--admin-text);
+    font-family: 'Be Vietnam Pro', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-page .navbar {
+    background: var(--admin-surface);
+    color: var(--admin-text);
+    box-shadow: 0 4px 20px rgba(16, 36, 94, 0.08);
+    border-top: 3px solid var(--admin-accent);
+    border-bottom: 1px solid var(--admin-border);
+    position: sticky;
+    top: 0;
+    z-index: 120;
+}
+
+.admin-page .navbar-container {
+    max-width: 1440px;
+    padding: 12px 20px;
+}
+
+.admin-page .navbar-brand h1 {
+    font-size: 1.75rem;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+/* Admin user action choices */
+#userForm .user-action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#userForm .user-action-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #dbe2ea;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    cursor: pointer;
+    margin: 0;
+    font-weight: 500;
+}
+
+#userForm .user-action-option:hover {
+    border-color: #9cb8e6;
+    background: #f2f7ff;
+}
+
+#userForm input[type="radio"] {
+    width: auto;
+    margin: 0;
+    accent-color: #2f7be7;
+    box-shadow: none;
+}
+
+#userForm input[type="radio"]:focus {
+    box-shadow: none;
+}
+
+.admin-page .navbar-menu {
+    gap: 4px;
+}
+
+.admin-page .navbar-menu a {
+    color: var(--admin-text-soft);
+    font-size: 0.85rem;
+    padding: 0.45rem 0.65rem;
+}
+
+.admin-page .navbar-menu a:hover {
+    background: var(--admin-accent-soft);
+    color: var(--admin-accent);
+}
+
+.admin-page .user-info {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2e3340;
+}
+
+.admin-page .container {
+    max-width: 1440px;
+    margin: 18px auto;
+    padding: 0 20px 24px;
+}
+
+.admin-page .section {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.admin-page .section-header {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #6a7eea;
+}
+
+.admin-page .section-header h2 {
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 700;
+    color: var(--admin-text);
+}
+
+.admin-page .btn {
+    border-radius: 6px;
+    box-shadow: none;
+    transform: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 14px;
+}
+
+.admin-page .btn:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.admin-page .btn-primary {
+    background: #5d77e8;
+}
+
+.admin-page .btn-primary:hover {
+    background: #4f68d7;
+}
+
+.admin-page .btn-success {
+    background: #35b266;
+}
+
+.admin-page .btn-danger {
+    background: #ef6b6b;
+}
+
+.admin-page .btn-warning {
+    background: transparent;
+    color: #5f6875;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.admin-page .btn-sm {
+    font-size: 11px;
+    padding: 5px 10px;
+}
+
+.admin-page .search-bar {
+    margin-bottom: 10px;
+}
+
+.admin-page .search-bar input,
+.admin-page .search-bar select {
+    font-size: 0.92rem;
+    background: #f8faff;
+    border: 1px solid var(--admin-border);
+    color: var(--admin-text-soft);
+    padding: 10px 12px;
+    max-width: 460px;
+}
+
+.admin-page #categoryFilter {
+    display: block;
+}
+
+.admin-page .list-container {
+    background: #f8faff;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 10px;
+    overflow-x: auto;
+}
+
+.admin-page .table {
+    box-shadow: none;
+    border: 1px solid var(--admin-border);
+    border-radius: 7px;
+    margin-bottom: 0;
+    font-size: 0.92rem;
+}
+
+.admin-page .table thead {
+    background: #5f78e8;
+}
+
+.admin-page .table thead th {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 9px 10px;
+}
+
+.admin-page .table tbody td {
+    padding: 10px;
+    color: #4f5561;
+}
+
+.admin-page .table tbody tr:hover {
+    background: #f9faff;
+}
+
+.admin-page .action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-page .action-lock {
+    color: #9aa2b0;
+    font-size: 11px;
+    font-weight: 600;
+    background: #eef1f6;
+    border: 1px solid #dde2ea;
+    border-radius: 10px;
+    padding: 3px 10px;
+}
+
+.admin-page .badge {
+    border-radius: 10px;
+    font-size: 10px;
+    padding: 2px 8px;
+}
+
+.admin-page .badge-success {
+    background: #eef8ef;
+    color: #2f8f45;
+}
+
+.admin-page .badge-danger {
+    background: #ffecec;
+    color: #d35a5a;
+}
+
+.admin-page .dashboard-grid {
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.admin-page .stat-card {
+    text-align: left;
+    padding: 14px;
+    box-shadow: none;
+    border: 1px solid #e1e4eb;
+    border-radius: 5px;
+}
+
+.admin-page .stat-card h3 {
+    font-size: 14px;
+    color: #2e3136;
+    margin-bottom: 8px;
+}
+
+.admin-page .stat-number {
+    font-size: 39px;
+    color: #5a77e7;
+}
+
+.admin-page .tab-navigation {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e0e4ec;
+    gap: 10px;
+}
+
+.admin-page .tab-button {
+    font-size: 12px;
+    font-weight: 600;
+    color: #848c9a;
+    padding: 8px 2px;
+}
+
+.admin-page .tab-button.active {
+    color: #ee5c63;
+    border-bottom-color: #ee5c63;
+}
+
+.admin-page .reviews-container {
+    gap: 10px;
+}
+
+.admin-page .review-card {
+    background: #f8f8f8;
+    border: 1px solid #e2e4ea;
+    border-left: none;
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: none;
+}
+
+.admin-page .review-header {
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.admin-page .review-user-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-page .review-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #ececec;
+    border: 1px solid #dfe2e8;
+}
+
+.admin-page .review-user {
+    margin: 0;
+    font-size: 12px;
+    color: #2f343c;
+}
+
+.admin-page .review-meta {
+    font-size: 10px;
+    color: #a3a8b2;
+}
+
+.admin-page .review-rating {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #ffbd38;
+}
+
+.admin-page .review-comment {
+    margin: 4px 0 0 44px;
+    font-size: 12px;
+    color: #5f6873;
+}
+
+.admin-page .review-buttons {
+    margin-top: 0;
+}
+
+@media (max-width: 768px) {
+    .admin-page .navbar-container {
+        align-items: flex-start;
+    }
+
+    .admin-page .navbar-menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: auto;
+    }
+
+    .admin-page .section-header h2 {
+        font-size: 30px;
+    }
+
+    .admin-page .table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .admin-page .review-comment {
+        margin-left: 0;
+    }
+
+    .admin-page .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
 }

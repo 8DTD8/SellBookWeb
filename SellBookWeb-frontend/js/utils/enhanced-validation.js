@@ -3,7 +3,7 @@
  * ==================================
  * 
  * Comprehensive form validation with real-time feedback
- * and constraint checking for all application forms
+ * and constraint checking for all web forms
  */
 
 // ===============================
@@ -12,10 +12,18 @@
 
 // Email: Standard email format
 function validateEmail(email) {
+    const value = (email || '').trim();
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value) {
+        return {
+            isValid: false,
+            error: 'Vui lòng nhập email'
+        };
+    }
+
     return {
-        isValid: regex.test(email),
-        error: regex.test(email) ? null : 'Email không hợp lệ'
+        isValid: regex.test(value),
+        error: regex.test(value) ? null : 'Vui lòng nhập email đúng định dạng (ví dụ: ten@domain.com)'
     };
 }
 
@@ -25,7 +33,7 @@ function validatePhone(phone) {
     const regex = /^[0-9]{10}$/;
     return {
         isValid: regex.test(phone),
-        error: regex.test(phone) ? null : 'Số điện thoại phải là 10 chữ số'
+        error: regex.test(phone) ? null : 'Số điện thoại phải gồm đúng 10 chữ số'
     };
 }
 
@@ -67,9 +75,16 @@ function validateDiscount(discount) {
 
 // Password: Min 6 characters
 function validatePassword(password) {
+    const value = password || '';
+    const hasUppercase = /[A-Z]/.test(value);
+    const hasLowercase = /[a-z]/.test(value);
+    const hasDigit = /\d/.test(value);
+    const hasSpecial = /[!@#$%^&*]/.test(value);
+    const isValid = value.length >= 8 && hasUppercase && hasLowercase && hasDigit && hasSpecial;
+
     return {
-        isValid: password && password.length >= 6,
-        error: (password && password.length >= 6) ? null : 'Mật khẩu phải có ít nhất 6 ký tự'
+        isValid,
+        error: isValid ? null : 'Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (!@#$%^&*)'
     };
 }
 
@@ -78,16 +93,22 @@ function validateName(name) {
     const trimmed = (name || '').trim();
     return {
         isValid: trimmed.length >= 2,
-        error: trimmed.length >= 2 ? null : 'Tên phải có ít nhất 2 ký tự'
+        error: trimmed.length >= 2 ? null : 'Họ và tên phải có ít nhất 2 ký tự'
     };
 }
 
 // Required field (not empty)
-function validateRequired(value, fieldName = 'Trường') {
-    const isValid = value && (typeof value === 'string' ? value.trim() : value) ? true : false;
+function validateRequired(value, fieldName = 'Thông tin') {
+    const normalizedValue = typeof value === 'string' ? value.trim() : value;
+    const isValid = !!normalizedValue;
+    const selectFields = ['Vai trò', 'Danh mục', 'Tỉnh/Thành phố'];
+    const errorMessage = selectFields.includes(fieldName)
+        ? `Vui lòng chọn ${fieldName.toLowerCase()}`
+        : `Vui lòng nhập ${fieldName.toLowerCase()}`;
+
     return {
-        isValid: isValid,
-        error: isValid ? null : `${fieldName} là bắt buộc`
+        isValid,
+        error: isValid ? null : errorMessage
     };
 }
 
@@ -228,7 +249,7 @@ function validateRegisterForm(name, email, password, confirmPassword, phone = ''
     if (!passwordVal.isValid) errors.push(passwordVal.error);
     
     if (password !== confirmPassword) {
-        errors.push('Mật khẩu không khớp');
+        errors.push('Xác nhận mật khẩu không khớp');
     }
     
     const phoneVal = validatePhone(phone);

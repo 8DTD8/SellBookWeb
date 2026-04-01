@@ -2,7 +2,7 @@
  * CONSTANTS - Centralized Configuration
  * ====================================
  * 
- * All application constants and configuration values
+ * All web constants and configuration values
  * in one place for easy maintenance and updates
  */
 
@@ -83,7 +83,7 @@ const PASSWORD_CONFIG = {
 // ===============================
 const VALIDATION_PATTERNS = {
     EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    PHONE: /^[\d\s\+\-\(\)]+$/,
+    PHONE: /^[0-9]{10}$/,
     URL: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
 };
 
@@ -161,7 +161,7 @@ const ERROR_MESSAGES = {
     SERVER_ERROR: 'Lỗi server. Vui lòng thử lại sau',
     
     // Validation
-    REQUIRED_FIELD: 'Trường này là bắt buộc',
+    REQUIRED_FIELD: 'Vui lòng nhập thông tin bắt buộc',
     INVALID_FORMAT: 'Định dạng không hợp lệ',
 };
 

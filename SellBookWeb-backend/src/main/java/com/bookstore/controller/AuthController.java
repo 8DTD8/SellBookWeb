@@ -2,6 +2,9 @@ package com.bookstore.controller;
 
 import com.bookstore.dto.request.RegisterRequest;
 import com.bookstore.dto.request.LoginRequest;
+import com.bookstore.dto.request.ForgotPasswordRequest;
+import com.bookstore.dto.request.ForgotPasswordOtpRequest;
+import com.bookstore.dto.request.ForgotPasswordVerifyOtpRequest;
 import com.bookstore.dto.response.AuthResponse;
 import com.bookstore.service.AuthService;
 import com.bookstore.security.RateLimitingFilter;
@@ -20,7 +23,6 @@ import java.util.concurrent.ExecutionException;
  */
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(maxAge = 3600)
 public class AuthController {
     private final AuthService authService;
 
@@ -42,7 +44,11 @@ public class AuthController {
             
             // ✅ Return only user info (no token)
             return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new LoginResponse(authResponse.getUser(), authResponse.getAccessTokenExpiration()));
+                .body(new LoginResponse(
+                    authResponse.getUser(),
+                    authResponse.getAccessToken(),
+                    authResponse.getAccessTokenExpiration()
+                ));
                 
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -70,7 +76,11 @@ public class AuthController {
             
             // ✅ Return only user info (no token)
             return ResponseEntity.ok(
-                new LoginResponse(authResponse.getUser(), authResponse.getAccessTokenExpiration())
+                new LoginResponse(
+                    authResponse.getUser(),
+                    authResponse.getAccessToken(),
+                    authResponse.getAccessTokenExpiration()
+                )
             );
             
         } catch (BadCredentialsException e) {
@@ -121,6 +131,36 @@ public class AuthController {
         clearRefreshTokenCookie(response);
         
         return ResponseEntity.ok(new LogoutResponse("Logged out successfully"));
+    }
+
+    @PostMapping("/forgot-password/request-otp")
+    public ResponseEntity<?> requestForgotPasswordOtp(@Valid @RequestBody ForgotPasswordOtpRequest request) {
+        try {
+            authService.requestForgotPasswordOtp(request);
+            return ResponseEntity.ok(new SuccessResponse("OTP đã được gửi đến email của bạn (nếu tài khoản tồn tại)."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/forgot-password/verify-otp")
+    public ResponseEntity<?> verifyForgotPasswordOtp(@Valid @RequestBody ForgotPasswordVerifyOtpRequest request) {
+        try {
+            authService.verifyForgotPasswordOtp(request);
+            return ResponseEntity.ok(new SuccessResponse("OTP hợp lệ. Bạn có thể đặt lại mật khẩu."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/forgot-password/reset")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        try {
+            authService.forgotPassword(request);
+            return ResponseEntity.ok(new SuccessResponse("Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
     }
 
     // ✅ Helper methods for secure cookie management
@@ -176,14 +216,17 @@ public class AuthController {
     // ✅ Response DTOs
     public static class LoginResponse {
         private Object user;
+        private String accessToken;
         private long expiresIn;
 
-        public LoginResponse(Object user, long expiresIn) {
+        public LoginResponse(Object user, String accessToken, long expiresIn) {
             this.user = user;
+            this.accessToken = accessToken;
             this.expiresIn = expiresIn;
         }
 
         public Object getUser() { return user; }
+        public String getAccessToken() { return accessToken; }
         public long getExpiresIn() { return expiresIn; }
     }
 
@@ -215,5 +258,15 @@ public class AuthController {
         }
 
         public String getError() { return error; }
+    }
+
+    public static class SuccessResponse {
+        private String message;
+
+        public SuccessResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() { return message; }
     }
 }

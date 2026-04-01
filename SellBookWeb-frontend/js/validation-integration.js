@@ -1,7 +1,7 @@
 // ==============================
 // VALIDATION INTEGRATION MODULE
 // ==============================
-// This module integrates enhanced-validation.js with the customer app
+// This module integrates enhanced-validation.js with the customer web
 // Provides form submission validation and real-time feedback
 
 /**
@@ -68,7 +68,9 @@ function setupCheckoutValidation() {
             applyFieldValidation(checkoutEmail, result);
         });
         checkoutEmail.addEventListener('input', () => {
-            const result = validateEmail(checkoutEmail.value);
+            const value = (checkoutEmail.value || '').trim();
+            const shouldValidate = value.includes('@') || value.includes('.');
+            const result = shouldValidate ? validateEmail(value) : { isValid: true, error: null };
             applyFieldValidation(checkoutEmail, result);
         });
     }
@@ -151,7 +153,7 @@ function setupLoginValidation() {
     if (registerPasswordConfirm) {
         registerPasswordConfirm.addEventListener('blur', function() {
             const pwd = registerPassword?.value || '';
-            const isValid = pwd === this.value && pwd.length >= 6;
+            const isValid = pwd === this.value && pwd.length >= 8;
             this.classList.toggle('is-valid', isValid);
             this.classList.toggle('is-invalid', !isValid);
         });
@@ -170,15 +172,27 @@ function setupLoginValidation() {
  */
 function applyFieldValidation(field, validationResult) {
     if (!field) return;
+    let feedbackEl = field.nextElementSibling;
+    if (!feedbackEl || !feedbackEl.classList.contains('validation-feedback')) {
+        feedbackEl = document.createElement('div');
+        feedbackEl.className = 'validation-feedback hidden';
+        field.parentElement.insertBefore(feedbackEl, field.nextElementSibling);
+    }
     
     const isEmpty = !field.value || field.value.trim() === '';
     
     if (isEmpty && !field.hasAttribute('required')) {
         // Optional field and empty, remove validation classes
         field.classList.remove('is-valid', 'is-invalid');
+        feedbackEl.textContent = '';
+        feedbackEl.classList.add('hidden');
+        feedbackEl.classList.remove('invalid');
     } else if (validationResult.isValid) {
         field.classList.remove('is-invalid');
         field.classList.add('is-valid');
+        feedbackEl.textContent = '';
+        feedbackEl.classList.add('hidden');
+        feedbackEl.classList.remove('invalid');
     } else {
         field.classList.remove('is-valid');
         field.classList.add('is-invalid');

@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/books")
-@CrossOrigin(origins = "*")
 public class AdminBookController {
     private final BookService bookService;
 

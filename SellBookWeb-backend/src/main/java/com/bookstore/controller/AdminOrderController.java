@@ -8,7 +8,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/orders")
-@CrossOrigin(origins = "*")
 public class AdminOrderController {
     private final OrderService orderService;
 
