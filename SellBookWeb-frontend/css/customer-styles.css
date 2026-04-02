@@ -544,13 +544,14 @@ html {
 }
 
 .btn-danger {
-    background-color: #f56565;
+    background-color: #dc3545;
     color: white;
 }
 
 .btn-danger:hover {
-    background-color: #e53e3e;
+    background-color: #c82333;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
 }
 
 .btn-secondary {
@@ -2500,8 +2501,198 @@ html {
     margin-bottom: 1.5rem;
 }
 
-#alertText {
-    white-space: pre-line;
+/* Review Modal Redesign */
+.review-modal-content {
+    max-width: 520px;
+    width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.review-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.review-modal-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+    font-weight: 700;
+}
+
+.review-modal-close {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.review-modal-close:hover {
+    color: #333;
+}
+
+.review-book-info {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.review-book-image {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #e0e0e0;
+}
+
+.review-book-title {
+    flex: 1;
+    font-weight: 600;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    align-self: center;
+    font-size: 0.95rem;
+}
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.review-form-group label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.review-rating-label {
+    margin-bottom: 0.5rem;
+}
+
+.review-star-rating {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 2rem;
+}
+
+.review-star-rating input {
+    display: none;
+}
+
+.review-star-label {
+    cursor: pointer;
+    color: #ddd;
+    transition: all 0.2s ease;
+    padding: 0.25rem;
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.review-star-label:hover,
+.review-star-label:hover ~ .review-star-label {
+    color: #667eea;
+    transform: scale(1.1);
+}
+
+.review-star-rating input:checked ~ .review-star-label {
+    color: #ffc107;
+}
+
+/* Checked state styling - all stars up to checked */
+.review-star-rating input:checked ~ label,
+.review-star-rating label:has(~ input:checked) {
+    color: #ffc107;
+}
+
+.review-rating-text {
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 0.25rem;
+}
+
+.review-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: none;
+    min-height: 120px;
+    transition: all 0.3s ease;
+}
+
+.review-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.review-form-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.review-submit-btn,
+.review-cancel-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.review-submit-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.review-submit-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.review-cancel-btn {
+    background: #cbd5e0;
+    color: #333;
+    border: none;
+    cursor: pointer;
+}
+
+.review-cancel-btn:hover {
+    background: #a0aec0;
 }
 
 /* ================================

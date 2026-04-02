@@ -7,10 +7,13 @@ import com.bookstore.repository.CategoryRepository;
 import com.bookstore.repository.CouponRepository;
 import com.bookstore.repository.UserRepository;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -19,19 +22,36 @@ public class DataInitializer {
     private final PasswordEncoder passwordEncoder;
     private final CategoryRepository categoryRepository;
     private final CouponRepository couponRepository;
+    private final MongoTemplate mongoTemplate;
 
-    public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder, CategoryRepository categoryRepository, CouponRepository couponRepository) {
+    public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder, CategoryRepository categoryRepository, CouponRepository couponRepository, MongoTemplate mongoTemplate) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.categoryRepository = categoryRepository;
         this.couponRepository = couponRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @PostConstruct
     public void initializeData() {
+        dropStaleIndexes();
         initializeAdminUser();
         initializeCategories();
         initializeCoupons();
+    }
+
+    private void dropStaleIndexes() {
+        try {
+            List<IndexInfo> indexes = mongoTemplate.indexOps("users").getIndexInfo();
+            boolean hasUsernameIndex = indexes.stream()
+                .anyMatch(idx -> idx.getName().equals("username_1"));
+            if (hasUsernameIndex) {
+                mongoTemplate.indexOps("users").dropIndex("username_1");
+                System.out.println("✓ Dropped stale index username_1 from users collection");
+            }
+        } catch (Exception e) {
+            System.out.println("⚠ Could not drop stale index username_1: " + e.getMessage());
+        }
     }
 
     private void initializeAdminUser() {

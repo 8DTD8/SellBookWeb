@@ -185,13 +185,8 @@
             // Rating & sales
             const ratingSales = document.getElementById('productRatingSales');
             if (ratingSales) {
-                const reviewCount = book.reviewCount || 1;
                 const salesCount = book.salesCount || 0;
                 ratingSales.innerHTML = `
-                    <div class="rating-display">
-                        <div class="rating-stars">${renderStars(book.rating || 0)}</div>
-                        <span>(${reviewCount} đánh giá)</span>
-                    </div>
                     <div class="sales-count">Đã bán ${formatNumber(salesCount)}</div>
                 `;
             }
@@ -274,11 +269,23 @@
             const quantityInput = document.getElementById('productQuantity');
             if (quantityInput) quantityInput.value = 1;
 
-            // Review login prompt
+            // Review login prompt / write-review button
             const reviewLoginPrompt = document.getElementById('reviewLoginPrompt');
-            if (reviewLoginPrompt) {
-                const user = auth.getUser();
-                reviewLoginPrompt.style.display = (user && user.id) ? 'none' : 'block';
+            const writeReviewBtn = document.getElementById('writeReviewBtn');
+            const user = auth.getUser();
+            
+            if (reviewLoginPrompt && writeReviewBtn) {
+                if (user && user.id) {
+                    // User is logged in
+                    reviewLoginPrompt.style.display = 'none';
+                    writeReviewBtn.style.display = 'block';
+                    const btn = document.getElementById('openReviewModalBtn');
+                    if (btn) btn.onclick = function () { window.openReviewModal(book.id); };
+                } else {
+                    // User is not logged in
+                    reviewLoginPrompt.style.display = 'block';
+                    writeReviewBtn.style.display = 'none';
+                }
             }
         },
 
@@ -443,10 +450,6 @@
                             <button class="review-action-btn" data-review-action="like" data-review-id="${safeReviewId}">
                                 <i class="fas fa-thumbs-up"></i>
                                 <span>Thích (${likes})</span>
-                            </button>
-                            <button class="review-action-btn" data-review-action="report" data-review-id="${safeReviewId}">
-                                <i class="fas fa-exclamation-circle"></i>
-                                <span>Báo cáo</span>
                             </button>
                         </div>
                     </div>

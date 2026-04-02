@@ -2,6 +2,9 @@ package com.bookstore.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,6 +16,9 @@ public class ReviewDTO {
     private Integer rating;
     private String comment;
     private Boolean approved;
+    private LocalDateTime createdAt;
+    private Integer likes = 0;
+    private List<String> likedBy = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -68,5 +74,29 @@ public class ReviewDTO {
 
     public void setApproved(Boolean approved) {
         this.approved = approved;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Integer getLikes() {
+        return likes != null ? likes : 0;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes != null ? likes : 0;
+    }
+
+    public List<String> getLikedBy() {
+        return likedBy != null ? likedBy : new ArrayList<>();
+    }
+
+    public void setLikedBy(List<String> likedBy) {
+        this.likedBy = likedBy != null ? likedBy : new ArrayList<>();
     }
 }

@@ -17,10 +17,6 @@
             onReviewAction: (action, reviewId) => {
                 if (action === 'like') {
                     deps.likeReview(reviewId);
-                    return;
-                }
-                if (action === 'report') {
-                    deps.reportReview(reviewId);
                 }
             },
             onCartAction: (action, bookId, element) => {

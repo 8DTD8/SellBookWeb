@@ -75,6 +75,28 @@ public class ReviewService {
         dto.setRating(review.getRating());
         dto.setComment(review.getComment());
         dto.setApproved(review.getApproved());
+        dto.setCreatedAt(review.getCreatedAt());
+        dto.setLikes(review.getLikes());
+        dto.setLikedBy(review.getLikedBy());
         return dto;
+    }
+
+    public ReviewDTO toggleLikeReview(String reviewId, String userId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
+        
+        if (review.getLikedBy().contains(userId)) {
+            // Unlike the review
+            review.getLikedBy().remove(userId);
+            review.setLikes(Math.max(0, review.getLikes() - 1));
+        } else {
+            // Like the review
+            review.getLikedBy().add(userId);
+            review.setLikes(review.getLikes() + 1);
+        }
+        
+        review.setUpdatedAt(LocalDateTime.now());
+        Review updatedReview = reviewRepository.save(review);
+        return convertToDTO(updatedReview);
     }
 }

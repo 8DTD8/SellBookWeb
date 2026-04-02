@@ -208,7 +208,18 @@
 
             setTimeout(() => {
                 const select = document.getElementById('newStatus');
-                if (select) select.value = order.status;
+                if (select) {
+                    const statusTransitions = {
+                        'PENDING':   [{ value: 'CONFIRMED', label: 'Đã xác nhận' }, { value: 'CANCELLED', label: 'Đã hủy' }],
+                        'CONFIRMED': [{ value: 'SHIPPED',   label: 'Đang vận chuyển' }, { value: 'CANCELLED', label: 'Đã hủy' }],
+                        'SHIPPED':   [{ value: 'DELIVERED', label: 'Đã giao' }, { value: 'CANCELLED', label: 'Đã hủy' }]
+                    };
+                    const validOptions = statusTransitions[order.status] || [];
+                    select.innerHTML = validOptions.map(opt =>
+                        `<option value="${opt.value}">${opt.label}</option>`
+                    ).join('');
+                    if (validOptions.length > 0) select.value = validOptions[0].value;
+                }
             }, 100);
 
             modal.classList.remove('hidden');

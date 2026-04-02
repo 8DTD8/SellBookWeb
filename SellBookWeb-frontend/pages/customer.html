@@ -26,40 +26,49 @@
                 <button class="search-btn" onclick="focusSearch()" title="Tìm kiếm">
                     <i class="fas fa-search"></i>
                 </button>
-                <button class="btn-icon" onclick="showSection('notifications')" title="Thông báo">
-                    <i class="fas fa-bell"></i>
-                    <span>Thông báo</span>
-                    <span id="notifBadge" class="badge" style="display:none;">0</span>
-                </button>
-                <button class="btn-icon" onclick="showSection('cart')" title="Giỏ hàng">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span>Giỏ Hàng</span>
-                    <span id="cartCount" class="badge">0</span>
-                </button>
-                <button class="btn-icon" onclick="showSection('myOrders')" title="Đơn hàng">
-                    <i class="fas fa-box"></i>
-                    <span>Đơn Hàng</span>
-                </button>
-                <div class="account-dropdown">
-                    <button class="btn-icon account-btn" onclick="toggleAccountDropdown(event)" title="Tài khoản">
-                        <i class="fas fa-user"></i>
-                        <span id="accountName">Tài Khoản</span>
-                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                <!-- Controls shown only when logged in -->
+                <div id="userNavControls" style="display:none; align-items: center; gap: 4px;">
+                    <button class="btn-icon" onclick="showSection('notifications')" title="Thông báo">
+                        <i class="fas fa-bell"></i>
+                        <span>Thông báo</span>
+                        <span id="notifBadge" class="badge" style="display:none;">0</span>
                     </button>
-                    <div class="dropdown-menu" id="accountDropdown">
-                        <a href="#" onclick="event.stopPropagation(); showProfile(); closeAccountDropdown(); return false;" class="dropdown-item">
-                            <i class="fas fa-user-circle"></i>
-                            <span>Thông tin tài khoản</span>
-                        </a>
-                        <a href="#" onclick="event.stopPropagation(); showSection('myOrders'); closeAccountDropdown(); return false;" class="dropdown-item">
-                            <i class="fas fa-box"></i>
-                            <span>Đơn hàng của tôi</span>
-                        </a>
-                        <a href="#" onclick="event.stopPropagation(); handleLogout(); return false;" class="dropdown-item">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Đăng xuất</span>
-                        </a>
+                    <button class="btn-icon" onclick="showSection('cart')" title="Giỏ hàng">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Giỏ Hàng</span>
+                        <span id="cartCount" class="badge">0</span>
+                    </button>
+                    <button class="btn-icon" onclick="showSection('myOrders')" title="Đơn hàng">
+                        <i class="fas fa-box"></i>
+                        <span>Đơn Hàng</span>
+                    </button>
+                    <div class="account-dropdown">
+                        <button class="btn-icon account-btn" onclick="toggleAccountDropdown(event)" title="Tài khoản">
+                            <i class="fas fa-user"></i>
+                            <span id="accountName">Tài Khoản</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-menu" id="accountDropdown">
+                            <a href="#" onclick="event.stopPropagation(); showProfile(); closeAccountDropdown(); return false;" class="dropdown-item">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Thông tin tài khoản</span>
+                            </a>
+                            <a href="#" onclick="event.stopPropagation(); showSection('myOrders'); closeAccountDropdown(); return false;" class="dropdown-item">
+                                <i class="fas fa-box"></i>
+                                <span>Đơn hàng của tôi</span>
+                            </a>
+                            <a href="#" onclick="event.stopPropagation(); handleLogout(); return false;" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Đăng xuất</span>
+                            </a>
+                        </div>
                     </div>
+                </div>
+                <!-- Button shown only for guests -->
+                <div id="guestNavControls" style="display:none;">
+                    <a href="login.html" class="btn btn-primary" style="padding: 0.5rem 1.2rem; font-size: 0.95rem; border-radius: 6px; text-decoration: none;">
+                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                    </a>
                 </div>
             </div>
         </div>
@@ -194,20 +203,6 @@
                             <!-- Availability will be inserted here -->
                         </div>
                         
-                        <div class="shipping-info">
-                            <h4>Thông tin vận chuyển</h4>
-                            <div class="shipping-address">
-                                <span id="shippingAddress">Giao hàng đến Phường Bến Nghé, Quận 1, Hồ Chí Minh</span>
-                                <a href="#" onclick="changeShippingAddress()">Thay đổi</a>
-                            </div>
-                            <div class="delivery-type">
-                                <i class="fas fa-truck"></i>
-                                <span>Giao hàng tiêu chuẩn</span>
-                            </div>
-                            <div class="delivery-date">
-                                <span>Dự kiến giao Thứ sáu - 27/02</span>
-                            </div>
-                        </div>
                         
                         <div class="related-offers">
                             <div class="offers-header">
@@ -254,6 +249,10 @@
                     
                     <div class="review-login-prompt" id="reviewLoginPrompt">
                         <p>Chỉ có thành viên mới có thể viết nhận xét. Vui lòng <a href="#" onclick="showLoginPrompt()">đăng nhập</a> hoặc <a href="#" onclick="showLoginPrompt()">đăng ký</a>.</p>
+                    </div>
+                    
+                    <div id="writeReviewBtn" style="margin-bottom: 1rem; display: none;">
+                        <button class="btn btn-danger" id="openReviewModalBtn">✎ Viết đánh giá</button>
                     </div>
                     
                     <div class="reviews-tabs">
@@ -652,26 +651,51 @@
 
     <!-- Review Modal -->
     <div id="reviewModal" class="modal hidden">
-        <div class="modal-content">
-            <h3>Đánh giá sách</h3>
-            <form onsubmit="submitReview(event)">
-                <div class="form-group">
-                    <label>Xếp hạng (1-5 sao):</label>
-                    <div class="rating-input">
-                        <input type="radio" name="rating" value="1"> ⭐
-                        <input type="radio" name="rating" value="2"> ⭐⭐
-                        <input type="radio" name="rating" value="3"> ⭐⭐⭐
-                        <input type="radio" name="rating" value="4"> ⭐⭐⭐⭐
-                        <input type="radio" name="rating" value="5"> ⭐⭐⭐⭐⭐
+        <div class="modal-content review-modal-content">
+            <div class="review-modal-header">
+                <h2>Đánh giá sách</h2>
+                <button type="button" class="review-modal-close" onclick="closeReviewModal()">×</button>
+            </div>
+            
+            <!-- Book Info -->
+            <div class="review-book-info">
+                <img id="reviewBookImage" src="" alt="Sách" class="review-book-image">
+                <div class="review-book-title" id="reviewBookTitle">Tên sách</div>
+            </div>
+            
+            <form onsubmit="submitReview(event)" class="review-form">
+                <!-- Star Rating -->
+                <div class="review-form-group">
+                    <label class="review-rating-label">Xếp hạng:</label>
+                    <div class="review-star-rating">
+                        <input type="radio" name="rating" value="1" id="star1">
+                        <label for="star1" class="review-star-label" data-star="1">★</label>
+                        
+                        <input type="radio" name="rating" value="2" id="star2">
+                        <label for="star2" class="review-star-label" data-star="2">★</label>
+                        
+                        <input type="radio" name="rating" value="3" id="star3">
+                        <label for="star3" class="review-star-label" data-star="3">★</label>
+                        
+                        <input type="radio" name="rating" value="4" id="star4">
+                        <label for="star4" class="review-star-label" data-star="4">★</label>
+                        
+                        <input type="radio" name="rating" value="5" id="star5">
+                        <label for="star5" class="review-star-label" data-star="5">★</label>
                     </div>
+                    <div class="review-rating-text" id="reviewRatingText">Chọn xếp hạng</div>
                 </div>
-                <div class="form-group">
-                    <label>Bình luận:</label>
-                    <textarea id="reviewComment" required></textarea>
+                
+                <!-- Comment -->
+                <div class="review-form-group">
+                    <label for="reviewComment">Bình luận của bạn:</label>
+                    <textarea id="reviewComment" class="review-textarea" placeholder="Chia sẻ trải nghiệm của bạn về cuốn sách này..." required></textarea>
                 </div>
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-success">Gửi đánh giá</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeReviewModal()">Hủy</button>
+                
+                <!-- Buttons -->
+                <div class="review-form-buttons">
+                    <button type="submit" class="btn btn-primary review-submit-btn">Gửi đánh giá</button>
+                    <button type="button" class="btn btn-secondary review-cancel-btn" onclick="closeReviewModal()">Hủy</button>
                 </div>
             </form>
         </div>

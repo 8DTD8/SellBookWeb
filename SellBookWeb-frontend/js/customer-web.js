@@ -17,6 +17,8 @@ let totalPages = 1;
 let notifications = [];
 let unreadNotificationCount = 0;
 let notificationPollingInterval = null;
+let bookStockPollingInterval = null;
+const BOOK_STOCK_POLLING_MS = 8000;
 let customerEventsBound = false;
 let customerSectionManager = null;
 
@@ -40,18 +42,19 @@ const sanitizeUrl = (window.SafeHtml && window.SafeHtml.sanitizeUrl)
 function updateAccountName() {
     try {
         const user = auth.getUser();
+        const isLoggedIn = auth.isAuthenticated();
+
+        // Toggle navbar controls
+        const userNavControls = document.getElementById('userNavControls');
+        const guestNavControls = document.getElementById('guestNavControls');
+        if (userNavControls) userNavControls.style.display = isLoggedIn ? 'flex' : 'none';
+        if (guestNavControls) guestNavControls.style.display = isLoggedIn ? 'none' : 'block';
+
         const accountNameEl = document.getElementById('accountName');
-        
         if (accountNameEl) {
-            if (user && user.name) {
-                // Hiển thị tên người dùng thay vì "Tài Khoản"
-                accountNameEl.textContent = user.name;
-            } else {
-                // Nếu chưa đăng nhập, hiển thị "Tài Khoản"
-                accountNameEl.textContent = 'Tài Khoản';
-            }
+            accountNameEl.textContent = (user && user.name) ? user.name : 'Tài Khoản';
         }
-        
+
         // Cập nhật userName cho các phần khác
         const userNameEl = document.getElementById('userName');
         if (userNameEl && user && user.name) {
@@ -66,16 +69,20 @@ function updateAccountName() {
 function initializeWeb() {
     setupCustomerEventDelegation();
 
-    // Cập nhật tên người dùng
+    // Cập nhật tên người dùng và trạng thái nav
     updateAccountName();
-    
-    // Load dữ liệu
+
+    // Load books và categories cho tất cả mọi người (kể cả khách)
     loadBooks();
-    loadProfile();
-    loadCart();
-    initializeCategories(); // Load categories for filter
-    loadNotifBadge(); // Load notification badge count
-    startNotificationPolling(); // Start notification polling
+    initializeCategories();
+
+    if (auth.isAuthenticated()) {
+        // Chỉ load các tính năng cần đăng nhập
+        loadProfile();
+        loadCart();
+        loadNotifBadge();
+        startNotificationPolling();
+    }
     
     // Search functionality
     const searchInput = document.getElementById('searchInput');
@@ -132,7 +139,6 @@ function setupCustomerEventDelegation() {
         showBookDetail,
         addToCart,
         likeReview,
-        reportReview,
         showSection,
         checkout,
         updateCartQuantity,
@@ -223,11 +229,34 @@ window.addEventListener('load', () => {
     setTimeout(updateAccountName, 200);
 });
 
+window.addEventListener('beforeunload', () => {
+    stopBookStockPolling();
+});
+
 // ==============================
 // SECTION MANAGEMENT
 // ==============================
 
+// Sections that require the user to be logged in
+const PROTECTED_SECTIONS = new Set(['cart', 'checkout', 'myOrders', 'profile', 'myReviews', 'notifications']);
+
+function requireLogin(message) {
+    showAlert(message || 'Vui lòng đăng nhập để sử dụng tính năng này.');
+    setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+    return false;
+}
+
 function showSection(sectionId) {
+    // Guard protected sections for guests
+    if (PROTECTED_SECTIONS.has(sectionId) && !auth.isAuthenticated()) {
+        requireLogin();
+        return;
+    }
+
+    if (sectionId !== 'bookDetail') {
+        stopBookStockPolling();
+    }
+
     if (
         !customerSectionManager
         && window.CustomerSectionBusiness
@@ -341,9 +370,84 @@ async function showBookDetail(bookId) {
             setCurrentBook: (book) => { currentBook = book; },
             setProductQuantity: (quantity) => { productQuantity = quantity; }
         });
+        startBookStockPolling();
         return;
     }
     showAlert('Không thể tải chi tiết sách do thiếu module business.');
+}
+
+function applyBookQuantityToDetailView(quantity) {
+    const normalizedQuantity = Number(quantity) || 0;
+
+    const availability = document.getElementById('productAvailability');
+    if (availability) {
+        availability.textContent = normalizedQuantity > 0 ? 'Còn hàng' : 'Hết hàng';
+        availability.style.color = normalizedQuantity > 0 ? '#28a745' : '#dc3545';
+    }
+
+    const infoTable = document.getElementById('infoTable');
+    if (infoTable) {
+        infoTable.querySelectorAll('tr').forEach((row) => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length === 2 && cells[0].textContent.trim() === 'Số lượng') {
+                cells[1].textContent = `${normalizedQuantity} quyển`;
+            }
+        });
+    }
+
+    const quantityInput = document.getElementById('productQuantity');
+    if (quantityInput && normalizedQuantity > 0) {
+        if (Number(quantityInput.value) > normalizedQuantity) {
+            quantityInput.value = String(normalizedQuantity);
+            productQuantity = normalizedQuantity;
+        }
+    }
+}
+
+async function refreshCurrentBookStock() {
+    if (!currentBook || !currentBook.id) return;
+
+    try {
+        const latestBook = await getBookById(currentBook.id);
+        const oldQuantity = Number(currentBook.quantity) || 0;
+        const nextQuantity = Number(latestBook?.quantity) || 0;
+
+        if (oldQuantity === nextQuantity) return;
+
+        currentBook = { ...currentBook, ...latestBook };
+        allBooks = allBooks.map((book) => (
+            book.id === currentBook.id ? { ...book, ...latestBook } : book
+        ));
+        filteredBooks = filteredBooks.map((book) => (
+            book.id === currentBook.id ? { ...book, ...latestBook } : book
+        ));
+
+        applyBookQuantityToDetailView(nextQuantity);
+    } catch (error) {
+        console.error('Error refreshing book stock:', error);
+    }
+}
+
+function startBookStockPolling() {
+    stopBookStockPolling();
+    if (!currentBook || !currentBook.id) return;
+
+    bookStockPollingInterval = setInterval(() => {
+        const detailSection = document.getElementById('bookDetail');
+        const isDetailActive = detailSection && detailSection.classList.contains('active');
+        if (!isDetailActive) {
+            stopBookStockPolling();
+            return;
+        }
+        refreshCurrentBookStock();
+    }, BOOK_STOCK_POLLING_MS);
+}
+
+function stopBookStockPolling() {
+    if (bookStockPollingInterval) {
+        clearInterval(bookStockPollingInterval);
+        bookStockPollingInterval = null;
+    }
 }
 
 function renderBookDetail(book) {
@@ -407,7 +511,10 @@ function decreaseQuantity() {
 
 function addToCartFromDetail() {
     if (!currentBook) return;
-    
+    if (!auth.isAuthenticated()) {
+        requireLogin('Vui lòng đăng nhập để thêm vào giỏ hàng.');
+        return;
+    }
     for (let i = 0; i < productQuantity; i++) {
         addToCart(currentBook.id);
     }
@@ -416,8 +523,12 @@ function addToCartFromDetail() {
 
 function buyNow() {
     if (!currentBook) return;
+    if (!auth.isAuthenticated()) {
+        requireLogin('Vui lòng đăng nhập để mua hàng.');
+        return;
+    }
     addToCartFromDetail();
-    // Navigate to checkout (you can implement this later)
+    // Navigate to checkout
     showSection('cart');
 }
 
@@ -484,20 +595,8 @@ function formatDate(dateString) {
     }
 }
 
-function likeReview(reviewId) {
-    // This would normally call an API to like a review
-    showAlert('Tính năng thích đánh giá sẽ được cập nhật!');
-}
-
-function reportReview(reviewId) {
-    if (confirm('Bạn có chắc chắn muốn báo cáo đánh giá này?')) {
-        // This would normally call an API to report a review
-        showAlert('Cảm ơn bạn đã báo cáo. Chúng tôi sẽ xem xét đánh giá này.');
-    }
-}
-
 function showLoginPrompt() {
-    showAlert('Vui lòng đăng nhập để viết đánh giá!');
+    requireLogin('Vui lòng đăng nhập để viết đánh giá sản phẩm.');
 }
 
 // ==============================
@@ -758,6 +857,10 @@ function initializeCategories() {
 // ==============================
 
 async function addToCart(bookId) {
+    if (!auth.isAuthenticated()) {
+        requireLogin('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.');
+        return;
+    }
     if (window.CustomerCartBusiness && typeof window.CustomerCartBusiness.addToCart === 'function') {
         await window.CustomerCartBusiness.addToCart(bookId, {
             cart,
@@ -810,8 +913,10 @@ function loadCart() {
 }
 
 function updateCartCount() {
+    const el = document.getElementById('cartCount');
+    if (!el) return;
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-    document.getElementById('cartCount').textContent = count;
+    el.textContent = count;
 }
 
 function renderCart() {
@@ -1369,16 +1474,107 @@ async function saveProfile(event) {
 
 let reviewingBookId = null;
 
+function initializeReviewModal() {
+    const starLabels = document.querySelectorAll('.review-star-label');
+    starLabels.forEach(label => {
+        label.addEventListener('click', function (e) {
+            e.preventDefault();
+            const star = this.getAttribute('data-star');
+            const input = document.getElementById('star' + star);
+            if (input) input.checked = true;
+            updateReviewRatingText(star);
+        });
+        
+        // Hover effect
+        label.addEventListener('mouseenter', function () {
+            const star = this.getAttribute('data-star');
+            document.querySelectorAll('.review-star-label').forEach((l, idx) => {
+                if (idx < star) l.style.color = '#667eea';
+                else l.style.color = '#ddd';
+            });
+        });
+    });
+    
+    document.querySelector('.review-star-rating')?.addEventListener('mouseleave', function () {
+        const checked = document.querySelector('input[name="rating"]:checked');
+        if (checked) {
+            const star = checked.value;
+            document.querySelectorAll('.review-star-label').forEach((l, idx) => {
+                if (idx < star) l.style.color = '#ffc107';
+                else l.style.color = '#ddd';
+            });
+        } else {
+            document.querySelectorAll('.review-star-label').forEach(l => {
+                l.style.color = '#ddd';
+            });
+        }
+    });
+}
+
+function updateReviewRatingText(rating) {
+    const ratingText = document.getElementById('reviewRatingText');
+    if (ratingText) {
+        const ratings = ['', '★ Thiếu tòi', '★★ Bình thường', '★★★ Tốt', '★★★★ Rất tốt', '★★★★★ Tuyệt vời'];
+        ratingText.textContent = ratings[rating] || 'Chọn xếp hạng';
+    }
+}
+
 function openReviewModal(bookId) {
     reviewingBookId = bookId;
+    const book = currentBook || allBooks.find(b => b.id === bookId);
+    
+    if (book) {
+        // Set book info
+        const bookImage = document.getElementById('reviewBookImage');
+        const bookTitle = document.getElementById('reviewBookTitle');
+        if (bookImage) bookImage.src = book.image || '';
+        if (bookTitle) bookTitle.textContent = book.title || 'Sách';
+    }
+    
     document.getElementById('reviewModal').classList.remove('hidden');
+    setTimeout(() => {
+        initializeReviewModal();
+    }, 50);
 }
 
 function closeReviewModal() {
     document.getElementById('reviewModal').classList.add('hidden');
     document.getElementById('reviewComment').value = '';
     document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
+    const ratingText = document.getElementById('reviewRatingText');
+    if (ratingText) ratingText.textContent = 'Chọn xếp hạng';
+    document.querySelectorAll('.review-star-label').forEach(l => l.style.color = '#ddd');
     reviewingBookId = null;
+}
+
+async function likeReview(reviewId) {
+    if (!auth.isAuthenticated()) {
+        requireLogin();
+        return;
+    }
+
+    try {
+        const user = auth.getUser();
+        const userId = user?.id;
+        if (!userId) {
+            showAlert('Lỗi: Không thể lấy ID người dùng');
+            return;
+        }
+
+        const updatedReview = await toggleLikeReview(reviewId, userId);
+        
+        // Update the UI
+        const likeButton = document.querySelector(`[data-review-action="like"][data-review-id="${reviewId}"]`);
+        if (likeButton) {
+            likeButton.innerHTML = `
+                <i class="fas fa-thumbs-up"></i>
+                <span>Thích (${updatedReview.likes || 0})</span>
+            `;
+        }
+    } catch (error) {
+        console.error('Error liking review:', error);
+        showAlert('Lỗi: Không thể thích đánh giá. Vui lòng thử lại.');
+    }
 }
 
 async function submitReview(event) {
@@ -1612,6 +1808,7 @@ window.toggleCartItemCoupon = toggleCartItemCoupon;
 window.checkout = checkout;
 window.submitReview = submitReview;
 window.openReviewModal = openReviewModal;
+window.likeReview = likeReview;
 
 // Event listener tổng hợp cho các click events
 document.addEventListener('click', (event) => {

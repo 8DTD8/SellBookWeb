@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +20,8 @@ public class Review extends BaseEntity {
     private Integer rating;
     private String comment;
     private Boolean approved;
+    private Integer likes = 0;
+    private List<String> likedBy = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -73,5 +77,21 @@ public class Review extends BaseEntity {
 
     public void setApproved(Boolean approved) {
         this.approved = approved;
+    }
+
+    public Integer getLikes() {
+        return likes != null ? likes : 0;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes != null ? likes : 0;
+    }
+
+    public List<String> getLikedBy() {
+        return likedBy != null ? likedBy : new ArrayList<>();
+    }
+
+    public void setLikedBy(List<String> likedBy) {
+        this.likedBy = likedBy != null ? likedBy : new ArrayList<>();
     }
 }

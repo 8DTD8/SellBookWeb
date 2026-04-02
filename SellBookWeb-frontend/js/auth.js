@@ -36,7 +36,14 @@ class AuthManager {
         this.user = null;
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.href = 'login.html';
+        // Redirect to customer page so guest can still browse
+        const currentPage = window.location.pathname.split('/').pop() || '';
+        if (currentPage === 'admin.html') {
+            window.location.href = 'customer.html';
+        } else {
+            // Reload same page (customer.html) with guest state
+            window.location.reload();
+        }
     }
 
     getAuthHeader() {
@@ -135,6 +142,15 @@ window.addEventListener('load', () => {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     
     if (currentPage !== 'login.html') {
+        // customer.html is publicly accessible (guest browsing)
+        if (currentPage === 'customer.html') {
+            // Only redirect admins away from customer page
+            if (auth.isAuthenticated() && isAdminRole(auth.getRole())) {
+                window.location.href = 'admin.html';
+            }
+            return;
+        }
+
         if (!auth.isAuthenticated()) {
             window.location.href = 'login.html';
             return;
@@ -143,8 +159,6 @@ window.addEventListener('load', () => {
         // Redirect based on role
         if (currentPage === 'admin.html' && !isAdminRole(auth.getRole())) {
             window.location.href = 'customer.html';
-        } else if (currentPage === 'customer.html' && isAdminRole(auth.getRole())) {
-            window.location.href = 'admin.html';
         }
     }
 });
@@ -240,25 +254,6 @@ function isStrongPasswordInput(password) {
         && /[a-z]/.test(password)
         && /\d/.test(password)
         && /[!@#$%^&*]/.test(password);
-}
-
-function buildDisplayNameFromEmail(email) {
-    const localPart = ((email || '').split('@')[0] || '').trim();
-    if (!localPart) {
-        return 'Khach hang';
-    }
-
-    const normalized = localPart
-        .replace(/[._-]+/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-    return normalized
-        .split(' ')
-        .filter(Boolean)
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-        .slice(0, 60) || 'Khach hang';
 }
 
 let forgotPasswordOtpVerified = false;
@@ -548,13 +543,23 @@ async function handleRegister(event) {
     event.preventDefault();
     clearError();
 
+    const username = (document.getElementById('registerUsername')?.value || '').trim();
     const email = (document.getElementById('registerEmail').value || '').trim();
     const password = document.getElementById('registerPassword').value || '';
     const passwordConfirm = document.getElementById('registerPasswordConfirm').value || '';
-    const name = buildDisplayNameFromEmail(email);
     const btn = document.getElementById('registerBtn');
 
     // Validation
+
+    if (!username) {
+        showError('Vui lòng nhập username đăng ký');
+        return;
+    }
+
+    if (!/^[A-Za-z0-9_.-]{3,30}$/.test(username)) {
+        showError('Username chỉ gồm chữ, số, dấu chấm, gạch dưới, gạch ngang và dài 3-30 ký tự');
+        return;
+    }
 
     if (!email) {
         showError('Vui lòng nhập email đăng ký');
@@ -592,7 +597,8 @@ async function handleRegister(event) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name,
+                name: username,
+                username,
                 email,
                 phone: '',
                 password,

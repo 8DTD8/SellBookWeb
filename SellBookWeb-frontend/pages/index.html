@@ -58,21 +58,22 @@
     </div>
 
     <script>
-        // Auto-redirect to login page after checking authentication
+        // Auto-redirect based on authentication state
         window.addEventListener('load', function() {
-            // Check if user is already logged in
-            const userInfo = sessionStorage.getItem('userInfo');
-            
-            if (userInfo) {
-                const user = JSON.parse(userInfo);
-                if (user.role === 'ADMIN') {
+            const token = localStorage.getItem('token');
+            const userRaw = localStorage.getItem('user');
+            const user = userRaw ? JSON.parse(userRaw) : null;
+
+            if (token && user) {
+                const role = (user.role || '').toUpperCase();
+                if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
                     window.location.href = './admin.html';
                 } else {
                     window.location.href = './customer.html';
                 }
             } else {
-                // Redirect to login page
-                window.location.href = './login.html';
+                // Guest: go to customer page to browse
+                window.location.href = './customer.html';
             }
         });
     </script>

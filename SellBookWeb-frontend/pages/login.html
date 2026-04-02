@@ -41,6 +41,13 @@
             font-weight: 700;
             color: #dc3545;
             line-height: 1;
+            text-decoration: none;
+            display: inline-block;
+            transition: opacity 0.2s ease;
+        }
+
+        .auth-brand:hover {
+            opacity: 0.85;
         }
 
         .auth-navbar-note {
@@ -421,7 +428,7 @@
 <body>
     <div class="auth-navbar">
         <div class="auth-navbar-container">
-            <div class="auth-brand">sellbookweb</div>
+            <a href="customer.html" class="auth-brand">sellbookweb</a>
             <div class="auth-navbar-note">Đăng nhập tài khoản để tiếp tục</div>
         </div>
     </div>
@@ -466,6 +473,11 @@
 
             <!-- Register Form -->
             <form id="registerForm" class="form-container" data-auth-submit="register">
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" id="registerUsername" required minlength="3" maxlength="30" placeholder="Nhập username của bạn">
+                </div>
+
                 <div class="form-group">
                     <label>Email:</label>
                     <input type="email" id="registerEmail" required data-validate="email">

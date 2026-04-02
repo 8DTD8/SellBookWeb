@@ -254,6 +254,10 @@ async function deleteReview(id) {
     return apiCall(`/reviews/${id}`, 'DELETE');
 }
 
+async function toggleLikeReview(id, userId) {
+    return apiCall(`/reviews/${id}/like?userId=${encodeURIComponent(userId)}`, 'POST');
+}
+
 // ==============================
 // ORDERS API
 // ==============================
@@ -334,6 +338,7 @@ if (typeof window !== 'undefined') {
     window.getPendingReviews = getPendingReviews;
     window.approveReview = approveReview;
     window.deleteReview = deleteReview;
+    window.toggleLikeReview = toggleLikeReview;
     window.fetchOrders = fetchOrders;
     window.getOrderById = getOrderById;
     window.updateOrderStatus = updateOrderStatus;

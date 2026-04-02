@@ -74,23 +74,31 @@ function setupLoginFormValidation() {
 function setupRegisterFormValidation() {
     console.log('Setting up register form validation...');
     
-    const registerName = document.getElementById('registerName');
+    const registerUsername = document.getElementById('registerUsername');
     const registerEmail = document.getElementById('registerEmail');
     const registerPassword = document.getElementById('registerPassword');
     const registerPasswordConfirm = document.getElementById('registerPasswordConfirm');
     const registerPhone = document.getElementById('registerPhone');
     
-    if (registerName) {
-        registerName.addEventListener('focus', () => {
-            clearOtherFieldErrors(registerName);
+    if (registerUsername) {
+        registerUsername.addEventListener('focus', () => {
+            clearOtherFieldErrors(registerUsername);
         });
-        registerName.addEventListener('blur', () => {
-            const result = validateName(registerName.value);
-            applyFieldValidation(registerName, result);
+        registerUsername.addEventListener('blur', () => {
+            const value = (registerUsername.value || '').trim();
+            const result = /^[A-Za-z0-9_.-]{3,30}$/.test(value)
+                ? { isValid: true, error: null }
+                : { isValid: false, error: 'Username hợp lệ: 3-30 ký tự, gồm chữ, số, ., _, -' };
+            applyFieldValidation(registerUsername, result);
         });
-        registerName.addEventListener('input', () => {
-            const result = validateName(registerName.value);
-            applyFieldValidation(registerName, result);
+        registerUsername.addEventListener('input', () => {
+            const value = (registerUsername.value || '').trim();
+            const result = value === ''
+                ? { isValid: true, error: null }
+                : (/^[A-Za-z0-9_.-]{3,30}$/.test(value)
+                    ? { isValid: true, error: null }
+                    : { isValid: false, error: 'Username hợp lệ: 3-30 ký tự, gồm chữ, số, ., _, -' });
+            applyFieldValidation(registerUsername, result);
         });
     }
     
@@ -262,7 +270,7 @@ function validateLoginFormFull() {
  * Validate register form before submission
  */
 function validateRegisterFormFull() {
-    const registerName = document.getElementById('registerName');
+    const registerUsername = document.getElementById('registerUsername');
     const registerEmail = document.getElementById('registerEmail');
     const registerPassword = document.getElementById('registerPassword');
     const registerPasswordConfirm = document.getElementById('registerPasswordConfirm');
@@ -270,14 +278,16 @@ function validateRegisterFormFull() {
     
     const errors = [];
     
-    if (registerName) {
-        const nameValue = (registerName.value || '').trim();
-        const nameResult = nameValue
-            ? validateName(nameValue)
-            : { isValid: false, error: 'Vui lòng nhập họ và tên' };
-        if (!nameResult.isValid) {
-            errors.push(nameResult.error);
-            applyFieldValidation(registerName, nameResult);
+    if (registerUsername) {
+        const usernameValue = (registerUsername.value || '').trim();
+        const usernameResult = usernameValue
+            ? (/^[A-Za-z0-9_.-]{3,30}$/.test(usernameValue)
+                ? { isValid: true, error: null }
+                : { isValid: false, error: 'Username hợp lệ: 3-30 ký tự, gồm chữ, số, ., _, -' })
+            : { isValid: false, error: 'Vui lòng nhập username đăng ký' };
+        if (!usernameResult.isValid) {
+            errors.push(usernameResult.error);
+            applyFieldValidation(registerUsername, usernameResult);
         }
     }
     

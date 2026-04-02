@@ -4,27 +4,56 @@ import com.bookstore.common.constant.Constants;
 import com.bookstore.common.validator.ValidationUtil;
 import com.bookstore.dto.OrderDTO;
 import com.bookstore.dto.mapper.OrderMapper;
+import com.bookstore.model.Book;
 import com.bookstore.model.Order;
+import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+
+    private static final Map<String, List<String>> VALID_TRANSITIONS = new HashMap<>();
+    static {
+        VALID_TRANSITIONS.put(Constants.ORDER_STATUS_PENDING,   Arrays.asList(Constants.ORDER_STATUS_CONFIRMED, Constants.ORDER_STATUS_CANCELLED));
+        VALID_TRANSITIONS.put(Constants.ORDER_STATUS_CONFIRMED, Arrays.asList(Constants.ORDER_STATUS_SHIPPED,   Constants.ORDER_STATUS_CANCELLED));
+        VALID_TRANSITIONS.put(Constants.ORDER_STATUS_SHIPPED,   Arrays.asList(Constants.ORDER_STATUS_DELIVERED, Constants.ORDER_STATUS_CANCELLED));
+        // DELIVERED and CANCELLED are terminal — no valid transitions
+    }
+
+    private static String getStatusLabel(String status) {
+        if (status == null) return "Không xác định";
+        switch (status) {
+            case "PENDING":   return "Chờ xác nhận";
+            case "CONFIRMED": return "Đã xác nhận";
+            case "SHIPPED":   return "Đang vận chuyển";
+            case "DELIVERED": return "Đã giao";
+            case "CANCELLED": return "Đã hủy";
+            default:          return status;
+        }
+    }
+
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final NotificationService notificationService;
     private final CouponService couponService;
+    private final BookRepository bookRepository;
 
-    public OrderService(OrderRepository orderRepository, UserService userService, NotificationService notificationService, CouponService couponService) {
+    public OrderService(OrderRepository orderRepository, UserService userService, NotificationService notificationService, CouponService couponService, BookRepository bookRepository) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.notificationService = notificationService;
         this.couponService = couponService;
+        this.bookRepository = bookRepository;
     }
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -38,7 +67,23 @@ public class OrderService {
         order.setStatus(Constants.ORDER_STATUS_PENDING);
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
-        
+
+        // Trừ số lượng tồn kho theo từng sản phẩm
+        if (order.getItems() != null) {
+            for (Order.OrderItem item : order.getItems()) {
+                Book book = bookRepository.findById(item.getBookId())
+                        .orElseThrow(() -> new IllegalArgumentException("Sách không tồn tại: " + item.getBookId()));
+                int stock = book.getQuantity() != null ? book.getQuantity() : 0;
+                if (stock < item.getQuantity()) {
+                    throw new IllegalStateException("Sách '" + book.getTitle() + "' không đủ số lượng tồn kho (còn " + stock + ")");
+                }
+                book.setQuantity(stock - item.getQuantity());
+                int sold = book.getSalesCount() != null ? book.getSalesCount() : 0;
+                book.setSalesCount(sold + item.getQuantity());
+                bookRepository.save(book);
+            }
+        }
+
         Order savedOrder = orderRepository.save(order);
         return OrderMapper.toDTO(savedOrder);
     }
@@ -74,11 +119,26 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException(Constants.ERROR_ORDER_NOT_FOUND));
         
         String oldStatus = order.getStatus();
-        if (Constants.ORDER_STATUS_CANCELLED.equals(oldStatus)) {
-            throw new IllegalStateException("Đơn hàng đã hủy không thể cập nhật trạng thái nữa");
+        List<String> validNext = VALID_TRANSITIONS.getOrDefault(oldStatus, Collections.emptyList());
+        if (!validNext.contains(newStatus)) {
+            throw new IllegalStateException(
+                "Không thể chuyển trạng thái từ '" + getStatusLabel(oldStatus) + "' sang '" + getStatusLabel(newStatus) + "'"
+            );
         }
-        if (Constants.ORDER_STATUS_DELIVERED.equals(oldStatus)) {
-            throw new IllegalStateException("Đơn hàng đã giao không thể cập nhật trạng thái nữa");
+
+        // Hoàn lại số lượng tồn kho khi hủy đơn
+        if (Constants.ORDER_STATUS_CANCELLED.equals(newStatus) && !Constants.ORDER_STATUS_CANCELLED.equals(oldStatus)) {
+            if (order.getItems() != null) {
+                for (Order.OrderItem item : order.getItems()) {
+                    bookRepository.findById(item.getBookId()).ifPresent(book -> {
+                        int stock = book.getQuantity() != null ? book.getQuantity() : 0;
+                        book.setQuantity(stock + item.getQuantity());
+                        int sold = book.getSalesCount() != null ? book.getSalesCount() : 0;
+                        book.setSalesCount(Math.max(0, sold - item.getQuantity()));
+                        bookRepository.save(book);
+                    });
+                }
+            }
         }
 
         order.setStatus(newStatus);
