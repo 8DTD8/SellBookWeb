@@ -6,6 +6,7 @@ import java.util.List;
 public class OrderDTO {
     private String id;
     private String userId;
+    private String userName;
     private List<OrderItemDTO> items;
     private Double totalPrice;
     private String status;
@@ -44,6 +45,9 @@ public class OrderDTO {
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
     public List<OrderItemDTO> getItems() { return items; }
     public void setItems(List<OrderItemDTO> items) { this.items = items; }

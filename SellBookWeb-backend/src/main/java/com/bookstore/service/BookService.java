@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +24,15 @@ public class BookService {
     }
 
     public BookDTO createBook(BookDTO bookDTO) {
+        String normalizedTitle = normalizeTitle(bookDTO.getTitle());
+        if (normalizedTitle == null || normalizedTitle.isEmpty()) {
+            throw new IllegalArgumentException("Tên sách là bắt buộc");
+        }
+        if (isDuplicateTitle(normalizedTitle, null)) {
+            throw new IllegalArgumentException("Tên sách đã tồn tại, vui lòng nhập tên khác");
+        }
+
+        bookDTO.setTitle(normalizedTitle);
         Book book = BookMapper.toEntity(bookDTO);
         
         // ✅ Set optional fields with sanitization
@@ -70,6 +80,17 @@ public class BookService {
     public BookDTO updateBook(String id, BookDTO bookDTO) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Constants.ERROR_BOOK_NOT_FOUND));
+
+        if (bookDTO.getTitle() != null) {
+            String normalizedTitle = normalizeTitle(bookDTO.getTitle());
+            if (normalizedTitle == null || normalizedTitle.isEmpty()) {
+                throw new IllegalArgumentException("Tên sách là bắt buộc");
+            }
+            if (isDuplicateTitle(normalizedTitle, id)) {
+                throw new IllegalArgumentException("Tên sách đã tồn tại, vui lòng nhập tên khác");
+            }
+            bookDTO.setTitle(normalizedTitle);
+        }
         
         // ✅ Update fields if provided
         updateBookFields(book, bookDTO);
@@ -141,5 +162,26 @@ public class BookService {
         if (bookDTO.getSalesCount() != null) {
             book.setSalesCount(bookDTO.getSalesCount());
         }
+    }
+
+    private String normalizeTitle(String title) {
+        if (title == null) {
+            return null;
+        }
+        return title.trim().replaceAll("\\s+", " ");
+    }
+
+    private boolean isDuplicateTitle(String normalizedTitle, String excludeBookId) {
+        String titleKey = normalizedTitle.toLowerCase(Locale.ROOT);
+        return bookRepository.findAll().stream().anyMatch(existing -> {
+            if (existing == null || existing.getTitle() == null) {
+                return false;
+            }
+            if (excludeBookId != null && excludeBookId.equals(existing.getId())) {
+                return false;
+            }
+            String existingTitleKey = normalizeTitle(existing.getTitle()).toLowerCase(Locale.ROOT);
+            return existingTitleKey.equals(titleKey);
+        });
     }
 }

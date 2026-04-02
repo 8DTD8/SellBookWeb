@@ -69,7 +69,6 @@
             const safeAddress = escapeHtml(order.shippingAddress || '-');
             const safeCreatedAt = escapeHtml(order.createdAt ? new Date(order.createdAt).toLocaleString() : '-');
             const safePayment = escapeHtml(AdminOrdersModalBusiness.getPaymentMethodText(order.paymentMethod));
-            const safeUserId = escapeHtml(order.userId || '-');
 
             const itemsHtml = order.items && order.items.length > 0
                 ? order.items.map(item => `
@@ -93,7 +92,6 @@
                             <p><strong>Khách hàng:</strong> ${safeUserName}</p>
                             <p><strong>Email:</strong> ${safeUserEmail}</p>
                             <p><strong>Số điện thoại:</strong> ${safePhone}</p>
-                            <p><strong>User ID:</strong> ${safeUserId}</p>
                         </section>
                         <section class="order-modal-card">
                             <h4>Thông tin đơn hàng</h4>

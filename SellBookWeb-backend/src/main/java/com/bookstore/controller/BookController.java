@@ -21,8 +21,12 @@ public class BookController {
     @PostMapping
     public ResponseEntity<?> createBook(@Valid @RequestBody BookDTO bookDTO) {
         // ✅ Input validation automatically via @Valid
-        BookDTO createdBook = bookService.createBook(bookDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
+        try {
+            BookDTO createdBook = bookService.createBook(bookDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")
@@ -93,8 +97,12 @@ public class BookController {
                 .body(new ErrorResponse("Book ID is required"));
         }
         
-        BookDTO updatedBook = bookService.updateBook(id, bookDTO);
-        return ResponseEntity.ok(updatedBook);
+        try {
+            BookDTO updatedBook = bookService.updateBook(id, bookDTO);
+            return ResponseEntity.ok(updatedBook);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage()));
+        }
     }
 
     @DeleteMapping("/{id}")

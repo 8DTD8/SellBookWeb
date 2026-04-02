@@ -14382,3 +14382,904 @@ This generated password is for development use only. Your security configuration
 2026-04-02 09:14:28 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
 2026-04-02 09:14:28 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
 2026-04-02 09:14:28 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:39:44 [restartedMain] INFO  com.bookstore.BookstoreApplication - Starting BookstoreApplication using Java 21.0.10 on DESKTOP-CU4EDGV with PID 8992 (D:\SellBookWeb\SellBookWeb-backend\target\classes started by DTechD in D:\SellBookWeb)
+2026-04-02 09:39:44 [restartedMain] DEBUG com.bookstore.BookstoreApplication - Running with Spring Boot v2.7.14, Spring v5.3.29
+2026-04-02 09:39:44 [restartedMain] INFO  com.bookstore.BookstoreApplication - No active profile set, falling back to 1 default profile: "default"
+2026-04-02 09:39:44 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-04-02 09:39:44 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-04-02 09:39:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2026-04-02 09:39:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 79 ms. Found 12 MongoDB repository interfaces.
+2026-04-02 09:39:46 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-04-02 09:39:46 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-02 09:39:46 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.78]
+2026-04-02 09:39:46 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-02 09:39:46 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1739 ms
+2026-04-02 09:39:46 [restartedMain] INFO  org.mongodb.driver.client - MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.6.1"}, "os": {"type": "Windows", "name": "Windows 11", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/21.0.10+7-LTS"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, streamFactoryFactory=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@36b4d8d2], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.Jep395RecordCodecProvider@52e8f709]}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='30000 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, sendBufferSize=0}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, sendBufferSize=0}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@43a307a7], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, contextProvider=null}
+2026-04-02 09:39:46 [cluster-rtt-ClusterId{value='69cdd6f26209a51ba64d66e7', description='null'}-localhost:27017] INFO  org.mongodb.driver.connection - Opened connection [connectionId{localValue:1, serverValue:96}] to localhost:27017
+2026-04-02 09:39:46 [cluster-ClusterId{value='69cdd6f26209a51ba64d66e7', description='null'}-localhost:27017] INFO  org.mongodb.driver.connection - Opened connection [connectionId{localValue:2, serverValue:95}] to localhost:27017
+2026-04-02 09:39:46 [cluster-ClusterId{value='69cdd6f26209a51ba64d66e7', description='null'}-localhost:27017] INFO  org.mongodb.driver.cluster - Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=27, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=24282800}
+2026-04-02 09:39:47 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-04-02 09:39:47 [restartedMain] INFO  org.mongodb.driver.connection - Opened connection [connectionId{localValue:3, serverValue:97}] to localhost:27017
+2026-04-02 09:39:48 [restartedMain] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: dfa8eafe-562b-4a05-a839-1760424ce25b
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/']
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/index.html']
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/src/**']
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/pages/**']
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/js/**']
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/css/**']
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/public/**']
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/health', GET]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/books', GET]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/books/**', GET]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/categories', GET]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/categories/**', GET]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/coupons/code/**', GET]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/reviews/book/**', GET]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/auth/login', POST]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/auth/register', POST]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/auth/forgot-password/request-otp', POST]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/auth/forgot-password/verify-otp', POST]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [permitAll] for Ant [pattern='/api/auth/forgot-password/reset', POST]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')] for Ant [pattern='/api/books', POST]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')] for Ant [pattern='/api/books/**', PUT]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')] for Ant [pattern='/api/books/**', DELETE]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')] for Ant [pattern='/api/categories', POST]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')] for Ant [pattern='/api/categories/**', PUT]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')] for Ant [pattern='/api/categories/**', DELETE]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')] for Ant [pattern='/api/admin/**']
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.s.w.a.e.ExpressionBasedFilterInvocationSecurityMetadataSource - Adding web access control expression [authenticated] for any request
+2026-04-02 09:39:48 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6542015f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2e64ba8f, org.springframework.security.web.context.SecurityContextPersistenceFilter@22ccc2d9, org.springframework.security.web.header.HeaderWriterFilter@4b55afac, org.springframework.web.filter.CorsFilter@5cab3c8c, org.springframework.security.web.csrf.CsrfFilter@a860565, org.springframework.security.web.authentication.logout.LogoutFilter@457af9f5, com.bookstore.security.RateLimitingFilter@11585596, com.bookstore.security.JwtAuthenticationFilter@64e5f61b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@67133a1c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4e309c2f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6f5e88ca, org.springframework.security.web.session.SessionManagementFilter@63bdd05, org.springframework.security.web.access.ExceptionTranslationFilter@56e8be23, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5344cff3]
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 100 mappings in 'requestMappingHandlerMapping'
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /static/**] in 'resourceHandlerMapping'
+2026-04-02 09:39:48 [restartedMain] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-04-02 09:39:48 [restartedMain] WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2026-04-02 09:39:48 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2026-04-02 09:39:48 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-04-02 09:39:48 [restartedMain] INFO  com.bookstore.BookstoreApplication - Started BookstoreApplication in 4.635 seconds (JVM running for 5.373)
+2026-04-02 09:39:50 [RMI TCP Connection(2)-127.0.0.1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-02 09:39:50 [RMI TCP Connection(2)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-02 09:39:50 [RMI TCP Connection(2)-127.0.0.1] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2026-04-02 09:39:50 [RMI TCP Connection(2)-127.0.0.1] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2026-04-02 09:39:50 [RMI TCP Connection(2)-127.0.0.1] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2026-04-02 09:39:50 [RMI TCP Connection(2)-127.0.0.1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@487e488e
+2026-04-02 09:39:50 [RMI TCP Connection(2)-127.0.0.1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@1ac1ea2b
+2026-04-02 09:39:50 [RMI TCP Connection(2)-127.0.0.1] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-04-02 09:39:50 [RMI TCP Connection(2)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 4 ms
+2026-04-02 09:39:53 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/books?page=0&size=100
+2026-04-02 09:39:53 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/categories
+2026-04-02 09:39:53 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:39:53 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:39:53 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:39:53 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:39:53 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:39:53 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:39:53 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/categories
+2026-04-02 09:39:53 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/books?page=0&size=100
+2026-04-02 09:39:53 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:39:53 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/books?page=0&size=100] with attributes [permitAll]
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/categories] with attributes [permitAll]
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/books?page=0&size=100
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/categories
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/categories", parameters={}
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/books?page=0&size=100", parameters={masked}
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.CategoryController#getAllCategories()
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.BookController#getAllBooks(int, int)
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.CategoryDTO@5c9c0676, com.bookstore.dto.CategoryDTO@5751e5a1, com.bookstore.dto.C (truncated)...]
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.BookDTO@67055f0f]]
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:39:54 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:39:54 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:07 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/login
+2026-04-02 09:40:07 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:07 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:07 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:07 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/auth/login
+2026-04-02 09:40:07 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:07 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-04-02 09:40:07 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [POST /api/auth/login] with attributes [permitAll]
+2026-04-02 09:40:07 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/auth/login
+2026-04-02 09:40:07 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/auth/login", parameters={}
+2026-04-02 09:40:07 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AuthController#login(LoginRequest, HttpServletRequest, HttpServletResponse)
+2026-04-02 09:40:07 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [com.bookstore.dto.request.LoginRequest@14597c00]
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.bookstore.controller.AuthController$LoginResponse@65043420]
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/books?page=0&size=100
+2026-04-02 09:40:08 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/categories
+2026-04-02 09:40:08 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:08 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:08 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:08 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/books?page=0&size=100
+2026-04-02 09:40:08 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/categories
+2026-04-02 09:40:08 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@397eac66]
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@27053169]
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@a5a6172]
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@2c1f1478]
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/users/69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/books?page=0&size=100] with attributes [permitAll]
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/categories] with attributes [permitAll]
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/books?page=0&size=100
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/categories
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/categories", parameters={}
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/users/69cc98d09501cf1dcbbb1c7b", parameters={}
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/books?page=0&size=100", parameters={masked}
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b", parameters={masked}
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.NotificationController#getUnreadCount(String)
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.CategoryController#getAllCategories()
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.BookController#getAllBooks(int, int)
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.UserController#getUserById(String)
+2026-04-02 09:40:08 [http-nio-8080-exec-4] INFO  org.mongodb.driver.connection - Opened connection [connectionId{localValue:4, serverValue:98}] to localhost:27017
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.BookDTO@6a1e69ce]]
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@a5a6172]
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.CategoryDTO@2218e692, com.bookstore.dto.CategoryDTO@6fc16936, com.bookstore.dto.C (truncated)...]
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@a5a6172]
+2026-04-02 09:40:08 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@2c1f1478]
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@2c1f1478]
+2026-04-02 09:40:08 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.bookstore.dto.UserDTO@2a668218]
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{count=0, message=Unread count retrieved successfully}]
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@27053169]
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@397eac66]
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@27053169]
+2026-04-02 09:40:08 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@397eac66]
+2026-04-02 09:40:08 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@11b65f07]
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b", parameters={masked}
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.NotificationController#getUnreadCount(String)
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{count=0, message=Unread count retrieved successfully}]
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@11b65f07]
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@11b65f07]
+2026-04-02 09:40:08 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:09 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/books/69cdc625cbcaf06d6be9e778
+2026-04-02 09:40:09 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:09 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:09 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/books/69cdc625cbcaf06d6be9e778
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@41e03e5e]
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/books/69cdc625cbcaf06d6be9e778] with attributes [permitAll]
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/books/69cdc625cbcaf06d6be9e778
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/books/69cdc625cbcaf06d6be9e778", parameters={}
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.BookController#getBookById(String)
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.bookstore.dto.BookDTO@49f93f0d]
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@41e03e5e]
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@41e03e5e]
+2026-04-02 09:40:09 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:09 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/reviews/book/69cdc625cbcaf06d6be9e778
+2026-04-02 09:40:09 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:09 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:09 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/reviews/book/69cdc625cbcaf06d6be9e778
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@dc416e2]
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/reviews/book/69cdc625cbcaf06d6be9e778] with attributes [permitAll]
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/reviews/book/69cdc625cbcaf06d6be9e778
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/reviews/book/69cdc625cbcaf06d6be9e778", parameters={}
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.ReviewController#getReviewsByBook(String)
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.ReviewDTO@405512be]]
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@dc416e2]
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@dc416e2]
+2026-04-02 09:40:09 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:28 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/orders
+2026-04-02 09:40:28 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:28 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:28 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/orders
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@45141077]
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [POST /api/orders] with attributes [authenticated]
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/orders
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/orders", parameters={}
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.OrderController#createOrder(OrderDTO)
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [com.bookstore.dto.OrderDTO@1812ac34]
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.bookstore.dto.OrderDTO@43b3e80e]
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@45141077]
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@45141077]
+2026-04-02 09:40:28 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:29 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/orders?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:29 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:29 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:29 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/orders?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6b918afa]
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/orders?userId=69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/orders?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders?userId=69cc98d09501cf1dcbbb1c7b", parameters={masked}
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.OrderController#getOrdersByUserId(String)
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.OrderDTO@36eb8bbf]]
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6b918afa]
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6b918afa]
+2026-04-02 09:40:29 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:34 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/books?page=0&size=100
+2026-04-02 09:40:34 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/categories
+2026-04-02 09:40:34 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:34 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/books?page=0&size=100
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/categories
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/categories] with attributes [permitAll]
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/books?page=0&size=100] with attributes [permitAll]
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/categories
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/books?page=0&size=100
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/categories", parameters={}
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/books?page=0&size=100", parameters={masked}
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.CategoryController#getAllCategories()
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.BookController#getAllBooks(int, int)
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.BookDTO@59a08d69]]
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.CategoryDTO@571b4510, com.bookstore.dto.CategoryDTO@59dca183, com.bookstore.dto.C (truncated)...]
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:40:34 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/login
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/auth/login
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [POST /api/auth/login] with attributes [permitAll]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/auth/login
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/auth/login", parameters={}
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AuthController#login(LoginRequest, HttpServletRequest, HttpServletResponse)
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [com.bookstore.dto.request.LoginRequest@30f4e66f]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.bookstore.controller.AuthController$LoginResponse@780ac59]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/categories
+2026-04-02 09:40:41 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/books?page=0&size=10
+2026-04-02 09:40:41 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/reviews/pending
+2026-04-02 09:40:41 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/categories
+2026-04-02 09:40:41 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/users
+2026-04-02 09:40:41 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/reviews/pending
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/users
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/books?page=0&size=10
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/categories
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@46931a4f]
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@8e1c278]
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/reviews/pending] with attributes [authenticated]
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/reviews/pending
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@ab93154]
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/reviews/pending", parameters={}
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/categories] with attributes [permitAll]
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.ReviewController#getPendingReviews()
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/categories
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@22edb32d]
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/categories", parameters={}
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/books?page=0&size=10] with attributes [permitAll]
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/books?page=0&size=10
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.CategoryController#getAllCategories()
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/books?page=0&size=10", parameters={masked}
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.BookController#getAllBooks(int, int)
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/users] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/users
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[]]
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/users", parameters={}
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.CategoryDTO@64752e4a, com.bookstore.dto.CategoryDTO@1faf5784, com.bookstore.dto.C (truncated)...]
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@8e1c278]
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminUserController#getAllUsers()
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@8e1c278]
+2026-04-02 09:40:41 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@ab93154]
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.BookDTO@2e48e800]]
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@ab93154]
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@22edb32d]
+2026-04-02 09:40:41 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/categories
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@22edb32d]
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:41 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.UserDTO@9f6f8df, com.bookstore.dto.UserDTO@4cb07166, com.bookstore.dto.UserDTO@16 (truncated)...]
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@46931a4f]
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@46931a4f]
+2026-04-02 09:40:41 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@3392fdc]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/categories] with attributes [permitAll]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/categories
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/categories", parameters={}
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.CategoryController#getAllCategories()
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.CategoryDTO@c2940ac, com.bookstore.dto.CategoryDTO@7af8cb55, com.bookstore.dto.Ca (truncated)...]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@3392fdc]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@3392fdc]
+2026-04-02 09:40:41 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:42 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders?page=0&size=20
+2026-04-02 09:40:42 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:42 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:42 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders?page=0&size=20
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@2ab7fb36]
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders?page=0&size=20] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders?page=0&size=20
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders?page=0&size=20", parameters={masked}
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getAllOrders(int, int)
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{orders=[com.bookstore.dto.OrderDTO@587743d7], message=Orders retrieved successfully}]
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@2ab7fb36]
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@2ab7fb36]
+2026-04-02 09:40:42 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:47 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:47 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:47 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:47 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@3200af57]
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders/69cdd71c6209a51ba64d66e8] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders/69cdd71c6209a51ba64d66e8", parameters={}
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getOrderById(String)
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=Order retrieved successfully, order=com.bookstore.dto.OrderDTO@6333e930}]
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@3200af57]
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@3200af57]
+2026-04-02 09:40:47 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6b443a8]
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders/69cdd71c6209a51ba64d66e8] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders/69cdd71c6209a51ba64d66e8", parameters={}
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getOrderById(String)
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=Order retrieved successfully, order=com.bookstore.dto.OrderDTO@33cb6b8f}]
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6b443a8]
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6b443a8]
+2026-04-02 09:40:51 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:51 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:51 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:51 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:51 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6a6a5d82]
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/users/69cc98d09501cf1dcbbb1c7b] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/users/69cc98d09501cf1dcbbb1c7b", parameters={}
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminUserController#getUserById(String)
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.bookstore.dto.UserDTO@68c62017]
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6a6a5d82]
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6a6a5d82]
+2026-04-02 09:40:51 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:54 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:54 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:54 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:54 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@71ea5e55]
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders/69cdd71c6209a51ba64d66e8] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders/69cdd71c6209a51ba64d66e8", parameters={}
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getOrderById(String)
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=Order retrieved successfully, order=com.bookstore.dto.OrderDTO@6f226cb3}]
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@71ea5e55]
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@71ea5e55]
+2026-04-02 09:40:54 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:56 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=CONFIRMED
+2026-04-02 09:40:56 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:56 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:56 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=CONFIRMED
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@35b5341f]
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [PUT /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=CONFIRMED] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=CONFIRMED
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - PUT "/api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=CONFIRMED", parameters={masked}
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#updateOrderStatus(String, String)
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=Order status updated successfully, order=com.bookstore.dto.OrderDTO@60a46a64}]
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@35b5341f]
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@35b5341f]
+2026-04-02 09:40:56 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:56 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders?page=0&size=20
+2026-04-02 09:40:56 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:56 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:56 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders?page=0&size=20
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@73728ee6]
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders?page=0&size=20] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders?page=0&size=20
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders?page=0&size=20", parameters={masked}
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getAllOrders(int, int)
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{orders=[com.bookstore.dto.OrderDTO@2c05a648], message=Orders retrieved successfully}]
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@73728ee6]
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@73728ee6]
+2026-04-02 09:40:56 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@30107b12]
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders/69cdd71c6209a51ba64d66e8] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders/69cdd71c6209a51ba64d66e8", parameters={}
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getOrderById(String)
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=Order retrieved successfully, order=com.bookstore.dto.OrderDTO@984ab54}]
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@30107b12]
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@30107b12]
+2026-04-02 09:40:58 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:58 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:58 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:58 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:40:58 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6ffaa93e]
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/users/69cc98d09501cf1dcbbb1c7b] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/users/69cc98d09501cf1dcbbb1c7b", parameters={}
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminUserController#getUserById(String)
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.bookstore.dto.UserDTO@7c36342c]
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6ffaa93e]
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6ffaa93e]
+2026-04-02 09:40:58 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:01 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:41:01 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:01 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:01 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@108cd050]
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders/69cdd71c6209a51ba64d66e8] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders/69cdd71c6209a51ba64d66e8", parameters={}
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getOrderById(String)
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=Order retrieved successfully, order=com.bookstore.dto.OrderDTO@18f4ded0}]
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@108cd050]
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@108cd050]
+2026-04-02 09:41:01 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:10 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=SHIPPED
+2026-04-02 09:41:10 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:10 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:10 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=SHIPPED
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@404c1989]
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [PUT /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=SHIPPED] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=SHIPPED
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - PUT "/api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=SHIPPED", parameters={masked}
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#updateOrderStatus(String, String)
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=Order status updated successfully, order=com.bookstore.dto.OrderDTO@590b9ce3}]
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@404c1989]
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@404c1989]
+2026-04-02 09:41:10 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:10 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders?page=0&size=20
+2026-04-02 09:41:10 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:10 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:10 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders?page=0&size=20
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@7cdc803f]
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders?page=0&size=20] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders?page=0&size=20
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders?page=0&size=20", parameters={masked}
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getAllOrders(int, int)
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{orders=[com.bookstore.dto.OrderDTO@322d4e7f], message=Orders retrieved successfully}]
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@7cdc803f]
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@7cdc803f]
+2026-04-02 09:41:10 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:11 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:41:11 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:11 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:11 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@32b66d2a]
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders/69cdd71c6209a51ba64d66e8] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders/69cdd71c6209a51ba64d66e8
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders/69cdd71c6209a51ba64d66e8", parameters={}
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getOrderById(String)
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=Order retrieved successfully, order=com.bookstore.dto.OrderDTO@52ecf972}]
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@32b66d2a]
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@32b66d2a]
+2026-04-02 09:41:11 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:13 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=DELIVERED
+2026-04-02 09:41:13 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:13 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:13 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=DELIVERED
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@24455fc6]
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [PUT /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=DELIVERED] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=DELIVERED
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - PUT "/api/admin/orders/69cdd71c6209a51ba64d66e8/status?status=DELIVERED", parameters={masked}
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#updateOrderStatus(String, String)
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=Order status updated successfully, order=com.bookstore.dto.OrderDTO@55fdbd6}]
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@24455fc6]
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@24455fc6]
+2026-04-02 09:41:13 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/admin/orders?page=0&size=20
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@5d0b9e37]
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/admin/orders?page=0&size=20] with attributes [hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')]
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/admin/orders?page=0&size=20
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/admin/orders?page=0&size=20", parameters={masked}
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AdminOrderController#getAllOrders(int, int)
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{orders=[com.bookstore.dto.OrderDTO@18482d10], message=Orders retrieved successfully}]
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@5d0b9e37]
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc97619501cf1dcbbb1c57, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_SUPER_ADMIN]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@5d0b9e37]
+2026-04-02 09:41:13 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:16 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/books?page=0&size=100
+2026-04-02 09:41:16 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/categories
+2026-04-02 09:41:16 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:16 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/books?page=0&size=100
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/categories
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/categories] with attributes [permitAll]
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/books?page=0&size=100] with attributes [permitAll]
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/categories
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/books?page=0&size=100
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/categories", parameters={}
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/books?page=0&size=100", parameters={masked}
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.BookController#getAllBooks(int, int)
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.CategoryController#getAllCategories()
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.CategoryDTO@3872760, com.bookstore.dto.CategoryDTO@6af2748b, com.bookstore.dto.Ca (truncated)...]
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.BookDTO@340d6239]]
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:41:16 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/login
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/auth/login
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [POST /api/auth/login] with attributes [permitAll]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/auth/login
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/auth/login", parameters={}
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.AuthController#login(LoginRequest, HttpServletRequest, HttpServletResponse)
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [com.bookstore.dto.request.LoginRequest@5a67d81d]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.bookstore.controller.AuthController$LoginResponse@6fd8cc52]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store anonymous SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/books?page=0&size=100
+2026-04-02 09:41:24 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/categories
+2026-04-02 09:41:24 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:24 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:24 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:24 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/categories
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/books?page=0&size=100
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@27602c1c]
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@549b418c]
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@10c51fa8]
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6c34e51d]
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/categories] with attributes [permitAll]
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/users/69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/categories
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/users/69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/books?page=0&size=100] with attributes [permitAll]
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/categories", parameters={}
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/users/69cc98d09501cf1dcbbb1c7b", parameters={}
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/books?page=0&size=100
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/books?page=0&size=100", parameters={masked}
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b", parameters={masked}
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.CategoryController#getAllCategories()
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.UserController#getUserById(String)
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.BookController#getAllBooks(int, int)
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.NotificationController#getUnreadCount(String)
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.bookstore.dto.UserDTO@3decba14]
+2026-04-02 09:41:24 [http-nio-8080-exec-4] INFO  org.mongodb.driver.connection - Opened connection [connectionId{localValue:5, serverValue:100}] to localhost:27017
+2026-04-02 09:41:24 [http-nio-8080-exec-9] INFO  org.mongodb.driver.connection - Opened connection [connectionId{localValue:6, serverValue:99}] to localhost:27017
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@10c51fa8]
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.BookDTO@64c92896]]
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@10c51fa8]
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{count=3, message=Unread count retrieved successfully}]
+2026-04-02 09:41:24 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6c34e51d]
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@549b418c]
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.CategoryDTO@839301a, com.bookstore.dto.CategoryDTO@4b090e03, com.bookstore.dto.Ca (truncated)...]
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@6c34e51d]
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@549b418c]
+2026-04-02 09:41:24 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@27602c1c]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@27602c1c]
+2026-04-02 09:41:24 [http-nio-8080-exec-9] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@5efc8e69]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/notifications/unread-count?userId=69cc98d09501cf1dcbbb1c7b", parameters={masked}
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.NotificationController#getUnreadCount(String)
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{count=3, message=Unread count retrieved successfully}]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@5efc8e69]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@5efc8e69]
+2026-04-02 09:41:24 [http-nio-8080-exec-2] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:26 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/notifications?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:26 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:26 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:26 [http-nio-8080-exec-3] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/notifications?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@5f7ca9cf]
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/notifications?userId=69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/notifications?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/notifications?userId=69cc98d09501cf1dcbbb1c7b", parameters={masked}
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.NotificationController#getUserNotifications(String)
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.model.Notification@68eaedb1, com.bookstore.model.Notification@664c4c5c, com.bookstore (truncated)...]
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@5f7ca9cf]
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@5f7ca9cf]
+2026-04-02 09:41:26 [http-nio-8080-exec-6] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:28 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/orders?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:28 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:28 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:28 [http-nio-8080-exec-5] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/orders?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@4fb76557]
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/orders?userId=69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/orders?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders?userId=69cc98d09501cf1dcbbb1c7b", parameters={masked}
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.OrderController#getOrdersByUserId(String)
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.dto.OrderDTO@47afff71]]
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@4fb76557]
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@4fb76557]
+2026-04-02 09:41:28 [http-nio-8080-exec-1] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:36 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/notifications?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:36 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:36 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:36 [http-nio-8080-exec-8] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/notifications?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@680cb3ad]
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [GET /api/notifications?userId=69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/notifications?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/notifications?userId=69cc98d09501cf1dcbbb1c7b", parameters={masked}
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.NotificationController#getUserNotifications(String)
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[com.bookstore.model.Notification@303c17c8, com.bookstore.model.Notification@2d661824, com.bookstore (truncated)...]
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@680cb3ad]
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@680cb3ad]
+2026-04-02 09:41:36 [http-nio-8080-exec-10] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:37 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/notifications/mark-all-read?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:37 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:37 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Did not store empty SecurityContext
+2026-04-02 09:41:37 [http-nio-8080-exec-7] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing PUT /api/notifications/mark-all-read?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Set SecurityContextHolder to empty SecurityContext
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Created HttpSession as SecurityContext is non-default
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@52828059]
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.i.FilterSecurityInterceptor - Authorized filter invocation [PUT /api/notifications/mark-all-read?userId=69cc98d09501cf1dcbbb1c7b] with attributes [authenticated]
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured PUT /api/notifications/mark-all-read?userId=69cc98d09501cf1dcbbb1c7b
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - PUT "/api/notifications/mark-all-read?userId=69cc98d09501cf1dcbbb1c7b", parameters={masked}
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.bookstore.controller.NotificationController#markAllAsRead(String)
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{message=All notifications marked as read}]
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@52828059]
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.HttpSessionSecurityContextRepository - Stored SecurityContextImpl [Authentication=UsernamePasswordAuthenticationToken [Principal=69cc98d09501cf1dcbbb1c7b, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], Granted Authorities=[ROLE_CUSTOMER]]] to HttpSession [org.apache.catalina.session.StandardSessionFacade@52828059]
+2026-04-02 09:41:37 [http-nio-8080-exec-4] DEBUG o.s.s.w.c.SecurityContextPersistenceFilter - Cleared SecurityContextHolder to complete request

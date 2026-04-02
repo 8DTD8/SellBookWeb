@@ -128,6 +128,28 @@
             transition: border-color 0.3s ease;
         }
 
+        .form-group input.with-password-toggle {
+            padding-right: 4.25rem;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 2.5rem;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0.3rem;
+            line-height: 1;
+        }
+
+        .password-toggle-btn:hover {
+            color: #dc3545;
+        }
+
         .form-group input:focus {
             outline: none;
             border-color: #dc3545;
@@ -457,7 +479,8 @@
 
                 <div class="form-group">
                     <label>Mật khẩu:</label>
-                    <input type="password" id="loginPassword" required minlength="8" data-validate="password">
+                    <input type="password" id="loginPassword" class="with-password-toggle" required minlength="8" data-validate="password">
+                    <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="loginPassword" aria-label="Hiện mật khẩu">Hiện</button>
                 </div>
 
                 <input type="hidden" id="loginRole" value="">
@@ -485,12 +508,14 @@
 
                 <div class="form-group">
                     <label>Mật khẩu:</label>
-                    <input type="password" id="registerPassword" required minlength="8" data-validate="password">
+                    <input type="password" id="registerPassword" class="with-password-toggle" required minlength="8" data-validate="password">
+                    <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="registerPassword" aria-label="Hiện mật khẩu">Hiện</button>
                 </div>
 
                 <div class="form-group">
                     <label>Xác nhận mật khẩu:</label>
-                    <input type="password" id="registerPasswordConfirm" required minlength="8">
+                    <input type="password" id="registerPasswordConfirm" class="with-password-toggle" required minlength="8">
+                    <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="registerPasswordConfirm" aria-label="Hiện mật khẩu">Hiện</button>
                 </div>
 
                 <button type="submit" class="submit-btn" id="registerBtn">Đăng ký</button>
@@ -530,11 +555,13 @@
                 <div id="forgotResetSection" class="hidden">
                     <div class="form-group">
                         <label>Mật khẩu mới:</label>
-                        <input type="password" id="forgotNewPassword" required minlength="8">
+                        <input type="password" id="forgotNewPassword" class="with-password-toggle" required minlength="8">
+                        <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="forgotNewPassword" aria-label="Hiện mật khẩu">Hiện</button>
                     </div>
                     <div class="form-group">
                         <label>Xác nhận mật khẩu mới:</label>
-                        <input type="password" id="forgotConfirmPassword" required minlength="8">
+                        <input type="password" id="forgotConfirmPassword" class="with-password-toggle" required minlength="8">
+                        <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="forgotConfirmPassword" aria-label="Hiện mật khẩu">Hiện</button>
                     </div>
                 </div>
                 <div class="modal-actions">

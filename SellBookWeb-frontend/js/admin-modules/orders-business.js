@@ -39,7 +39,7 @@
 
             const row = document.createElement('tr');
             const orderId = order.id || '';
-            const userId = order.userId || '-';
+            const customerName = order.userName || order.userId || '-';
             const phone = order.phone || '-';
             const createdAt = order.createdAt ? (new Date(order.createdAt).toLocaleString() || '-') : '-';
             const totalPrice = formatPrice(order.totalPrice || 0);
@@ -48,14 +48,14 @@
             const statusText = getOrderStatusText(status);
             const isLockedStatus = status === 'CANCELLED' || status === 'DELIVERED';
             const safeOrderId = escapeHtml(orderId);
-            const safeUserId = escapeHtml(userId);
+            const safeCustomerName = escapeHtml(customerName);
             const safePhone = escapeHtml(phone);
             const safeCreatedAt = escapeHtml(createdAt);
             const safeOrderIdJs = escapeJsString(orderId);
 
             row.innerHTML = `
                 <td>${safeOrderId}</td>
-                <td>${safeUserId}</td>
+                <td>${safeCustomerName}</td>
                 <td>${safePhone}</td>
                 <td>${safeCreatedAt}</td>
                 <td>${totalPrice}</td>

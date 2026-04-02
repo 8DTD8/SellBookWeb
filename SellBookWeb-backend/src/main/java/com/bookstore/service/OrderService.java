@@ -85,7 +85,7 @@ public class OrderService {
         }
 
         Order savedOrder = orderRepository.save(order);
-        return OrderMapper.toDTO(savedOrder);
+        return enrichOrderUserName(OrderMapper.toDTO(savedOrder));
     }
 
     public OrderDTO getOrderById(String id) {
@@ -94,6 +94,7 @@ public class OrderService {
         }
         return orderRepository.findById(id)
                 .map(OrderMapper::toDTO)
+                .map(this::enrichOrderUserName)
                 .orElse(null);
     }
 
@@ -101,12 +102,14 @@ public class OrderService {
         Pageable pageable = PageRequest.of(page, size);
         return orderRepository.findAll(pageable).stream()
                 .map(OrderMapper::toDTO)
+                .map(this::enrichOrderUserName)
                 .collect(Collectors.toList());
     }
 
     public List<OrderDTO> getOrdersByUserId(String userId) {
         return orderRepository.findByUserId(userId).stream()
                 .map(OrderMapper::toDTO)
+                .map(this::enrichOrderUserName)
                 .collect(Collectors.toList());
     }
 
@@ -151,7 +154,7 @@ public class OrderService {
             notifyOrderStatusChange(order.getUserId(), id, oldStatus, newStatus);
         }
         
-        return OrderMapper.toDTO(updated);
+        return enrichOrderUserName(OrderMapper.toDTO(updated));
     }
 
     public OrderDTO cancelOrder(String id) {
@@ -162,5 +165,19 @@ public class OrderService {
     
     private void notifyOrderStatusChange(String userId, String orderId, String oldStatus, String newStatus) {
         notificationService.createOrderStatusNotification(userId, orderId, oldStatus, newStatus);
+    }
+
+    private OrderDTO enrichOrderUserName(OrderDTO dto) {
+        if (dto == null || dto.getUserId() == null || dto.getUserId().trim().isEmpty()) {
+            return dto;
+        }
+
+        try {
+            dto.setUserName(userService.getUserById(dto.getUserId()).getName());
+        } catch (RuntimeException ex) {
+            dto.setUserName(dto.getUserId());
+        }
+
+        return dto;
     }
 }

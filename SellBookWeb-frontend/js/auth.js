@@ -104,6 +104,11 @@ function setupAuthEventDelegation() {
 
         if (action === 'verify-forgot-otp') {
             verifyForgotPasswordOtp();
+            return;
+        }
+
+        if (action === 'toggle-password') {
+            togglePasswordVisibility(actionElement);
         }
     });
 
@@ -184,6 +189,19 @@ function toggleForm(formType) {
         toggleBtns[1].classList.add('active');
     }
     clearError();
+}
+
+function togglePasswordVisibility(actionElement) {
+    const targetId = actionElement?.dataset?.passwordTarget;
+    if (!targetId) return;
+
+    const input = document.getElementById(targetId);
+    if (!input) return;
+
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    actionElement.textContent = isHidden ? 'Ẩn' : 'Hiện';
+    actionElement.setAttribute('aria-label', isHidden ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
 }
 
 function showMessage(message, type = 'error') {
