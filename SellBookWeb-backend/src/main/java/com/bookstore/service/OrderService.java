@@ -3,6 +3,7 @@ package com.bookstore.service;
 import com.bookstore.common.constant.Constants;
 import com.bookstore.common.validator.ValidationUtil;
 import com.bookstore.dto.OrderDTO;
+import com.bookstore.dto.PaymentDTO;
 import com.bookstore.dto.mapper.OrderMapper;
 import com.bookstore.model.Book;
 import com.bookstore.model.Order;
@@ -47,13 +48,15 @@ public class OrderService {
     private final NotificationService notificationService;
     private final CouponService couponService;
     private final BookRepository bookRepository;
+    private final PaymentService paymentService;
 
-    public OrderService(OrderRepository orderRepository, UserService userService, NotificationService notificationService, CouponService couponService, BookRepository bookRepository) {
+    public OrderService(OrderRepository orderRepository, UserService userService, NotificationService notificationService, CouponService couponService, BookRepository bookRepository, PaymentService paymentService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.notificationService = notificationService;
         this.couponService = couponService;
         this.bookRepository = bookRepository;
+        this.paymentService = paymentService;
     }
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -85,7 +88,8 @@ public class OrderService {
         }
 
         Order savedOrder = orderRepository.save(order);
-        return enrichOrderUserName(OrderMapper.toDTO(savedOrder));
+        paymentService.createPaymentForOrder(savedOrder);
+        return enrichOrderWithPayment(enrichOrderUserName(OrderMapper.toDTO(savedOrder)));
     }
 
     public OrderDTO getOrderById(String id) {
@@ -95,6 +99,7 @@ public class OrderService {
         return orderRepository.findById(id)
                 .map(OrderMapper::toDTO)
                 .map(this::enrichOrderUserName)
+            .map(this::enrichOrderWithPayment)
                 .orElse(null);
     }
 
@@ -103,6 +108,7 @@ public class OrderService {
         return orderRepository.findAll(pageable).stream()
                 .map(OrderMapper::toDTO)
                 .map(this::enrichOrderUserName)
+            .map(this::enrichOrderWithPayment)
                 .collect(Collectors.toList());
     }
 
@@ -110,6 +116,7 @@ public class OrderService {
         return orderRepository.findByUserId(userId).stream()
                 .map(OrderMapper::toDTO)
                 .map(this::enrichOrderUserName)
+            .map(this::enrichOrderWithPayment)
                 .collect(Collectors.toList());
     }
 
@@ -127,6 +134,13 @@ public class OrderService {
             throw new IllegalStateException(
                 "Không thể chuyển trạng thái từ '" + getStatusLabel(oldStatus) + "' sang '" + getStatusLabel(newStatus) + "'"
             );
+        }
+
+        if (Constants.ORDER_STATUS_CONFIRMED.equals(newStatus) && requiresCompletedPayment(order)) {
+            PaymentDTO payment = paymentService.getPaymentByOrderId(order.getId());
+            if (payment == null || !Constants.PAYMENT_STATUS_COMPLETED.equals(payment.getPaymentStatus())) {
+                throw new IllegalStateException("Chỉ có thể xác nhận đơn khi thanh toán chuyển khoản đã hoàn tất");
+            }
         }
 
         // Hoàn lại số lượng tồn kho khi hủy đơn
@@ -148,13 +162,17 @@ public class OrderService {
         order.setUpdatedAt(LocalDateTime.now());
         
         Order updated = orderRepository.save(order);
+
+        if (Constants.ORDER_STATUS_CANCELLED.equals(newStatus) && !Constants.ORDER_STATUS_CANCELLED.equals(oldStatus)) {
+            paymentService.refundPaymentForOrder(updated.getId());
+        }
         
         // ✅ Send notification if status changed
         if (!oldStatus.equals(newStatus)) {
             notifyOrderStatusChange(order.getUserId(), id, oldStatus, newStatus);
         }
         
-        return enrichOrderUserName(OrderMapper.toDTO(updated));
+        return enrichOrderWithPayment(enrichOrderUserName(OrderMapper.toDTO(updated)));
     }
 
     public OrderDTO cancelOrder(String id) {
@@ -167,6 +185,20 @@ public class OrderService {
         notificationService.createOrderStatusNotification(userId, orderId, oldStatus, newStatus);
     }
 
+    private boolean requiresCompletedPayment(Order order) {
+        if (order == null) {
+            return false;
+        }
+
+        String paymentMethod = order.getPaymentMethod();
+        if (paymentMethod == null) {
+            return false;
+        }
+
+        String normalizedMethod = paymentMethod.trim().toUpperCase();
+        return "BANK".equals(normalizedMethod) || "MOMO".equals(normalizedMethod);
+    }
+
     private OrderDTO enrichOrderUserName(OrderDTO dto) {
         if (dto == null || dto.getUserId() == null || dto.getUserId().trim().isEmpty()) {
             return dto;
@@ -176,6 +208,27 @@ public class OrderService {
             dto.setUserName(userService.getUserById(dto.getUserId()).getName());
         } catch (RuntimeException ex) {
             dto.setUserName(dto.getUserId());
+        }
+
+        return dto;
+    }
+
+    private OrderDTO enrichOrderWithPayment(OrderDTO dto) {
+        if (dto == null || dto.getId() == null || dto.getId().trim().isEmpty()) {
+            return dto;
+        }
+
+        PaymentDTO payment = paymentService.getPaymentByOrderId(dto.getId());
+        if (payment == null) {
+            return dto;
+        }
+
+        dto.setPaymentId(payment.getId());
+        dto.setPaymentStatus(payment.getPaymentStatus());
+        dto.setTransactionId(payment.getTransactionId());
+        dto.setPaymentDate(payment.getPaymentDate());
+        if (dto.getPaymentMethod() == null || dto.getPaymentMethod().trim().isEmpty()) {
+            dto.setPaymentMethod(payment.getPaymentMethod());
         }
 
         return dto;

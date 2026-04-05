@@ -20,6 +20,12 @@
                 if (!book) book = await getBookById(bookId);
                 if (!book) { showAlert('Không tìm thấy sách!'); return; }
 
+                const stock = Number(book.quantity) || 0;
+                if (stock <= 0) {
+                    showAlert('Sản phẩm này hiện chưa có hàng. Bạn có thể thêm vào wishlist để nhận thông báo khi có hàng lại.');
+                    return;
+                }
+
                 const workingCart = [...cart];
                 const existingItem = workingCart.find(item => item.id === bookId);
                 const hasDiscount = book.discount && book.discount > 0;
@@ -27,6 +33,10 @@
                 const couponValue = parseCouponValue(book.discountCode);
 
                 if (existingItem) {
+                    if (existingItem.quantity >= stock) {
+                        showAlert(`Số lượng tồn chỉ còn ${stock} quyển.`);
+                        return;
+                    }
                     existingItem.quantity += 1;
                     existingItem.discount = discount;
                     existingItem.discountCode = book.discountCode || null;

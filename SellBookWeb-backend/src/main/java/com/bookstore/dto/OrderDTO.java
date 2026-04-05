@@ -11,10 +11,14 @@ public class OrderDTO {
     private Double totalPrice;
     private String status;
     private String paymentMethod;
+    private String paymentId;
+    private String paymentStatus;
+    private String transactionId;
     private String couponCode;
     private String shippingAddress;
     private String phone;
     private LocalDateTime createdAt;
+    private LocalDateTime paymentDate;
 
     public OrderDTO() {
     }
@@ -61,6 +65,15 @@ public class OrderDTO {
     public String getPaymentMethod() { return paymentMethod; }
     public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
 
+    public String getPaymentId() { return paymentId; }
+    public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
+
+    public String getPaymentStatus() { return paymentStatus; }
+    public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
+
+    public String getTransactionId() { return transactionId; }
+    public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
+
     public String getCouponCode() { return couponCode; }
     public void setCouponCode(String couponCode) { this.couponCode = couponCode; }
 
@@ -72,4 +85,7 @@ public class OrderDTO {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getPaymentDate() { return paymentDate; }
+    public void setPaymentDate(LocalDateTime paymentDate) { this.paymentDate = paymentDate; }
 }

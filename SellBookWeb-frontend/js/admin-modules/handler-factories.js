@@ -27,6 +27,22 @@
             'hide-category-form': () => deps.hideCategoryForm(),
             'show-add-coupon-form': () => deps.showAddCouponForm(),
             'hide-coupon-form': () => deps.hideCouponForm(),
+            'show-add-supplier-form': () => deps.showAddSupplierForm(),
+            'hide-supplier-form': () => deps.hideSupplierForm(),
+            'edit-supplier': ({ element }) => deps.editSupplier(element.dataset.supplierId),
+            'delete-supplier': ({ element }) => deps.deleteSupplierConfirm(element.dataset.supplierId),
+            'show-add-purchase-order-form': () => deps.showAddPurchaseOrderForm(),
+            'hide-purchase-order-form': () => deps.hidePurchaseOrderForm(),
+            'add-purchase-order-item': () => deps.addPurchaseOrderItem(),
+            'remove-purchase-order-item': ({ element }) => deps.removePurchaseOrderItem(element),
+            'refresh-purchase-orders': () => deps.refreshPurchaseOrders(),
+            'receive-purchase-order': ({ element }) => deps.receivePurchaseOrder(element.dataset.purchaseOrderId),
+            'cancel-purchase-order': ({ element }) => deps.cancelPurchaseOrder(element.dataset.purchaseOrderId),
+            'delete-purchase-order': ({ element }) => deps.deletePurchaseOrderConfirm(element.dataset.purchaseOrderId),
+            'refresh-payments': () => deps.refreshPayments(),
+            'complete-payment': ({ element }) => deps.completePayment(element.dataset.paymentId),
+            'fail-payment': ({ element }) => deps.failPayment(element.dataset.paymentId),
+            'refund-payment': ({ element }) => deps.refundPayment(element.dataset.paymentId),
             'edit-coupon': ({ element }) => deps.editCoupon(element.dataset.couponId),
             'delete-coupon': ({ element }) => deps.deleteCouponConfirm(element.dataset.couponId),
             'hide-user-form': () => deps.hideUserForm(),
@@ -41,14 +57,18 @@
 
         const changeActionRouter = createRouter({
             'filter-by-category': () => deps.filterByCategory(),
-            'filter-by-status': () => deps.filterByStatus()
+            'filter-by-status': () => deps.filterByStatus(),
+            'filter-purchase-order-status': () => deps.filterPurchaseOrdersByStatus(),
+            'filter-by-payment-status': () => deps.filterPaymentsByStatus()
         });
 
         const submitActionRouter = createRouter({
             'save-book': ({ event }) => deps.saveBook(event),
             'save-category': ({ event }) => deps.saveCategory(event),
             'save-coupon': ({ event }) => deps.saveCoupon(event),
-            'save-user': ({ event }) => deps.saveUser(event)
+            'save-user': ({ event }) => deps.saveUser(event),
+            'save-supplier': ({ event }) => deps.saveSupplier(event),
+            'save-purchase-order': ({ event }) => deps.savePurchaseOrder(event)
         });
 
         const bookActionRouter = createRouter({

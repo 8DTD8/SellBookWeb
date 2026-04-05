@@ -48,7 +48,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${safeCode}</td>
-                    <td>${coupon.discountType || '-'} / ${discountValueText}</td>
+                    <td>${discountValueText}</td>
                     <td>${usageText}</td>
                     <td>${statusText}</td>
                     <td>
@@ -69,7 +69,6 @@
                 document.getElementById('couponId').value = coupon.id || '';
                 document.getElementById('couponCode').value = coupon.code || '';
                 document.getElementById('couponDescription').value = coupon.description || '';
-                document.getElementById('couponDiscountType').value = coupon.discountType || 'PERCENTAGE';
                 document.getElementById('couponDiscountValue').value = coupon.discountValue || 0;
                 document.getElementById('couponMinimumAmount').value = coupon.minimumAmount || '';
                 document.getElementById('couponMaxUsage').value = coupon.maxUsage || '';
@@ -128,7 +127,7 @@
             const couponData = {
                 code,
                 description: document.getElementById('couponDescription').value || null,
-                discountType: document.getElementById('couponDiscountType').value,
+                discountType: 'PERCENTAGE',
                 discountValue,
                 minimumAmount,
                 maxUsage,

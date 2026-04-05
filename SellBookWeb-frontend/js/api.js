@@ -68,14 +68,20 @@ async function parseErrorMessage(response) {
 }
 
 function throwAuthError(statusCode, errorMessage) {
+    const sessionExpiredMessage = 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại';
+
     if (statusCode === 401) {
         if (typeof auth !== 'undefined') {
-            auth.logout();
+            auth.logout(sessionExpiredMessage);
         }
-        throw new Error('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
+        throw new Error(sessionExpiredMessage);
     }
 
     if (statusCode === 403) {
+        if (typeof auth !== 'undefined' && auth && auth.isAuthenticated && auth.isAuthenticated()) {
+            auth.logout(sessionExpiredMessage);
+            throw new Error(sessionExpiredMessage);
+        }
         throw new Error(errorMessage || 'Bạn không có quyền truy cập hoặc phiên đăng nhập không hợp lệ');
     }
 }
@@ -278,6 +284,89 @@ async function updateOrderStatus(id, status) {
 }
 
 // ==============================
+// PAYMENTS API
+// ==============================
+
+async function fetchPayments() {
+    const response = await apiCall('/admin/payments');
+    return response && response.payments ? response.payments : [];
+}
+
+async function getPaymentById(id) {
+    const response = await apiCall(`/admin/payments/${id}`);
+    return response && response.payment ? response.payment : null;
+}
+
+async function updatePaymentStatusAdmin(id, status) {
+    const response = await apiCall(`/admin/payments/${id}/status?status=${encodeURIComponent(status)}`, 'PUT');
+    return response && response.payment ? response.payment : null;
+}
+
+// ==============================
+// SUPPLIERS API
+// ==============================
+
+async function fetchSuppliers() {
+    return apiCall('/admin/suppliers');
+}
+
+async function getSupplierById(id) {
+    return apiCall(`/admin/suppliers/${id}`);
+}
+
+async function createSupplier(supplierData) {
+    return apiCall('/admin/suppliers', 'POST', supplierData);
+}
+
+async function updateSupplier(id, supplierData) {
+    return apiCall(`/admin/suppliers/${id}`, 'PUT', supplierData);
+}
+
+async function deleteSupplier(id) {
+    return apiCall(`/admin/suppliers/${id}`, 'DELETE');
+}
+
+// ==============================
+// PURCHASE ORDERS API
+// ==============================
+
+async function fetchPurchaseOrders() {
+    return apiCall('/admin/purchase-orders');
+}
+
+async function getPurchaseOrderById(id) {
+    return apiCall(`/admin/purchase-orders/${id}`);
+}
+
+async function createPurchaseOrder(purchaseOrderData) {
+    return apiCall('/admin/purchase-orders', 'POST', purchaseOrderData);
+}
+
+async function updatePurchaseOrderStatus(id, status) {
+    return apiCall(`/admin/purchase-orders/${id}/status?status=${encodeURIComponent(status)}`, 'PUT');
+}
+
+async function deletePurchaseOrder(id) {
+    return apiCall(`/admin/purchase-orders/${id}`, 'DELETE');
+}
+
+// ==============================
+// WISHLIST API
+// ==============================
+
+async function getWishlist(userId) {
+    return apiCall(`/wishlists/${userId}`);
+}
+
+async function addBookToWishlist(userId, bookId) {
+    return apiCall(`/wishlists/${userId}/add?bookId=${encodeURIComponent(bookId)}`, 'POST');
+}
+
+async function removeBookFromWishlist(userId, bookId) {
+    return apiCall(`/wishlists/${userId}/remove?bookId=${encodeURIComponent(bookId)}`, 'DELETE');
+}
+
+// ==============================
 // NOTIFICATIONS API
 // ==============================
 
@@ -342,6 +431,22 @@ if (typeof window !== 'undefined') {
     window.fetchOrders = fetchOrders;
     window.getOrderById = getOrderById;
     window.updateOrderStatus = updateOrderStatus;
+    window.fetchPayments = fetchPayments;
+    window.getPaymentById = getPaymentById;
+    window.updatePaymentStatusAdmin = updatePaymentStatusAdmin;
+    window.fetchSuppliers = fetchSuppliers;
+    window.getSupplierById = getSupplierById;
+    window.createSupplier = createSupplier;
+    window.updateSupplier = updateSupplier;
+    window.deleteSupplier = deleteSupplier;
+    window.fetchPurchaseOrders = fetchPurchaseOrders;
+    window.getPurchaseOrderById = getPurchaseOrderById;
+    window.createPurchaseOrder = createPurchaseOrder;
+    window.updatePurchaseOrderStatus = updatePurchaseOrderStatus;
+    window.deletePurchaseOrder = deletePurchaseOrder;
+    window.getWishlist = getWishlist;
+    window.addBookToWishlist = addBookToWishlist;
+    window.removeBookFromWishlist = removeBookFromWishlist;
     window.getNotifications = getNotifications;
     window.getUnreadNotifications = getUnreadNotifications;
     window.getUnreadCount = getUnreadCount;

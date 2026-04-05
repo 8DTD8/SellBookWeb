@@ -26,7 +26,7 @@ public class SupplierService {
         supplier.setCountry(supplierDTO.getCountry());
         supplier.setContactPerson(supplierDTO.getContactPerson());
         supplier.setBankAccount(supplierDTO.getBankAccount());
-        supplier.setActive(true);
+        supplier.setActive(supplierDTO.getActive() == null ? true : supplierDTO.getActive());
         supplier.setCreatedAt(LocalDateTime.now());
         supplier.setUpdatedAt(LocalDateTime.now());
 
@@ -64,6 +64,7 @@ public class SupplierService {
         supplier.setCountry(supplierDTO.getCountry());
         supplier.setContactPerson(supplierDTO.getContactPerson());
         supplier.setBankAccount(supplierDTO.getBankAccount());
+        supplier.setActive(supplierDTO.getActive() == null ? supplier.getActive() : supplierDTO.getActive());
         supplier.setUpdatedAt(LocalDateTime.now());
 
         Supplier updated = supplierRepository.save(supplier);

@@ -9,6 +9,10 @@
                 }
                 if (action === 'add-cart') {
                     deps.addToCart(bookId);
+                    return;
+                }
+                if (action === 'toggle-wishlist') {
+                    deps.toggleWishlist(bookId);
                 }
             },
             onBookCard: (bookId) => {

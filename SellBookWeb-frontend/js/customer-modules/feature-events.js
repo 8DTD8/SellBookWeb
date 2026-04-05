@@ -74,15 +74,17 @@
         const notificationsList = document.getElementById('notificationsList');
         if (notificationsList) {
             notificationsList.addEventListener('click', (event) => {
+                const bookNotificationItem = event.target.closest('.notification-book-card[data-book-id]');
+                if (bookNotificationItem && typeof onNotificationBookClick === 'function') {
+                    event.stopPropagation();
+                    onNotificationBookClick(bookNotificationItem.dataset.bookId, bookNotificationItem, event);
+                    return;
+                }
+
                 const notificationItem = event.target.closest('.notification-item[data-notification-id]');
                 if (notificationItem && typeof onNotificationClick === 'function') {
                     onNotificationClick(notificationItem.dataset.notificationId, notificationItem, event);
                     return;
-                }
-
-                const bookNotificationItem = event.target.closest('.notification-book-card[data-book-id]');
-                if (bookNotificationItem && typeof onNotificationBookClick === 'function') {
-                    onNotificationBookClick(bookNotificationItem.dataset.bookId, bookNotificationItem, event);
                 }
             });
         }

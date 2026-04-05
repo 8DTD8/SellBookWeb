@@ -7,6 +7,7 @@
             loadMyReviews,
             loadMyOrders,
             loadNotifications,
+            loadWishlistSection,
             loadCart,
             logger
         } = deps;
@@ -25,6 +26,10 @@
 
                 if (sectionId === 'notifications') {
                     loadNotifications();
+                }
+
+                if (sectionId === 'wishlist') {
+                    loadWishlistSection();
                 }
 
                 if (sectionId === 'cart') {

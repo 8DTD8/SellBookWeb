@@ -11,10 +11,26 @@
         getPaymentMethodText(method) {
             switch (method) {
                 case 'COD': return 'Thanh toán khi nhận hàng';
-                case 'CARD': return 'Thẻ ngân hàng';
-                case 'TRANSFER': return 'Chuyển khoản';
+                case 'BANK': return 'Chuyển khoản ngân hàng';
+                case 'MOMO': return 'Ví MoMo';
                 default: return method || '-';
             }
+        },
+
+        getPaymentStatusText(status) {
+            switch (String(status || '').toUpperCase()) {
+                case 'COMPLETED': return 'Đã thanh toán';
+                case 'FAILED': return 'Thanh toán thất bại';
+                case 'REFUNDED': return 'Đã hoàn tiền';
+                case 'PENDING':
+                default:
+                    return 'Chưa thanh toán';
+            }
+        },
+
+        requiresCompletedPayment(order) {
+            const paymentMethod = String(order && order.paymentMethod ? order.paymentMethod : '').toUpperCase();
+            return paymentMethod === 'BANK' || paymentMethod === 'MOMO';
         },
 
         /**
@@ -181,7 +197,9 @@
                                         ${getOrderStatusText(order.status)}
                                     </span>
                                 </p>
+                                <p><strong>Thanh toán:</strong> ${escapeHtml(AdminOrdersModalBusiness.getPaymentStatusText(order.paymentStatus))}</p>
                             </div>
+                            <p id="updateStatusHint" class="form-hint"></p>
                             <form id="updateStatusForm" data-order-id="${safeOrderIdJs}">
                                 <div class="form-group">
                                     <label>Trạng thái mới:</label>
@@ -206,13 +224,28 @@
 
             setTimeout(() => {
                 const select = document.getElementById('newStatus');
+                const hint = document.getElementById('updateStatusHint');
                 if (select) {
                     const statusTransitions = {
                         'PENDING':   [{ value: 'CONFIRMED', label: 'Đã xác nhận' }, { value: 'CANCELLED', label: 'Đã hủy' }],
                         'CONFIRMED': [{ value: 'SHIPPED',   label: 'Đang vận chuyển' }, { value: 'CANCELLED', label: 'Đã hủy' }],
                         'SHIPPED':   [{ value: 'DELIVERED', label: 'Đã giao' }, { value: 'CANCELLED', label: 'Đã hủy' }]
                     };
-                    const validOptions = statusTransitions[order.status] || [];
+                    let validOptions = statusTransitions[order.status] || [];
+                    const paymentStatus = String(order.paymentStatus || '').toUpperCase();
+                    const requiresCompletedPayment = AdminOrdersModalBusiness.requiresCompletedPayment(order);
+
+                    if (order.status === 'PENDING' && requiresCompletedPayment && paymentStatus !== 'COMPLETED') {
+                        validOptions = validOptions.filter(opt => opt.value !== 'CONFIRMED');
+                        if (hint) {
+                            hint.textContent = 'Đơn chuyển khoản chỉ được xác nhận sau khi thanh toán đã hoàn tất.';
+                        }
+                    } else if (order.status === 'PENDING' && !requiresCompletedPayment && hint) {
+                        hint.textContent = 'Đơn COD có thể chuyển sang đã xác nhận mà không cần thanh toán trước.';
+                    } else if (hint) {
+                        hint.textContent = '';
+                    }
+
                     select.innerHTML = validOptions.map(opt =>
                         `<option value="${opt.value}">${opt.label}</option>`
                     ).join('');

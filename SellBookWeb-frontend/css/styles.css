@@ -121,6 +121,12 @@ html {
     color: #333;
 }
 
+.section-header-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
 /* ================================
    BUTTONS
    ================================ */
@@ -249,6 +255,12 @@ html {
     margin-bottom: 1.5rem;
 }
 
+.two-column-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
@@ -279,6 +291,12 @@ html {
 #bookDescription {
     resize: none;
     min-height: 140px;
+}
+
+#supplierAddress,
+#purchaseOrderNotes {
+    resize: none;
+    min-height: 90px;
 }
 
 .form-group input[type="checkbox"] {
@@ -427,6 +445,42 @@ html {
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.purchase-order-form-container {
+    max-width: 900px;
+}
+
+.purchase-order-items-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.purchase-order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.purchase-order-item-row {
+    display: grid;
+    grid-template-columns: minmax(240px, 2fr) 120px 160px auto;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.purchase-order-item-row select,
+.purchase-order-item-row input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: inherit;
 }
 
 /* ================================
@@ -655,6 +709,13 @@ html {
         align-items: flex-start;
     }
 
+    .section-header-actions,
+    .two-column-grid,
+    .purchase-order-item-row {
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
@@ -763,15 +824,24 @@ html {
 }
 
 .admin-page .navbar-container {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
     max-width: 1440px;
     padding: 12px 20px;
 }
 
+.admin-page .navbar-brand {
+    min-width: 0;
+}
+
 .admin-page .navbar-brand h1 {
-    font-size: 1.75rem;
-    line-height: 1;
+    font-size: 1.05rem;
+    line-height: 1.15;
     font-weight: 700;
     letter-spacing: 0.02em;
+    white-space: nowrap;
 }
 
 /* Admin user action choices */
@@ -811,13 +881,29 @@ html {
 }
 
 .admin-page .navbar-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 4px;
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.admin-page .navbar-menu::-webkit-scrollbar {
+    display: none;
+}
+
+.admin-page .navbar-menu li {
+    flex: 0 0 auto;
 }
 
 .admin-page .navbar-menu a {
     color: var(--admin-text-soft);
-    font-size: 0.85rem;
-    padding: 0.45rem 0.65rem;
+    font-size: 0.78rem;
+    padding: 0.4rem 0.55rem;
+    white-space: nowrap;
 }
 
 .admin-page .navbar-menu a:hover {
@@ -826,9 +912,11 @@ html {
 }
 
 .admin-page .user-info {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: #2e3340;
+    white-space: nowrap;
+    text-align: right;
 }
 
 .admin-page .container {

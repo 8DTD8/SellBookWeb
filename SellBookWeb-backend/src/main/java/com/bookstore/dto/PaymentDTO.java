@@ -9,6 +9,7 @@ public class PaymentDTO {
     private String paymentMethod;
     private String paymentStatus;
     private String transactionId;
+    private LocalDateTime createdAt;
     private LocalDateTime paymentDate;
 
     public PaymentDTO() {
@@ -31,6 +32,9 @@ public class PaymentDTO {
 
     public String getTransactionId() { return transactionId; }
     public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public LocalDateTime getPaymentDate() { return paymentDate; }
     public void setPaymentDate(LocalDateTime paymentDate) { this.paymentDate = paymentDate; }

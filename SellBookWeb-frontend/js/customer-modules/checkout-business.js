@@ -5,6 +5,51 @@
 (function (global) {
     'use strict';
 
+    function calculateCheckoutPricing(selectedItems, coupon) {
+        let subtotal = 0;
+        let totalOriginal = 0;
+
+        (selectedItems || []).forEach(item => {
+            const originalPrice = item.price || 0;
+            const percentDiscount = item.discount || 0;
+            const priceAfterPercent = percentDiscount > 0
+                ? originalPrice * (1 - percentDiscount / 100)
+                : originalPrice;
+            const couponValue = item.couponValue || 0;
+            const hasCoupon = !!item.discountCode && couponValue > 0;
+            const couponApplied = hasCoupon && (item.couponApplied !== false);
+            const finalPrice = couponApplied
+                ? Math.max(priceAfterPercent - couponValue, 0)
+                : priceAfterPercent;
+
+            subtotal += finalPrice * item.quantity;
+            totalOriginal += originalPrice * item.quantity;
+        });
+
+        let couponDiscount = 0;
+        if (coupon) {
+            if (coupon.discountType === 'PERCENTAGE') {
+                couponDiscount = subtotal * (coupon.discountValue / 100);
+            } else {
+                couponDiscount = coupon.discountValue;
+            }
+            couponDiscount = Math.min(couponDiscount, subtotal);
+        }
+
+        const discountedSubtotal = subtotal - couponDiscount;
+        const shippingFee = 30000;
+
+        return {
+            totalOriginal,
+            subtotal,
+            couponDiscount,
+            discountedSubtotal,
+            shippingFee,
+            totalWithShipping: discountedSubtotal + shippingFee,
+            savings: totalOriginal - discountedSubtotal
+        };
+    }
+
     const CustomerCheckoutBusiness = {
 
         /**
@@ -27,8 +72,6 @@
 
             document.getElementById('checkoutItemCount').textContent = selectedItems.length + ' sản phẩm';
 
-            let subtotal = 0;
-            let totalOriginal = 0;
             let itemsHtml = '';
 
             selectedItems.forEach(item => {
@@ -43,9 +86,6 @@
                 const finalPrice = couponApplied
                     ? Math.max(priceAfterPercent - couponValue, 0)
                     : priceAfterPercent;
-
-                subtotal += finalPrice * item.quantity;
-                totalOriginal += originalPrice * item.quantity;
 
                 itemsHtml += `
                     <div class="checkout-order-item">
@@ -63,13 +103,12 @@
 
             itemsList.innerHTML = itemsHtml;
 
-            const shippingFee = 30000;
-            const savings = totalOriginal - subtotal;
+            const pricing = calculateCheckoutPricing(selectedItems, window.appliedCheckoutCoupon || null);
 
-            document.getElementById('checkoutSubtotal').textContent = formatPrice(subtotal);
-            document.getElementById('checkoutShipping').textContent = formatPrice(shippingFee);
-            document.getElementById('checkoutSavings').textContent = '-' + formatPrice(savings);
-            document.getElementById('checkoutTotal').textContent = formatPrice(subtotal + shippingFee);
+            document.getElementById('checkoutSubtotal').textContent = formatPrice(pricing.discountedSubtotal);
+            document.getElementById('checkoutShipping').textContent = formatPrice(pricing.shippingFee);
+            document.getElementById('checkoutSavings').textContent = '-' + formatPrice(pricing.savings);
+            document.getElementById('checkoutTotal').textContent = formatPrice(pricing.totalWithShipping);
 
             // Reset payment method
             CustomerCheckoutBusiness.selectPaymentMethod('COD',
@@ -156,43 +195,12 @@
         updateCheckoutWithCoupon(coupon, deps) {
             const { formatPrice, cart, selectedCartItems } = deps;
             const selectedItems = cart.filter(item => selectedCartItems.has(item.id));
-            let subtotal = 0;
-            let totalOriginal = 0;
+            const pricing = calculateCheckoutPricing(selectedItems, coupon);
 
-            selectedItems.forEach(item => {
-                const originalPrice = item.price || 0;
-                const percentDiscount = item.discount || 0;
-                const priceAfterPercent = percentDiscount > 0
-                    ? originalPrice * (1 - percentDiscount / 100)
-                    : originalPrice;
-                const couponValue = item.couponValue || 0;
-                const hasCoupon = !!item.discountCode && couponValue > 0;
-                const couponApplied = hasCoupon && (item.couponApplied !== false);
-                const finalPrice = couponApplied
-                    ? Math.max(priceAfterPercent - couponValue, 0)
-                    : priceAfterPercent;
-                subtotal += finalPrice * item.quantity;
-                totalOriginal += originalPrice * item.quantity;
-            });
-
-            let couponDiscount = 0;
-            if (coupon) {
-                if (coupon.discountType === 'PERCENTAGE') {
-                    couponDiscount = subtotal * (coupon.discountValue / 100);
-                } else {
-                    couponDiscount = coupon.discountValue;
-                }
-                couponDiscount = Math.min(couponDiscount, subtotal);
-            }
-
-            const afterCoupon = subtotal - couponDiscount;
-            const shippingFee = 30000;
-            const savings = totalOriginal - afterCoupon;
-
-            document.getElementById('checkoutSubtotal').textContent = formatPrice(afterCoupon);
-            document.getElementById('checkoutShipping').textContent = formatPrice(shippingFee);
-            document.getElementById('checkoutSavings').textContent = '-' + formatPrice(savings);
-            document.getElementById('checkoutTotal').textContent = formatPrice(afterCoupon + shippingFee);
+            document.getElementById('checkoutSubtotal').textContent = formatPrice(pricing.discountedSubtotal);
+            document.getElementById('checkoutShipping').textContent = formatPrice(pricing.shippingFee);
+            document.getElementById('checkoutSavings').textContent = '-' + formatPrice(pricing.savings);
+            document.getElementById('checkoutTotal').textContent = formatPrice(pricing.totalWithShipping);
         },
 
         /**
@@ -230,7 +238,6 @@
             const provinceText = document.getElementById('checkoutProvince').selectedOptions[0]?.text || '';
             const fullAddress = [address, ward, district, provinceText].filter(Boolean).join(', ');
 
-            let totalPrice = 0;
             const orderItems = selectedItems.map(item => {
                 const originalPrice = item.price || 0;
                 const percentDiscount = item.discount || 0;
@@ -243,18 +250,16 @@
                 const finalPrice = couponApplied
                     ? Math.max(priceAfterPercent - couponValue, 0)
                     : priceAfterPercent;
-                totalPrice += finalPrice * item.quantity;
                 return { bookId: item.id, title: item.title, price: finalPrice, quantity: item.quantity };
             });
 
-            const shippingFee = 30000;
-            totalPrice += shippingFee;
+            const pricing = calculateCheckoutPricing(selectedItems, window.appliedCheckoutCoupon || null);
 
             const user = auth.getUser();
             const orderData = {
                 userId: user?.id,
                 items: orderItems,
-                totalPrice: totalPrice,
+                totalPrice: pricing.totalWithShipping,
                 status: 'PENDING',
                 paymentMethod: paymentMethod,
                 couponCode: window.appliedCheckoutCoupon?.code || null,
@@ -278,6 +283,24 @@
                 updateCartCount();
 
                 document.getElementById('successOrderId').textContent = result.id || 'N/A';
+                const paymentMethodText = CustomerCheckoutBusiness.getPaymentMethodText(result.paymentMethod);
+                const paymentStatusText = CustomerCheckoutBusiness.getPaymentStatusText(result.paymentStatus);
+                const successPaymentMethod = document.getElementById('successPaymentMethod');
+                const successPaymentStatus = document.getElementById('successPaymentStatus');
+                const successTransactionId = document.getElementById('successTransactionId');
+
+                if (successPaymentMethod) {
+                    successPaymentMethod.textContent = paymentMethodText;
+                }
+
+                if (successPaymentStatus) {
+                    successPaymentStatus.textContent = paymentStatusText;
+                }
+
+                if (successTransactionId) {
+                    successTransactionId.textContent = result.transactionId || 'Chưa có';
+                }
+
                 showSection('orderSuccess');
             } catch (error) {
                 showAlert('Đặt hàng thất bại: ' + error.message);
@@ -286,6 +309,34 @@
                     placeOrderBtn.disabled = false;
                     placeOrderBtn.innerHTML = '<i class="fas fa-check"></i> Đặt hàng';
                 }
+            }
+        },
+
+        getPaymentMethodText(method) {
+            const normalizedMethod = String(method || '').toUpperCase();
+            switch (normalizedMethod) {
+                case 'BANK':
+                    return 'Chuyển khoản ngân hàng';
+                case 'MOMO':
+                    return 'Ví MoMo';
+                case 'COD':
+                default:
+                    return 'Thanh toán khi nhận hàng';
+            }
+        },
+
+        getPaymentStatusText(status) {
+            const normalizedStatus = String(status || '').toUpperCase();
+            switch (normalizedStatus) {
+                case 'COMPLETED':
+                    return 'Đã thanh toán';
+                case 'REFUNDED':
+                    return 'Đã hoàn tiền';
+                case 'FAILED':
+                    return 'Thanh toán thất bại';
+                case 'PENDING':
+                default:
+                    return 'Chưa thanh toán';
             }
         }
     };

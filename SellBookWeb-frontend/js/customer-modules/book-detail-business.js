@@ -18,7 +18,8 @@
         renderBooks(books, deps) {
             const {
                 escapeJsString, escapeHtml, sanitizeUrl, formatPrice, renderStars,
-                renderPagination, currentPage, productsPerPage, setTotalPages
+                renderPagination, currentPage, productsPerPage, setTotalPages,
+                isInWishlist
             } = deps;
 
             const container = document.getElementById('booksList');
@@ -48,6 +49,9 @@
                 const discount = hasDiscount ? book.discount : 0;
                 const originalPrice = book.price;
                 const finalPrice = hasDiscount ? originalPrice * (1 - discount / 100) : originalPrice;
+                const quantity = Number(book.quantity) || 0;
+                const isOutOfStock = quantity <= 0;
+                const wished = typeof isInWishlist === 'function' ? isInWishlist(book.id) : false;
 
                 card.innerHTML = `
                     <div class="book-image">
@@ -55,6 +59,7 @@
                             ? `<img src="${safeImageUrl}" alt="${safeBookTitle}">`
                             : '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f5f5f5; color: #999; font-size: 3rem;">📚</div>'}
                         ${hasDiscount ? `<div class="discount-badge">-${discount}%</div>` : ''}
+                        <div class="book-stock-badge ${isOutOfStock ? 'out' : 'in'}">${isOutOfStock ? 'Chưa có hàng' : `Còn ${quantity}`}</div>
                     </div>
                     <div class="book-info">
                         <div class="book-title">${safeBookTitle}</div>
@@ -65,7 +70,8 @@
                         </div>
                         <div class="book-actions">
                             <button class="btn btn-primary btn-sm" data-action="detail" data-book-id="${safeBookId}">Chi tiết</button>
-                            <button class="btn btn-success btn-sm" data-action="add-cart" data-book-id="${safeBookId}">Thêm 🛒</button>
+                            <button class="btn btn-success btn-sm" data-action="add-cart" data-book-id="${safeBookId}" ${isOutOfStock ? 'disabled' : ''}>${isOutOfStock ? 'Chưa có hàng' : 'Thêm 🛒'}</button>
+                            <button class="btn btn-outline-danger btn-sm wishlist-card-btn ${wished ? 'active' : ''}" data-action="toggle-wishlist" data-book-id="${safeBookId}">${wished ? 'Đã lưu' : 'Yêu thích'}</button>
                         </div>
                     </div>
                 `;
@@ -86,7 +92,9 @@
             try {
                 const book = await getBookById(bookId);
                 if (typeof setCurrentBook === 'function') setCurrentBook(book);
-                if (typeof setProductQuantity === 'function') setProductQuantity(1);
+                if (typeof setProductQuantity === 'function') {
+                    setProductQuantity((Number(book?.quantity) || 0) > 0 ? 1 : 0);
+                }
                 renderBookDetail(book);
                 await loadProductReviews(bookId);
                 showSection('bookDetail');
@@ -101,7 +109,7 @@
          * deps: { escapeHtml, sanitizeUrl, formatPrice, formatNumber, renderStars, auth, getCategoryName }
          */
         renderBookDetail(book, deps) {
-            const { escapeHtml, sanitizeUrl, formatPrice, formatNumber, renderStars, auth, getCategoryName } = deps;
+            const { escapeHtml, sanitizeUrl, formatPrice, formatNumber, renderStars, auth, getCategoryName, isInWishlist } = deps;
 
             const hasDiscount = book.discount && book.discount > 0;
             const discount = hasDiscount ? book.discount : 0;
@@ -220,8 +228,23 @@
             const availability = document.getElementById('productAvailability');
             if (availability) {
                 const quantity = book.quantity || 0;
-                availability.textContent = quantity > 0 ? 'Còn hàng' : 'Hết hàng';
+                availability.textContent = quantity > 0 ? 'Còn hàng' : 'Chưa có hàng';
                 availability.style.color = quantity > 0 ? '#28a745' : '#dc3545';
+            }
+
+            const wishlistActionContainer = document.getElementById('wishlistActionContainer');
+            if (wishlistActionContainer) {
+                const wished = typeof isInWishlist === 'function' ? isInWishlist(book.id) : false;
+                const quantity = Number(book.quantity) || 0;
+                const label = wished
+                    ? 'Đã theo dõi'
+                    : (quantity > 0 ? 'Thêm vào wishlist' : 'Theo dõi khi có hàng');
+                wishlistActionContainer.innerHTML = `
+                    <button type="button" id="wishlistDetailButton" class="btn-wishlist-detail ${wished ? 'active' : ''}" onclick="toggleWishlistFromDetail()">
+                        <i class="fas fa-heart"></i>
+                        <span>${escapeHtml(label)}</span>
+                    </button>
+                `;
             }
 
             // Offer badges / coupons
@@ -267,7 +290,7 @@
 
             // Quantity input
             const quantityInput = document.getElementById('productQuantity');
-            if (quantityInput) quantityInput.value = 1;
+            if (quantityInput) quantityInput.value = (Number(book.quantity) || 0) > 0 ? 1 : 0;
 
             // Review login prompt / write-review button
             const reviewLoginPrompt = document.getElementById('reviewLoginPrompt');

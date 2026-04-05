@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class CouponService {
+    private static final String DEFAULT_DISCOUNT_TYPE = "PERCENTAGE";
+
     private final CouponRepository couponRepository;
 
     public CouponService(CouponRepository couponRepository) {
@@ -23,7 +25,7 @@ public class CouponService {
         coupon.setCode(couponDTO.getCode() == null ? null : couponDTO.getCode().trim().toUpperCase());
         coupon.setDescription(couponDTO.getDescription());
         coupon.setDiscountValue(couponDTO.getDiscountValue());
-        coupon.setDiscountType(couponDTO.getDiscountType());
+        coupon.setDiscountType(normalizeDiscountType(couponDTO.getDiscountType()));
         coupon.setMinimumAmount(couponDTO.getMinimumAmount());
         coupon.setMaxUsage(couponDTO.getMaxUsage());
         coupon.setCurrentUsage(0);
@@ -87,7 +89,7 @@ public class CouponService {
         coupon.setCode(couponDTO.getCode() == null ? null : couponDTO.getCode().trim().toUpperCase());
         coupon.setDescription(couponDTO.getDescription());
         coupon.setDiscountValue(couponDTO.getDiscountValue());
-        coupon.setDiscountType(couponDTO.getDiscountType());
+        coupon.setDiscountType(normalizeDiscountType(couponDTO.getDiscountType()));
         coupon.setMinimumAmount(couponDTO.getMinimumAmount());
         coupon.setMaxUsage(couponDTO.getMaxUsage());
         coupon.setStartDate(couponDTO.getStartDate());
@@ -149,5 +151,12 @@ public class CouponService {
         dto.setEndDate(coupon.getEndDate());
         dto.setActive(coupon.getActive());
         return dto;
+    }
+
+    private String normalizeDiscountType(String discountType) {
+        if (discountType == null || discountType.trim().isEmpty()) {
+            return DEFAULT_DISCOUNT_TYPE;
+        }
+        return discountType.trim().toUpperCase();
     }
 }

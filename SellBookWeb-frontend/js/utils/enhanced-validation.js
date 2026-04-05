@@ -47,12 +47,12 @@ function validatePrice(price) {
     };
 }
 
-// Quantity: Must be positive integer, not zero
+// Quantity: Must be a non-negative integer
 function validateQuantity(quantity) {
     const num = parseInt(quantity, 10);
     return {
-        isValid: num > 0 && !isNaN(num),
-        error: (num > 0 && !isNaN(num)) ? null : 'Số lượng phải lớn hơn 0'
+        isValid: Number.isInteger(num) && num >= 0,
+        error: (Number.isInteger(num) && num >= 0) ? null : 'Số lượng phải lớn hơn hoặc bằng 0'
     };
 }
 

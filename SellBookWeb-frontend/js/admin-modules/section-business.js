@@ -9,6 +9,9 @@
             loadCategories,
             loadCoupons,
             loadUsers,
+            loadSuppliers,
+            loadPurchaseOrders,
+            loadPayments,
             loadReviews,
             loadOrders
         } = deps;
@@ -40,6 +43,15 @@
                     break;
                 case 'users':
                     loadUsers();
+                    break;
+                case 'suppliers':
+                    loadSuppliers();
+                    break;
+                case 'purchaseOrders':
+                    loadPurchaseOrders();
+                    break;
+                case 'payments':
+                    loadPayments();
                     break;
                 case 'reviews':
                     loadReviews();

@@ -35,6 +35,38 @@
 		return classMap[normalizedStatus] || 'badge-secondary';
 	}
 
+	function paymentMethodLabel(method) {
+		const normalizedMethod = String(method || '').toUpperCase();
+		const methodMap = {
+			COD: 'Thanh toán khi nhận hàng',
+			BANK: 'Chuyển khoản ngân hàng',
+			MOMO: 'Ví MoMo'
+		};
+		return methodMap[normalizedMethod] || (method || 'N/A');
+	}
+
+	function paymentStatusLabel(status) {
+		const normalizedStatus = String(status || '').toUpperCase();
+		const statusMap = {
+			PENDING: 'Chưa thanh toán',
+			COMPLETED: 'Đã thanh toán',
+			FAILED: 'Thanh toán thất bại',
+			REFUNDED: 'Đã hoàn tiền'
+		};
+		return statusMap[normalizedStatus] || (status || 'Chưa có');
+	}
+
+	function paymentStatusClass(status) {
+		const normalizedStatus = String(status || '').toUpperCase();
+		const classMap = {
+			PENDING: 'badge-warning',
+			COMPLETED: 'badge-success',
+			FAILED: 'badge-danger',
+			REFUNDED: 'badge-secondary'
+		};
+		return classMap[normalizedStatus] || 'badge-secondary';
+	}
+
 	function renderOrderItems(order, escapeHtml, formatPrice) {
 		const items = Array.isArray(order.items) ? order.items : [];
 		if (items.length === 0) {
@@ -79,6 +111,10 @@
 				const normalizedStatus = String(order.status || 'PENDING').toUpperCase();
 				const label = statusLabel(normalizedStatus);
 				const badgeClass = statusClass(normalizedStatus);
+				const paymentLabel = paymentMethodLabel(order.paymentMethod);
+				const paymentStatus = paymentStatusLabel(order.paymentStatus);
+				const paymentBadgeClass = paymentStatusClass(order.paymentStatus);
+				const paymentDate = formatDate(order.paymentDate);
 				const total = formatPrice(Number(order.totalPrice || 0));
 				const createdAt = formatDate(order.createdAt);
 				const canCancel = normalizedStatus === 'PENDING' || normalizedStatus === 'CONFIRMED';
@@ -90,6 +126,12 @@
 							<span class="order-status-badge ${badgeClass}">${escapeHtml(label)}</span>
 						</div>
 						<div style="color:#666;font-size:0.9rem;margin:6px 0 10px;">Ngày đặt: ${escapeHtml(createdAt)}</div>
+						<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
+							<span style="font-size:0.92rem;color:#4a5568;">Phương thức: <strong>${escapeHtml(paymentLabel)}</strong></span>
+							<span class="order-status-badge ${paymentBadgeClass}">${escapeHtml(paymentStatus)}</span>
+							${order.transactionId ? `<span style="font-size:0.88rem;color:#718096;">Mã GD: ${escapeHtml(order.transactionId)}</span>` : ''}
+							${order.paymentDate ? `<span style="font-size:0.88rem;color:#718096;">Lúc: ${escapeHtml(paymentDate)}</span>` : ''}
+						</div>
 						<div>${renderOrderItems(order, escapeHtml, formatPrice)}</div>
 						<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:12px;flex-wrap:wrap;">
 							<strong>Tổng tiền: ${total}</strong>

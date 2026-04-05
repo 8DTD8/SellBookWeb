@@ -679,6 +679,27 @@ html {
     z-index: 10;
 }
 
+.book-stock-badge {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    z-index: 10;
+}
+
+.book-stock-badge.in {
+    background: rgba(40, 167, 69, 0.92);
+    color: #fff;
+}
+
+.book-stock-badge.out {
+    background: rgba(220, 53, 69, 0.92);
+    color: #fff;
+}
+
 .book-info {
     padding: 1rem;
     flex-grow: 1;
@@ -746,6 +767,17 @@ html {
     flex: 1;
     padding: 0.6rem;
     font-size: 0.85rem;
+}
+
+.book-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.wishlist-card-btn.active {
+    background: #fff0f1;
+    border-color: #dc3545;
+    color: #dc3545;
 }
 
 /* ================================
@@ -868,6 +900,10 @@ html {
     gap: 1rem;
 }
 
+.wishlist-action-container {
+    margin-top: -0.5rem;
+}
+
 .btn-add-cart {
     flex: 1;
     padding: 1rem;
@@ -905,6 +941,41 @@ html {
 
 .btn-buy-now:hover {
     background: #c82333;
+}
+
+.btn-add-cart:disabled,
+.btn-buy-now:disabled,
+.quantity-control button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-wishlist-detail {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background: #fff7f7;
+    border: 1px solid #f1c5ca;
+    color: #b92d3c;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.25s ease;
+}
+
+.btn-wishlist-detail:hover {
+    background: #ffe8ea;
+    border-color: #dc3545;
+}
+
+.btn-wishlist-detail.active {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
 }
 
 .store-policies {
@@ -2932,7 +3003,8 @@ a:focus-visible {
     }
     
     .btn-add-cart,
-    .btn-buy-now {
+    .btn-buy-now,
+    .btn-wishlist-detail {
         width: 100%;
     }
     

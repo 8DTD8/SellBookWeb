@@ -7,6 +7,9 @@ let booksData = [];
 let categoriesData = [];
 let couponsData = [];
 let usersData = [];
+let suppliersData = [];
+let purchaseOrdersData = [];
+let paymentsData = [];
 let currentReviewsView = 'pending';
 let adminActionEventsBound = false;
 let adminStaticEventsBound = false;
@@ -60,6 +63,26 @@ function setupAdminStaticDelegation() {
         hideCategoryForm,
         showAddCouponForm,
         hideCouponForm,
+        showAddSupplierForm,
+        hideSupplierForm,
+        editSupplier,
+        deleteSupplierConfirm,
+        showAddPurchaseOrderForm,
+        hidePurchaseOrderForm,
+        addPurchaseOrderItem,
+        removePurchaseOrderItem,
+        saveSupplier,
+        savePurchaseOrder,
+        receivePurchaseOrder,
+        cancelPurchaseOrder,
+        deletePurchaseOrderConfirm,
+        refreshPurchaseOrders,
+        filterPurchaseOrdersByStatus,
+        refreshPayments,
+        filterPaymentsByStatus,
+        completePayment,
+        failPayment,
+        refundPayment,
         hideUserForm,
         refreshOrders,
         closeAlert,
@@ -158,6 +181,9 @@ function showSection(sectionId) {
             loadCategories,
             loadCoupons,
             loadUsers,
+            loadSuppliers,
+            loadPurchaseOrders,
+            loadPayments,
             loadReviews,
             loadOrders
         });
@@ -435,7 +461,6 @@ function showAddCouponForm() {
     document.getElementById('couponId').value = '';
     document.getElementById('couponCode').value = '';
     document.getElementById('couponDescription').value = '';
-    document.getElementById('couponDiscountType').value = 'PERCENTAGE';
     document.getElementById('couponDiscountValue').value = '';
     document.getElementById('couponMinimumAmount').value = '';
     document.getElementById('couponMaxUsage').value = '';
@@ -497,6 +522,255 @@ async function loadUsers() {
         return;
     }
     showAlert('Không thể tải người dùng do thiếu module business.');
+}
+
+// ==============================
+// SUPPLIERS MANAGEMENT
+// ==============================
+
+async function loadSuppliers() {
+    if (window.AdminSuppliersBusiness && typeof window.AdminSuppliersBusiness.loadSuppliers === 'function') {
+        await window.AdminSuppliersBusiness.loadSuppliers({
+            fetchSuppliers,
+            renderSuppliers,
+            showAlert,
+            setSuppliersData: (data) => { suppliersData = data; }
+        });
+        return;
+    }
+    showAlert('Không thể tải nhà cung cấp do thiếu module business.');
+}
+
+function renderSuppliers(suppliers) {
+    if (window.AdminSuppliersBusiness && typeof window.AdminSuppliersBusiness.renderSuppliers === 'function') {
+        window.AdminSuppliersBusiness.renderSuppliers(suppliers, { escapeHtml, escapeJsString });
+        return;
+    }
+}
+
+function showAddSupplierForm() {
+    document.getElementById('supplierId').value = '';
+    document.getElementById('supplierName').value = '';
+    document.getElementById('supplierEmail').value = '';
+    document.getElementById('supplierPhone').value = '';
+    document.getElementById('supplierContactPerson').value = '';
+    document.getElementById('supplierAddress').value = '';
+    document.getElementById('supplierCity').value = '';
+    document.getElementById('supplierCountry').value = '';
+    document.getElementById('supplierBankAccount').value = '';
+    document.getElementById('supplierActive').checked = true;
+    document.getElementById('supplierFormTitle').textContent = 'Thêm nhà cung cấp';
+    document.getElementById('supplierForm').classList.remove('hidden');
+}
+
+function hideSupplierForm() {
+    document.getElementById('supplierForm').classList.add('hidden');
+}
+
+async function editSupplier(id) {
+    if (window.AdminSuppliersBusiness && typeof window.AdminSuppliersBusiness.editSupplier === 'function') {
+        await window.AdminSuppliersBusiness.editSupplier(id, { getSupplierById, showAlert });
+    }
+}
+
+async function saveSupplier(event) {
+    if (window.AdminSuppliersBusiness && typeof window.AdminSuppliersBusiness.saveSupplier === 'function') {
+        await window.AdminSuppliersBusiness.saveSupplier(event, {
+            createSupplier,
+            updateSupplier,
+            showAlert,
+            hideSupplierForm,
+            reloadSuppliers: loadSuppliers
+        });
+    }
+}
+
+async function deleteSupplierConfirm(id) {
+    if (window.AdminSuppliersBusiness && typeof window.AdminSuppliersBusiness.deleteSupplierConfirm === 'function') {
+        await window.AdminSuppliersBusiness.deleteSupplierConfirm(id, {
+            deleteSupplier,
+            showAlert,
+            reloadSuppliers: loadSuppliers
+        });
+    }
+}
+
+// ==============================
+// PURCHASE ORDERS MANAGEMENT
+// ==============================
+
+async function loadPurchaseOrders() {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.loadPurchaseOrders === 'function') {
+        await window.AdminPurchaseOrdersBusiness.loadPurchaseOrders({
+            fetchPurchaseOrders,
+            fetchSuppliers,
+            fetchBooks,
+            setPurchaseOrdersData: (data) => { purchaseOrdersData = data; },
+            setSuppliersData: (data) => { suppliersData = data; },
+            setBooksData: (data) => { booksData = data; },
+            renderPurchaseOrders,
+            showAlert
+        });
+        return;
+    }
+    showAlert('Không thể tải phiếu nhập do thiếu module business.');
+}
+
+function renderPurchaseOrders(orders) {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.renderPurchaseOrders === 'function') {
+        window.AdminPurchaseOrdersBusiness.renderPurchaseOrders(orders, {
+            escapeHtml,
+            escapeJsString,
+            formatPrice,
+            suppliersData
+        });
+    }
+}
+
+function showAddPurchaseOrderForm() {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.showAddPurchaseOrderForm === 'function') {
+        window.AdminPurchaseOrdersBusiness.showAddPurchaseOrderForm({ suppliersData, booksData, showAlert });
+    }
+}
+
+function hidePurchaseOrderForm() {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.hidePurchaseOrderForm === 'function') {
+        window.AdminPurchaseOrdersBusiness.hidePurchaseOrderForm();
+    }
+}
+
+function addPurchaseOrderItem() {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.addPurchaseOrderItem === 'function') {
+        window.AdminPurchaseOrdersBusiness.addPurchaseOrderItem({ booksData });
+    }
+}
+
+function removePurchaseOrderItem(element) {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.removePurchaseOrderItem === 'function') {
+        window.AdminPurchaseOrdersBusiness.removePurchaseOrderItem(element, { showAlert });
+    }
+}
+
+async function savePurchaseOrder(event) {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.savePurchaseOrder === 'function') {
+        await window.AdminPurchaseOrdersBusiness.savePurchaseOrder(event, {
+            createPurchaseOrder,
+            showAlert,
+            hidePurchaseOrderForm,
+            reloadPurchaseOrders: loadPurchaseOrders
+        });
+    }
+}
+
+async function receivePurchaseOrder(id) {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.receivePurchaseOrder === 'function') {
+        await window.AdminPurchaseOrdersBusiness.receivePurchaseOrder(id, {
+            updatePurchaseOrderStatus,
+            showAlert,
+            reloadPurchaseOrders: loadPurchaseOrders
+        });
+    }
+}
+
+async function cancelPurchaseOrder(id) {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.cancelPurchaseOrder === 'function') {
+        await window.AdminPurchaseOrdersBusiness.cancelPurchaseOrder(id, {
+            updatePurchaseOrderStatus,
+            showAlert,
+            reloadPurchaseOrders: loadPurchaseOrders
+        });
+    }
+}
+
+async function deletePurchaseOrderConfirm(id) {
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.deletePurchaseOrderConfirm === 'function') {
+        await window.AdminPurchaseOrdersBusiness.deletePurchaseOrderConfirm(id, {
+            deletePurchaseOrder,
+            showAlert,
+            reloadPurchaseOrders: loadPurchaseOrders
+        });
+    }
+}
+
+function filterPurchaseOrdersByStatus() {
+    const status = document.getElementById('purchaseOrderStatusFilter').value;
+    if (window.AdminPurchaseOrdersBusiness && typeof window.AdminPurchaseOrdersBusiness.filterByStatus === 'function') {
+        renderPurchaseOrders(window.AdminPurchaseOrdersBusiness.filterByStatus(purchaseOrdersData, status));
+    }
+}
+
+function refreshPurchaseOrders() {
+    loadPurchaseOrders();
+}
+
+// ==============================
+// PAYMENTS MANAGEMENT
+// ==============================
+
+async function loadPayments() {
+    if (window.AdminPaymentsBusiness && typeof window.AdminPaymentsBusiness.loadPayments === 'function') {
+        await window.AdminPaymentsBusiness.loadPayments({
+            fetchPayments,
+            fetchOrders,
+            setPaymentsData: (data) => { paymentsData = data; },
+            renderPayments,
+            showAlert
+        });
+        return;
+    }
+    showAlert('Không thể tải danh sách thanh toán do thiếu module business.');
+}
+
+function renderPayments(payments) {
+    if (window.AdminPaymentsBusiness && typeof window.AdminPaymentsBusiness.renderPayments === 'function') {
+        window.AdminPaymentsBusiness.renderPayments(payments, {
+            escapeHtml,
+            escapeJsString,
+            formatPrice,
+            getPaymentMethodText
+        });
+    }
+}
+
+function filterPaymentsByStatus() {
+    const status = document.getElementById('paymentStatusFilter').value;
+    if (window.AdminPaymentsBusiness && typeof window.AdminPaymentsBusiness.filterByStatus === 'function') {
+        renderPayments(window.AdminPaymentsBusiness.filterByStatus(paymentsData, status));
+    }
+}
+
+async function completePayment(id) {
+    if (window.AdminPaymentsBusiness && typeof window.AdminPaymentsBusiness.updatePaymentStatus === 'function') {
+        await window.AdminPaymentsBusiness.updatePaymentStatus(id, 'COMPLETED', {
+            updatePaymentStatusAdmin,
+            showAlert,
+            reloadPayments: loadPayments
+        });
+    }
+}
+
+async function failPayment(id) {
+    if (window.AdminPaymentsBusiness && typeof window.AdminPaymentsBusiness.updatePaymentStatus === 'function') {
+        await window.AdminPaymentsBusiness.updatePaymentStatus(id, 'FAILED', {
+            updatePaymentStatusAdmin,
+            showAlert,
+            reloadPayments: loadPayments
+        });
+    }
+}
+
+async function refundPayment(id) {
+    if (window.AdminPaymentsBusiness && typeof window.AdminPaymentsBusiness.updatePaymentStatus === 'function') {
+        await window.AdminPaymentsBusiness.updatePaymentStatus(id, 'REFUNDED', {
+            updatePaymentStatusAdmin,
+            showAlert,
+            reloadPayments: loadPayments
+        });
+    }
+}
+
+function refreshPayments() {
+    loadPayments();
 }
 
 function renderUsers(users) {
@@ -830,8 +1104,8 @@ function getPaymentMethodText(method) {
     }
     switch (method) {
         case 'COD': return 'Thanh toán khi nhận hàng';
-        case 'CARD': return 'Thẻ ngân hàng';
-        case 'TRANSFER': return 'Chuyển khoản';
+        case 'BANK': return 'Chuyển khoản ngân hàng';
+        case 'MOMO': return 'Ví MoMo';
         default: return method || '-';
     }
 }

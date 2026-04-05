@@ -5,6 +5,7 @@ import com.bookstore.service.PurchaseOrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 import java.util.List;
 
 @RestController
@@ -16,10 +17,19 @@ public class AdminPurchaseOrderController {
         this.purchaseOrderService = purchaseOrderService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<PurchaseOrderDTO>> getAllPurchaseOrders() {
+        return ResponseEntity.ok(purchaseOrderService.getAllPurchaseOrders());
+    }
+
     @PostMapping
-    public ResponseEntity<PurchaseOrderDTO> createPurchaseOrder(@RequestBody PurchaseOrderDTO purchaseOrderDTO) {
-        PurchaseOrderDTO created = purchaseOrderService.createPurchaseOrder(purchaseOrderDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<?> createPurchaseOrder(@RequestBody PurchaseOrderDTO purchaseOrderDTO) {
+        try {
+            PurchaseOrderDTO created = purchaseOrderService.createPurchaseOrder(purchaseOrderDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")
@@ -44,14 +54,18 @@ public class AdminPurchaseOrderController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<PurchaseOrderDTO> updatePurchaseOrderStatus(
+    public ResponseEntity<?> updatePurchaseOrderStatus(
             @PathVariable String id,
             @RequestParam String status) {
-        PurchaseOrderDTO updated = purchaseOrderService.updatePurchaseOrderStatus(id, status);
-        if (updated == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            PurchaseOrderDTO updated = purchaseOrderService.updatePurchaseOrderStatus(id, status);
+            if (updated == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         }
-        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")

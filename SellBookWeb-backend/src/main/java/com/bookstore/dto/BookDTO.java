@@ -22,7 +22,7 @@ public class BookDTO {
     @Size(min = 2, max = 100, message = "Tác giả phải từ 2-100 ký tự")
     private String author;
 
-    @Size(max = 1000, message = "Mô tả không được > 1000 ký tự")
+    @Size(max = 10000, message = "Mô tả không được > 10000 ký tự")
     private String description;
 
     @NotNull(message = "Giá không được null")

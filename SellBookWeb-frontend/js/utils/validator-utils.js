@@ -167,7 +167,7 @@ function isValidPrice(price) {
 // QUANTITY VALIDATION
 // ===============================
 function isValidQuantity(quantity) {
-    return Number.isInteger(quantity) && quantity > 0 && quantity < 1000;
+    return Number.isInteger(quantity) && quantity >= 0 && quantity < 1000;
 }
 
 // ===============================

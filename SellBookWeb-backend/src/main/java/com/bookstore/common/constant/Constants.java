@@ -37,6 +37,7 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_ORDER_STATUS_CHANGED = "ORDER_STATUS_CHANGED";
     public static final String NOTIFICATION_TYPE_NEW_ORDER = "NEW_ORDER";
     public static final String NOTIFICATION_TYPE_PAYMENT_SUCCESS = "PAYMENT_SUCCESS";
+    public static final String NOTIFICATION_TYPE_WISHLIST_BACK_IN_STOCK = "WISHLIST_BACK_IN_STOCK";
     
     // Error messages
     public static final String ERROR_BOOK_NOT_FOUND = "Book not found";

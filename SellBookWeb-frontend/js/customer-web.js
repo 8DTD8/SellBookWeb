@@ -18,6 +18,7 @@ let notifications = [];
 let unreadNotificationCount = 0;
 let notificationPollingInterval = null;
 let bookStockPollingInterval = null;
+let wishlistBookIds = new Set();
 const BOOK_STOCK_POLLING_MS = 8000;
 let customerEventsBound = false;
 let customerSectionManager = null;
@@ -78,6 +79,7 @@ function initializeWeb() {
 
     if (auth.isAuthenticated()) {
         // Chỉ load các tính năng cần đăng nhập
+        loadWishlist();
         loadProfile();
         loadCart();
         loadNotifBadge();
@@ -138,6 +140,7 @@ function setupCustomerEventDelegation() {
     const customerHandlerDeps = {
         showBookDetail,
         addToCart,
+        toggleWishlist,
         likeReview,
         showSection,
         checkout,
@@ -238,7 +241,7 @@ window.addEventListener('beforeunload', () => {
 // ==============================
 
 // Sections that require the user to be logged in
-const PROTECTED_SECTIONS = new Set(['cart', 'checkout', 'myOrders', 'profile', 'myReviews', 'notifications']);
+const PROTECTED_SECTIONS = new Set(['cart', 'checkout', 'myOrders', 'profile', 'myReviews', 'notifications', 'wishlist']);
 
 function requireLogin(message) {
     showAlert(message || 'Vui lòng đăng nhập để sử dụng tính năng này.');
@@ -278,6 +281,7 @@ function showSection(sectionId) {
             loadMyReviews,
             loadMyOrders,
             loadNotifications,
+            loadWishlistSection,
             loadCart,
             logger: console
         });
@@ -350,7 +354,8 @@ function renderBooks(books) {
             renderPagination,
             currentPage,
             productsPerPage,
-            setTotalPages: (value) => { totalPages = value; }
+            setTotalPages: (value) => { totalPages = value; },
+            isInWishlist: (bookId) => wishlistBookIds.has(bookId)
         });
         return;
     }
@@ -381,7 +386,7 @@ function applyBookQuantityToDetailView(quantity) {
 
     const availability = document.getElementById('productAvailability');
     if (availability) {
-        availability.textContent = normalizedQuantity > 0 ? 'Còn hàng' : 'Hết hàng';
+        availability.textContent = normalizedQuantity > 0 ? 'Còn hàng' : 'Chưa có hàng';
         availability.style.color = normalizedQuantity > 0 ? '#28a745' : '#dc3545';
     }
 
@@ -396,12 +401,18 @@ function applyBookQuantityToDetailView(quantity) {
     }
 
     const quantityInput = document.getElementById('productQuantity');
-    if (quantityInput && normalizedQuantity > 0) {
-        if (Number(quantityInput.value) > normalizedQuantity) {
-            quantityInput.value = String(normalizedQuantity);
-            productQuantity = normalizedQuantity;
+    if (quantityInput) {
+        if (normalizedQuantity <= 0) {
+            quantityInput.value = '0';
+            productQuantity = 0;
+        } else if (Number(quantityInput.value) > normalizedQuantity || Number(quantityInput.value) <= 0) {
+            quantityInput.value = '1';
+            productQuantity = 1;
         }
     }
+
+    syncDetailActionState(normalizedQuantity);
+    renderCurrentBookWishlistState();
 }
 
 async function refreshCurrentBookStock() {
@@ -452,6 +463,7 @@ function stopBookStockPolling() {
 
 function renderBookDetail(book) {
     if (window.CustomerBookDetailBusiness && typeof window.CustomerBookDetailBusiness.renderBookDetail === 'function') {
+        productQuantity = (Number(book?.quantity) || 0) > 0 ? 1 : 0;
         window.CustomerBookDetailBusiness.renderBookDetail(book, {
             escapeHtml,
             sanitizeUrl,
@@ -459,8 +471,10 @@ function renderBookDetail(book) {
             formatNumber,
             renderStars,
             auth,
-            getCategoryName
+            getCategoryName,
+            isInWishlist: (bookId) => wishlistBookIds.has(bookId)
         });
+        syncDetailActionState(Number(book?.quantity) || 0);
         return;
     }
 }
@@ -494,8 +508,27 @@ function parseCouponValue(code) {
 
 let productQuantity = 1;
 
+function syncDetailActionState(quantity = Number(currentBook?.quantity) || 0) {
+    const hasStock = quantity > 0;
+    const addToCartButton = document.getElementById('addToCartFromDetailBtn');
+    const buyNowButton = document.getElementById('buyNowFromDetailBtn');
+    const decreaseButton = document.getElementById('decreaseQuantityBtn');
+    const increaseButton = document.getElementById('increaseQuantityBtn');
+
+    [addToCartButton, buyNowButton, decreaseButton, increaseButton].forEach((button) => {
+        if (button) {
+            button.disabled = !hasStock;
+        }
+    });
+}
+
 function increaseQuantity() {
-    const maxQuantity = currentBook?.quantity || 99;
+    const maxQuantity = Math.max(0, Number(currentBook?.quantity) || 0);
+    if (maxQuantity <= 0) {
+        productQuantity = 0;
+        document.getElementById('productQuantity').value = 0;
+        return;
+    }
     if (productQuantity < maxQuantity) {
         productQuantity++;
         document.getElementById('productQuantity').value = productQuantity;
@@ -515,6 +548,10 @@ function addToCartFromDetail() {
         requireLogin('Vui lòng đăng nhập để thêm vào giỏ hàng.');
         return;
     }
+    if ((Number(currentBook.quantity) || 0) <= 0) {
+        showAlert('Sản phẩm này hiện chưa có hàng. Bạn có thể thêm vào wishlist để nhận thông báo khi có hàng lại.');
+        return;
+    }
     for (let i = 0; i < productQuantity; i++) {
         addToCart(currentBook.id);
     }
@@ -527,9 +564,185 @@ function buyNow() {
         requireLogin('Vui lòng đăng nhập để mua hàng.');
         return;
     }
+    if ((Number(currentBook.quantity) || 0) <= 0) {
+        showAlert('Sản phẩm này hiện chưa có hàng. Bạn có thể thêm vào wishlist để nhận thông báo khi có hàng lại.');
+        return;
+    }
     addToCartFromDetail();
     // Navigate to checkout
     showSection('cart');
+}
+
+async function loadWishlistSection() {
+    const container = document.getElementById('wishlistList');
+    if (!container) {
+        return;
+    }
+
+    if (!auth.isAuthenticated()) {
+        requireLogin('Vui lòng đăng nhập để xem wishlist.');
+        return;
+    }
+
+    const wishlistIds = Array.from(wishlistBookIds);
+    if (wishlistIds.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#999;grid-column:1/-1;padding:2rem;">Wishlist của bạn đang trống.</p>';
+        return;
+    }
+
+    container.innerHTML = '<p style="text-align:center;color:#999;grid-column:1/-1;padding:2rem;">Đang tải wishlist...</p>';
+
+    try {
+        const cachedBooks = new Map((allBooks || []).map((book) => [book.id, book]));
+        const missingIds = wishlistIds.filter((id) => !cachedBooks.has(id));
+        const fetchedBooks = await Promise.all(missingIds.map(async (id) => {
+            try {
+                return await getBookById(id);
+            } catch (error) {
+                console.error('Error loading wishlist book:', error);
+                return null;
+            }
+        }));
+
+        fetchedBooks.filter(Boolean).forEach((book) => {
+            cachedBooks.set(book.id, book);
+        });
+
+        const wishlistBooks = wishlistIds
+            .map((id) => cachedBooks.get(id))
+            .filter(Boolean);
+
+        renderWishlistSection(wishlistBooks);
+    } catch (error) {
+        console.error('Error loading wishlist section:', error);
+        container.innerHTML = '<p style="text-align:center;color:#dc3545;grid-column:1/-1;padding:2rem;">Không thể tải wishlist lúc này.</p>';
+    }
+}
+
+function renderWishlistSection(books) {
+    const container = document.getElementById('wishlistList');
+    if (!container) {
+        return;
+    }
+
+    if (!Array.isArray(books) || books.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#999;grid-column:1/-1;padding:2rem;">Wishlist của bạn đang trống.</p>';
+        return;
+    }
+
+    container.innerHTML = books.map((book) => {
+        const safeTitle = escapeHtml(book.title || 'Sách');
+        const safeAuthor = escapeHtml(book.author || 'Chưa rõ tác giả');
+        const safeImage = sanitizeUrl(book.image || '');
+        const safeId = escapeJsString(book.id || '');
+        const quantity = Number(book.quantity) || 0;
+        const hasDiscount = book.discount && book.discount > 0;
+        const finalPrice = hasDiscount ? book.price * (1 - (book.discount / 100)) : book.price;
+
+        return `
+            <article class="book-card" data-book-id="${safeId}">
+                <div class="book-image">
+                    ${safeImage
+                        ? `<img src="${safeImage}" alt="${safeTitle}">`
+                        : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f5f5;color:#999;font-size:3rem;">📚</div>'}
+                    <div class="book-stock-badge ${quantity > 0 ? 'in' : 'out'}">${quantity > 0 ? `Còn ${quantity}` : 'Chưa có hàng'}</div>
+                </div>
+                <div class="book-info">
+                    <div class="book-title">${safeTitle}</div>
+                    <div class="book-rating">${escapeHtml(safeAuthor)}</div>
+                    <div class="book-price-container">
+                        <span class="book-price">${formatPrice(finalPrice)}</span>
+                        ${hasDiscount ? `<span class="book-original-price">${formatPrice(book.price || 0)}</span>` : ''}
+                    </div>
+                    <div class="book-actions">
+                        <button class="btn btn-primary btn-sm" onclick="showBookDetail('${safeId}')">Chi tiết</button>
+                        <button class="btn btn-danger btn-sm" onclick="toggleWishlist('${safeId}')">Bỏ lưu</button>
+                    </div>
+                </div>
+            </article>
+        `;
+    }).join('');
+}
+
+async function loadWishlist() {
+    if (!auth.isAuthenticated()) {
+        wishlistBookIds = new Set();
+        renderBooks(filteredBooks);
+        renderCurrentBookWishlistState();
+        return;
+    }
+
+    const user = auth.getUser();
+    if (!user || !user.id) {
+        return;
+    }
+
+    try {
+        const wishlist = await getWishlist(user.id);
+        wishlistBookIds = new Set(Array.isArray(wishlist?.bookIds) ? wishlist.bookIds : []);
+        renderBooks(filteredBooks);
+        renderCurrentBookWishlistState();
+    } catch (error) {
+        console.error('Error loading wishlist:', error);
+    }
+}
+
+function renderCurrentBookWishlistState() {
+    const wishlistButton = document.getElementById('wishlistDetailButton');
+    if (!wishlistButton || !currentBook || !currentBook.id) {
+        return;
+    }
+
+    const wished = wishlistBookIds.has(currentBook.id);
+    const quantity = Number(currentBook.quantity) || 0;
+    const label = wished
+        ? 'Đã theo dõi'
+        : (quantity > 0 ? 'Thêm vào wishlist' : 'Theo dõi khi có hàng');
+
+    wishlistButton.classList.toggle('active', wished);
+    wishlistButton.innerHTML = `<i class="fas fa-heart"></i><span>${escapeHtml(label)}</span>`;
+}
+
+async function toggleWishlist(bookId) {
+    if (!auth.isAuthenticated()) {
+        requireLogin('Vui lòng đăng nhập để dùng wishlist.');
+        return;
+    }
+
+    const user = auth.getUser();
+    if (!user || !user.id || !bookId) {
+        return;
+    }
+
+    const wished = wishlistBookIds.has(bookId);
+
+    try {
+        if (wished) {
+            await removeBookFromWishlist(user.id, bookId);
+            wishlistBookIds.delete(bookId);
+            showAlert('Đã xóa sách khỏi wishlist.');
+        } else {
+            await addBookToWishlist(user.id, bookId);
+            wishlistBookIds.add(bookId);
+            showAlert('Đã thêm sách vào wishlist.');
+        }
+
+        renderBooks(filteredBooks);
+        renderCurrentBookWishlistState();
+        if (document.getElementById('wishlist')?.classList.contains('active')) {
+            loadWishlistSection();
+        }
+    } catch (error) {
+        console.error('Error updating wishlist:', error);
+        showAlert('Không thể cập nhật wishlist: ' + error.message);
+    }
+}
+
+function toggleWishlistFromDetail() {
+    if (!currentBook || !currentBook.id) {
+        return;
+    }
+    toggleWishlist(currentBook.id);
 }
 
 function changeShippingAddress() {
@@ -1278,6 +1491,9 @@ window.handleNotificationClick = handleNotificationClick;
 window.markAllAsRead = markAllAsRead;
 window.startNotificationPolling = startNotificationPolling;
 window.stopNotificationPolling = stopNotificationPolling;
+window.loadWishlistSection = loadWishlistSection;
+window.toggleWishlist = toggleWishlist;
+window.toggleWishlistFromDetail = toggleWishlistFromDetail;
 
 // ==============================
 // PROFILE MANAGEMENT

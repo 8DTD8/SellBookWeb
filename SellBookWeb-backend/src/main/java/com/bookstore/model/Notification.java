@@ -14,6 +14,7 @@ public class Notification extends BaseEntity {
     private String id;
     private String userId;
     private String orderId;
+    private String bookId;
     private String type; // ORDER_STATUS_CHANGED, NEW_ORDER, etc.
     private String title;
     private String message;
@@ -43,6 +44,14 @@ public class Notification extends BaseEntity {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
     }
 
     public String getType() {

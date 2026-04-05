@@ -16,9 +16,13 @@ public class PaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<PaymentDTO> createPayment(@RequestBody PaymentDTO paymentDTO) {
-        PaymentDTO created = paymentService.createPayment(paymentDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<?> createPayment(@RequestBody PaymentDTO paymentDTO) {
+        try {
+            PaymentDTO created = paymentService.createPayment(paymentDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", ex.getMessage()));
+        }
     }
 
     @GetMapping("/order/{orderId}")
@@ -34,10 +38,14 @@ public class PaymentController {
     public ResponseEntity<PaymentDTO> updatePaymentStatus(
             @PathVariable String paymentId,
             @RequestParam String status) {
-        PaymentDTO updated = paymentService.updatePaymentStatus(paymentId, status);
-        if (updated == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            PaymentDTO updated = paymentService.updatePaymentStatus(paymentId, status);
+            if (updated == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(updated);
     }
 }

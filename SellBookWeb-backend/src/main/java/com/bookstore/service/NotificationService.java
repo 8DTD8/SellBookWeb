@@ -1,5 +1,6 @@
 package com.bookstore.service;
 
+import com.bookstore.common.constant.Constants;
 import com.bookstore.model.Notification;
 import com.bookstore.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,14 @@ public class NotificationService {
     }
 
     public Notification createNotification(String userId, String orderId, String type, String title, String message) {
+        return createNotification(userId, orderId, null, type, title, message);
+    }
+
+    public Notification createNotification(String userId, String orderId, String bookId, String type, String title, String message) {
         Notification notification = new Notification();
         notification.setUserId(userId);
         notification.setOrderId(orderId);
+        notification.setBookId(bookId);
         notification.setType(type);
         notification.setTitle(title);
         notification.setMessage(message);
@@ -33,6 +39,33 @@ public class NotificationService {
             orderId, getStatusText(oldStatus), getStatusText(newStatus));
         
         createNotification(userId, orderId, "ORDER_STATUS_CHANGED", title, message);
+    }
+
+    public void createWishlistRestockNotification(String userId, String bookId, String bookTitle) {
+        String title = "Sách trong wishlist đã có hàng";
+        String message = String.format("Sách \"%s\" trong wishlist của bạn vừa có hàng trở lại.", bookTitle);
+        createNotification(
+            userId,
+            null,
+            bookId,
+            Constants.NOTIFICATION_TYPE_WISHLIST_BACK_IN_STOCK,
+            title,
+            message
+        );
+    }
+
+    public void createPaymentSuccessNotification(String userId, String orderId, String paymentMethod, Double amount) {
+        String title = "Thanh toán thành công";
+        String methodText = getPaymentMethodText(paymentMethod);
+        String amountText = amount == null ? "0" : String.format("%,.0f", amount);
+        String message = String.format(
+            "Thanh toán cho đơn hàng #%s bằng %s đã thành công. Số tiền: %s VND.",
+            orderId,
+            methodText,
+            amountText
+        );
+
+        createNotification(userId, orderId, Constants.NOTIFICATION_TYPE_PAYMENT_SUCCESS, title, message);
     }
 
     public List<Notification> getUserNotifications(String userId) {
@@ -77,6 +110,23 @@ public class NotificationService {
             case "DELIVERED": return "Đã giao";
             case "CANCELLED": return "Đã hủy";
             default: return status;
+        }
+    }
+
+    private String getPaymentMethodText(String paymentMethod) {
+        if (paymentMethod == null) {
+            return "thanh toán";
+        }
+
+        switch (paymentMethod.toUpperCase()) {
+            case "COD":
+                return "thanh toán khi nhận hàng";
+            case "BANK":
+                return "chuyển khoản ngân hàng";
+            case "MOMO":
+                return "ví MoMo";
+            default:
+                return paymentMethod;
         }
     }
 }

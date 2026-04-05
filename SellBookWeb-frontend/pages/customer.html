@@ -28,6 +28,10 @@
                 </button>
                 <!-- Controls shown only when logged in -->
                 <div id="userNavControls" style="display:none; align-items: center; gap: 4px;">
+                    <button class="btn-icon" onclick="showSection('wishlist')" title="Wishlist">
+                        <i class="fas fa-heart"></i>
+                        <span>Wishlist</span>
+                    </button>
                     <button class="btn-icon" onclick="showSection('notifications')" title="Thông báo">
                         <i class="fas fa-bell"></i>
                         <span>Thông báo</span>
@@ -56,6 +60,10 @@
                             <a href="#" onclick="event.stopPropagation(); showSection('myOrders'); closeAccountDropdown(); return false;" class="dropdown-item">
                                 <i class="fas fa-box"></i>
                                 <span>Đơn hàng của tôi</span>
+                            </a>
+                            <a href="#" onclick="event.stopPropagation(); showSection('wishlist'); closeAccountDropdown(); return false;" class="dropdown-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Wishlist của tôi</span>
                             </a>
                             <a href="#" onclick="event.stopPropagation(); handleLogout(); return false;" class="dropdown-item">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -155,14 +163,15 @@
                             <!-- Thumbnails will be inserted here -->
                         </div>
                         <div class="product-actions">
-                            <button class="btn-add-cart" onclick="addToCartFromDetail()">
+                            <button id="addToCartFromDetailBtn" class="btn-add-cart" onclick="addToCartFromDetail()">
                                 <i class="fas fa-shopping-cart"></i>
                                 <span>Thêm vào giỏ hàng</span>
                             </button>
-                            <button class="btn-buy-now" onclick="buyNow()">
+                            <button id="buyNowFromDetailBtn" class="btn-buy-now" onclick="buyNow()">
                                 <span>Mua ngay</span>
                             </button>
                         </div>
+                        <div id="wishlistActionContainer" class="wishlist-action-container"></div>
                         <div class="store-policies">
                             <h4>Chính sách ưu đãi của sellbookweb</h4>
                             <div class="policy-item">
@@ -217,9 +226,9 @@
                         <div class="quantity-selector">
                             <label>Số lượng:</label>
                             <div class="quantity-control">
-                                <button onclick="decreaseQuantity()">-</button>
+                                <button id="decreaseQuantityBtn" onclick="decreaseQuantity()">-</button>
                                 <input type="number" id="productQuantity" value="1" min="1" readonly>
-                                <button onclick="increaseQuantity()">+</button>
+                                <button id="increaseQuantityBtn" onclick="increaseQuantity()">+</button>
                             </div>
                         </div>
                         
@@ -376,6 +385,19 @@
                 <h2>Đánh giá của tôi</h2>
             </div>
             <div id="myReviewsList" class="reviews-container">
+            </div>
+        </section>
+
+        <!-- Wishlist Section -->
+        <section id="wishlist" class="section">
+            <div style="max-width:1100px;margin:0 auto;padding:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+                    <h2 style="margin:0;"><i class="fas fa-heart"></i> Wishlist của tôi</h2>
+                    <button class="btn btn-secondary" onclick="loadWishlistSection()">Làm mới</button>
+                </div>
+                <div id="wishlistList" class="books-grid">
+                    <p style="text-align:center;color:#999;grid-column:1/-1;">Đang tải wishlist...</p>
+                </div>
             </div>
         </section>
 
@@ -610,6 +632,9 @@
                 <h2>Đặt hàng thành công!</h2>
                 <p>Cảm ơn bạn đã mua hàng. Đơn hàng của bạn đang được xử lý.</p>
                 <p class="order-id-text">Mã đơn hàng: <strong id="successOrderId"></strong></p>
+                <p class="order-id-text">Phương thức thanh toán: <strong id="successPaymentMethod">Thanh toán khi nhận hàng</strong></p>
+                <p class="order-id-text">Trạng thái thanh toán: <strong id="successPaymentStatus">Chưa thanh toán</strong></p>
+                <p class="order-id-text">Mã giao dịch: <strong id="successTransactionId">Chưa có</strong></p>
                 <div class="order-success-actions">
                     <button class="btn btn-primary" onclick="showSection('myOrders')">📦 Xem đơn hàng của tôi</button>
                     <button class="btn btn-secondary" onclick="showSection('home')" style="margin-left:10px;">Tiếp tục mua sắm</button>

@@ -31,11 +31,14 @@ class AuthManager {
         localStorage.setItem('token', token);
     }
 
-    logout() {
+    logout(message) {
         this.token = null;
         this.user = null;
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        if (message) {
+            sessionStorage.setItem('authLogoutMessage', message);
+        }
         // Redirect to customer page so guest can still browse
         const currentPage = window.location.pathname.split('/').pop() || '';
         if (currentPage === 'admin.html') {
@@ -145,6 +148,18 @@ window.addEventListener('DOMContentLoaded', () => {
 // Check authentication on page load
 window.addEventListener('load', () => {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const logoutMessage = sessionStorage.getItem('authLogoutMessage');
+
+    if (logoutMessage) {
+        sessionStorage.removeItem('authLogoutMessage');
+        if (currentPage === 'login.html') {
+            showMessage(logoutMessage, 'info');
+        } else {
+            setTimeout(() => {
+                window.alert(logoutMessage);
+            }, 0);
+        }
+    }
     
     if (currentPage !== 'login.html') {
         // customer.html is publicly accessible (guest browsing)
