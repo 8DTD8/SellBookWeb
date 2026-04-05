@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SellBookWeb - Cửa hàng bán sách trực tuyến</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .loader {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loader h2 {
+            color: white;
+            font-size: 20px;
+        }
+        .loader p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loader-container">
+        <div class="loader">
+            <div class="spinner"></div>
+            <h2>SellBookWeb</h2>
+            <p>Đang tải...</p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-redirect based on authentication state
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('token');
+            const userRaw = localStorage.getItem('user');
+            const user = userRaw ? JSON.parse(userRaw) : null;
+
+            if (token && user) {
+                const role = (user.role || '').toUpperCase();
+                if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
+                    window.location.href = './admin.html';
+                } else {
+                    window.location.href = './customer.html';
+                }
+            } else {
+                // Guest: go to customer page to browse
+                window.location.href = './customer.html';
+            }
+        });
+    </script>
+</body>
+</html>

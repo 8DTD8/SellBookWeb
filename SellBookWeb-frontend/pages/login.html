@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa hàng bán sách - Đăng nhập</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .auth-navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .auth-navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .auth-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #dc3545;
+            line-height: 1;
+            text-decoration: none;
+            display: inline-block;
+            transition: opacity 0.2s ease;
+        }
+
+        .auth-brand:hover {
+            opacity: 0.85;
+        }
+
+        .auth-navbar-note {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .auth-shell {
+            min-height: calc(100vh - 76px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 28px 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 430px;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            animation: slideUp 0.5s ease;
+            border: 1px solid #ececec;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            color: #dc3545;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input.with-password-toggle {
+            padding-right: 4.25rem;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 2.5rem;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0.3rem;
+            line-height: 1;
+        }
+
+        .password-toggle-btn:hover {
+            color: #dc3545;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        .form-group input.is-invalid {
+            border-color: #e53e3e;
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
+        }
+
+        .form-group input.is-valid {
+            border-color: #cbd5e0;
+            box-shadow: none;
+        }
+
+        .validation-feedback {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -2px;
+            font-size: 0.82rem;
+            line-height: 1;
+            color: #e53e3e;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .validation-feedback.hidden {
+            display: none;
+        }
+
+        .validation-feedback.invalid {
+            color: #e53e3e;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 0.4rem;
+            background: #f8f9fa;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+            border-radius: 4px;
+        }
+
+        .toggle-btn.active {
+            color: #dc3545;
+            box-shadow: inset 0 0 0 1px #f2b8bf;
+            background: #fff1f2;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .submit-btn:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        .error {
+            padding: 0.85rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+            animation: slideDown 0.3s ease;
+            border: 1px solid transparent;
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        .error.error-type {
+            background-color: #fff1f2;
+            color: #b42318;
+            border-color: #fecdd3;
+        }
+
+        .error.success-type {
+            background-color: #ecfdf3;
+            color: #067647;
+            border-color: #abefc6;
+        }
+
+        .error.info-type {
+            background-color: #eff8ff;
+            color: #175cd3;
+            border-color: #b2ddff;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .links p {
+            margin: 0;
+        }
+
+        .links a {
+            color: #dc3545;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .forgot-password-link {
+            display: inline-block;
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: #dc3545;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .forgot-password-link:hover {
+            text-decoration: underline;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 4px;
+            padding: 1.25rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e8e8e8;
+        }
+
+        .modal-card h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .modal-card p {
+            margin-bottom: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-cancel {
+            background: #edf0f5;
+            color: #3e4652;
+        }
+
+        .btn-reset {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .btn-reset:hover {
+            background: #c82333;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .auth-navbar-container {
+                padding: 0.9rem 1rem;
+            }
+
+            .auth-brand {
+                font-size: 1.5rem;
+            }
+
+            .auth-navbar-note {
+                display: none;
+            }
+
+            .auth-shell {
+                min-height: calc(100vh - 64px);
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-navbar">
+        <div class="auth-navbar-container">
+            <a href="customer.html" class="auth-brand">sellbookweb</a>
+            <div class="auth-navbar-note">Đăng nhập tài khoản để tiếp tục</div>
+        </div>
+    </div>
+
+    <div class="auth-shell">
+        <div class="container">
+            <div class="login-box">
+            <div class="login-header">
+                <h1>📚 Cửa Hàng Sách</h1>
+                <p>Quản lý cửa hàng bán sách trực tuyến</p>
+            </div>
+
+            <div class="error" id="errorMessage"></div>
+
+            <div class="toggle-form">
+                <button class="toggle-btn active" data-auth-action="toggle-form" data-form="login">Đăng nhập</button>
+                <button class="toggle-btn" data-auth-action="toggle-form" data-form="register">Đăng ký</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="form-container active" data-auth-submit="login">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="loginEmail" required data-validate="email">
+                </div>
+
+                <div class="form-group">
+                    <label>Mật khẩu:</label>
+                    <input type="password" id="loginPassword" class="with-password-toggle" required minlength="8" data-validate="password">
+                    <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="loginPassword" aria-label="Hiện mật khẩu">Hiện</button>
+                </div>
+
+                <input type="hidden" id="loginRole" value="">
+
+                <button type="submit" class="submit-btn" id="loginBtn">Đăng nhập</button>
+
+                <a href="#" class="forgot-password-link" data-auth-action="open-forgot-password">Quên mật khẩu?</a>
+
+                <div class="links">
+                    <p><span style="color: #999;">Liên Hệ trợ giúp:</span> <a href="mailto:dangtiendat.dmx2019@gmail.com">dangtiendat.dmx2019@gmail.com</a></p>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="form-container" data-auth-submit="register">
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" id="registerUsername" required minlength="3" maxlength="30" placeholder="Nhập username của bạn">
+                </div>
+
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="registerEmail" required data-validate="email">
+                </div>
+
+                <div class="form-group">
+                    <label>Mật khẩu:</label>
+                    <input type="password" id="registerPassword" class="with-password-toggle" required minlength="8" data-validate="password">
+                    <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="registerPassword" aria-label="Hiện mật khẩu">Hiện</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Xác nhận mật khẩu:</label>
+                    <input type="password" id="registerPasswordConfirm" class="with-password-toggle" required minlength="8">
+                    <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="registerPasswordConfirm" aria-label="Hiện mật khẩu">Hiện</button>
+                </div>
+
+                <button type="submit" class="submit-btn" id="registerBtn">Đăng ký</button>
+
+                <div class="links">
+                    <p><span style="color: #999;">Bạn đã có tài khoản?</span> <a href="#" data-auth-action="toggle-form" data-form="login">Đăng nhập</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+
+    <div id="forgotPasswordModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>Quên mật khẩu</h3>
+            <p>Nhập email để nhận OTP, sau đó xác nhận OTP để đặt lại mật khẩu.</p>
+            <div class="error" id="forgotPasswordMessage"></div>
+            <form id="forgotPasswordForm" data-auth-submit="forgot-reset">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="forgotEmail" required>
+                </div>
+                <div class="modal-actions" id="otpRequestActions" style="margin-top: 0; margin-bottom: 0.75rem;">
+                    <button type="button" class="btn-reset" data-auth-action="request-forgot-otp">Gửi OTP</button>
+                </div>
+
+                <div id="otpVerifySection">
+                    <div class="form-group">
+                        <label>Mã OTP:</label>
+                        <input type="text" id="forgotOtp" required maxlength="6" placeholder="Nhập OTP 6 số">
+                    </div>
+                    <div class="modal-actions" style="margin-top: 0; margin-bottom: 0.75rem;">
+                        <button type="button" class="btn-reset" data-auth-action="verify-forgot-otp">Xác nhận OTP</button>
+                    </div>
+                </div>
+
+                <div id="forgotResetSection" class="hidden">
+                    <div class="form-group">
+                        <label>Mật khẩu mới:</label>
+                        <input type="password" id="forgotNewPassword" class="with-password-toggle" required minlength="8">
+                        <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="forgotNewPassword" aria-label="Hiện mật khẩu">Hiện</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu mới:</label>
+                        <input type="password" id="forgotConfirmPassword" class="with-password-toggle" required minlength="8">
+                        <button type="button" class="password-toggle-btn" data-auth-action="toggle-password" data-password-target="forgotConfirmPassword" aria-label="Hiện mật khẩu">Hiện</button>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-auth-action="close-forgot-password">Hủy</button>
+                    <button type="submit" id="forgotResetBtn" class="btn-reset hidden">Xác nhận đổi mật khẩu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/constants.js"></script>
+    <script src="../js/utils/validator-utils.js"></script>
+    <script src="../js/utils/enhanced-validation.js"></script>
+    <script src="../js/utils/safe-html.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/login-validation-integration.js"></script>
+</body>
+</html>

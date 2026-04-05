@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Cửa hàng bán sách</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/validation-and-cart.css">
+</head>
+<body class="admin-page">
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>📚 Quản lý cửa hàng</h1>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="#" data-ui-action="show-section" data-section="dashboard">Trang chủ</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="books">Sách</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="categories">Danh mục</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="coupons">Mã giảm giá</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="users">Người dùng</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="suppliers">NCC</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="purchaseOrders">Phiếu nhập</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="orders">Đơn hàng</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="payments">Thanh toán</a></li>
+                <li><a href="#" data-ui-action="show-section" data-section="reviews">Đánh giá</a></li>
+                <li><a href="#" data-ui-action="logout" style="color: #5f6875;">Đăng xuất</a></li>
+            </ul>
+            <div class="user-info">
+                <span id="adminName">Admin Name</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="section-header">
+                <h2>Bảng điều khiển</h2>
+            </div>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>📖 Tổng số sách</h3>
+                    <p class="stat-number" id="totalBooks">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>📂 Danh mục</h3>
+                    <p class="stat-number" id="totalCategories">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>👥 Người dùng</h3>
+                    <p class="stat-number" id="totalUsers">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>⭐ Đánh giá chờ</h3>
+                    <p class="stat-number" id="pendingReviews">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Books Section -->
+        <section id="books" class="section">
+            <div class="section-header">
+                <h2>Quản lý sách</h2>
+                <button class="btn btn-primary" data-ui-action="show-add-book-form">+ Thêm</button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="search-bar">
+                <input type="text" id="searchBook" placeholder="Tìm kiếm sách..." data-input-action="search-books">
+                <select id="categoryFilter" data-change-action="filter-by-category">
+                    <option value="">-- Tất cả danh mục --</option>
+                </select>
+            </div>
+
+            <!-- Add/Edit Book Form -->
+            <div id="bookForm" class="form-container hidden">
+                <h3 id="bookFormTitle">Thêm sách mới</h3>
+                <form id="bookFormData" data-submit-action="save-book">
+                    <input type="hidden" id="bookId">
+                    <div class="form-group">
+                        <label>Tiêu đề:</label>
+                        <input type="text" id="bookTitle" required minlength="1" data-validate="required">
+                    </div>
+                    <div class="form-group">
+                        <label>Tác giả:</label>
+                        <input type="text" id="bookAuthor" required minlength="1" data-validate="required">
+                    </div>
+                    <div class="form-group">
+                        <label>Giá bán:</label>
+                        <input type="number" id="bookPrice" step="0.01" min="0" required data-validate="price">
+                    </div>
+                    <div class="form-group">
+                        <label>Số lượng:</label>
+                        <input type="number" id="bookQuantity" min="0" required data-validate="quantity">
+                    </div>
+                    <div class="form-group">
+                        <label>Danh mục:</label>
+                        <select id="bookCategory" required>
+                            <option value="">-- Chọn danh mục --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả:</label>
+                        <textarea id="bookDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>URL Hình ảnh:</label>
+                        <input type="text" id="bookImage">
+                    </div>
+                    <div class="form-group">
+                        <label>Nhà cung cấp:</label>
+                            <select id="bookSupplier">
+                                <option value="">-- Để trống nếu không chọn --</option>
+                            </select>
+                            <small style="color: #666;">Có thể chọn lại nhà cung cấp khi chỉnh sửa sách</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Hình thức bìa:</label>
+                        <select id="bookCoverType">
+                            <option value="Bìa Mềm">Bìa Mềm</option>
+                            <option value="Bìa cứng">Bìa cứng</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Người dịch:</label>
+                        <input type="text" id="bookTranslator" placeholder="VD: Nguyễn Văn A">
+                        <small style="color: #666;">Nếu không có người dịch sẽ hiển thị N/A</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Nhà xuất bản (NXB):</label>
+                        <input type="text" id="bookPublisher" placeholder="VD: Nhà xuất bản Văn Học">
+                    </div>
+                    <div class="form-group">
+                        <label>Phần trăm giảm giá (%):</label>
+                        <input type="number" id="bookDiscount" step="0.1" min="0" max="100" placeholder="VD: 20" data-validate="discount">
+                        <small style="color: #666;">Giảm trực tiếp từ giá gốc (VD: nhập 30 cho sách 50đ => còn 35đ)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Hoạt động:</label>
+                        <input type="checkbox" id="bookActive" checked>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-ui-action="hide-book-form">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Books List -->
+            <div class="list-container">
+                <table id="booksList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Coupons Section -->
+        <section id="coupons" class="section">
+            <div class="section-header">
+                <h2>Quản lý mã giảm giá</h2>
+                <button class="btn btn-primary" data-ui-action="show-add-coupon-form">+ Thêm mã</button>
+            </div>
+
+            <div id="couponForm" class="form-container hidden">
+                <h3 id="couponFormTitle">Thêm mã giảm giá mới</h3>
+                <form id="couponFormData" data-submit-action="save-coupon">
+                    <input type="hidden" id="couponId">
+                    <div class="form-group">
+                        <label>Mã coupon:</label>
+                        <input type="text" id="couponCode" placeholder="VD: SALE20" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả:</label>
+                        <input type="text" id="couponDescription" placeholder="VD: Giảm 20% cho đơn từ 200k">
+                    </div>
+                    <div class="form-group">
+                        <label>Giá trị giảm:</label>
+                        <input type="number" id="couponDiscountValue" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Đơn tối thiểu:</label>
+                        <input type="number" id="couponMinimumAmount" min="0" step="0.01" placeholder="VD: 100000">
+                    </div>
+                    <div class="form-group">
+                        <label>Giới hạn lượt dùng:</label>
+                        <input type="number" id="couponMaxUsage" min="1" placeholder="VD: 100">
+                    </div>
+                    <div class="form-group">
+                        <label>Thời gian bắt đầu:</label>
+                        <input type="datetime-local" id="couponStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Thời gian kết thúc:</label>
+                        <input type="datetime-local" id="couponEndDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Đang hoạt động:</label>
+                        <input type="checkbox" id="couponActive" checked>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-ui-action="hide-coupon-form">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <table id="couponsList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Giá trị giảm</th>
+                            <th>Lượt dùng</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section id="categories" class="section">
+            <div class="section-header">
+                <h2>Quản lý danh mục</h2>
+                <button class="btn btn-primary" data-ui-action="show-add-category-form">+ Thêm</button>
+            </div>
+
+            <!-- Add/Edit Category Form -->
+            <div id="categoryForm" class="form-container hidden">
+                <h3 id="categoryFormTitle">Thêm danh mục mới</h3>
+                <form id="categoryFormData" data-submit-action="save-category">
+                    <input type="hidden" id="categoryId">
+                    <div class="form-group">
+                        <label>Tên danh mục:</label>
+                        <input type="text" id="categoryName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả:</label>
+                        <textarea id="categoryDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Icon (FontAwesome class):</label>
+                        <input type="text" id="categoryIcon" placeholder="VD: fas fa-book">
+                        <small style="color: #666;">Sử dụng FontAwesome icon class, ví dụ: fas fa-book, fas fa-heart</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Danh mục cha (Parent):</label>
+                        <select id="categoryParentId">
+                            <option value="">-- Không có (Nhóm chính) --</option>
+                        </select>
+                        <small style="color: #666;">Chọn danh mục cha nếu đây là thể loại con</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Hoạt động:</label>
+                        <input type="checkbox" id="categoryActive" checked>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-ui-action="hide-category-form">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Categories List -->
+            <div class="list-container">
+                <table id="categoriesList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Tên danh mục</th>
+                            <th>Icon</th>
+                            <th>Danh mục cha</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users" class="section">
+            <div class="section-header">
+                <h2>Quản lý người dùng</h2>
+            </div>
+
+            <!-- Add/Edit User Form -->
+            <div id="userForm" class="form-container hidden">
+                <h3 id="userFormTitle">Chỉnh sửa người dùng</h3>
+                <form id="userFormData" data-submit-action="save-user">
+                    <input type="hidden" id="userId">
+                    <input type="hidden" id="userCurrentRole">
+                    <input type="hidden" id="userCurrentActive">
+                    <div class="form-group">
+                        <label>Tên:</label>
+                        <input type="text" id="userNameDisplay" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="userEmailDisplay" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block; margin-bottom: 8px;">Chọn thao tác:</label>
+                        <div class="user-action-list">
+                            <label class="user-action-option" for="userActionPromote">
+                                <input type="radio" name="userAction" id="userActionPromote" value="PROMOTE">
+                                <span>Nâng tài khoản này lên ADMIN</span>
+                            </label>
+                            <label class="user-action-option" for="userActionLockToggle">
+                                <input type="radio" name="userAction" id="userActionLockToggle" value="LOCK_TOGGLE">
+                                <span id="userLockActionLabel">Khóa tài khoản (không cho đăng nhập)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-ui-action="hide-user-form">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Users List -->
+            <div class="list-container">
+                <table id="usersList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Suppliers Section -->
+        <section id="suppliers" class="section">
+            <div class="section-header">
+                <h2>Quản lý nhà cung cấp</h2>
+                <button class="btn btn-primary" data-ui-action="show-add-supplier-form">+ Thêm nhà cung cấp</button>
+            </div>
+
+            <div id="supplierForm" class="form-container hidden">
+                <h3 id="supplierFormTitle">Thêm nhà cung cấp</h3>
+                <form id="supplierFormData" data-submit-action="save-supplier">
+                    <input type="hidden" id="supplierId">
+                    <div class="form-group">
+                        <label>Tên nhà cung cấp:</label>
+                        <input type="text" id="supplierName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="supplierEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại:</label>
+                        <input type="text" id="supplierPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Người liên hệ:</label>
+                        <input type="text" id="supplierContactPerson">
+                    </div>
+                    <div class="form-group">
+                        <label>Địa chỉ:</label>
+                        <textarea id="supplierAddress"></textarea>
+                    </div>
+                    <div class="form-group two-column-grid">
+                        <div>
+                            <label>Thành phố:</label>
+                            <input type="text" id="supplierCity">
+                        </div>
+                        <div>
+                            <label>Quốc gia:</label>
+                            <input type="text" id="supplierCountry">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tài khoản ngân hàng:</label>
+                        <input type="text" id="supplierBankAccount">
+                    </div>
+                    <div class="form-group">
+                        <label>Hoạt động:</label>
+                        <input type="checkbox" id="supplierActive" checked>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-ui-action="hide-supplier-form">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <table id="suppliersList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Tên</th>
+                            <th>Người liên hệ</th>
+                            <th>Số điện thoại</th>
+                            <th>Email</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Purchase Orders Section -->
+        <section id="purchaseOrders" class="section">
+            <div class="section-header">
+                <h2>Quản lý phiếu nhập</h2>
+                <div class="section-header-actions">
+                    <button class="btn btn-primary" data-ui-action="show-add-purchase-order-form">+ Tạo phiếu nhập</button>
+                    <button class="btn btn-secondary" data-ui-action="refresh-purchase-orders">Làm mới</button>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <select id="purchaseOrderStatusFilter" data-change-action="filter-purchase-order-status">
+                    <option value="">-- Tất cả trạng thái --</option>
+                    <option value="PENDING">Chờ nhập kho</option>
+                    <option value="RECEIVED">Đã nhập kho</option>
+                    <option value="CANCELLED">Đã hủy</option>
+                </select>
+            </div>
+
+            <div id="purchaseOrderForm" class="form-container hidden purchase-order-form-container">
+                <h3>Tạo phiếu nhập mới</h3>
+                <form id="purchaseOrderFormData" data-submit-action="save-purchase-order">
+                    <div class="form-group">
+                        <label>Nhà cung cấp:</label>
+                        <select id="purchaseOrderSupplier" required>
+                            <option value="">-- Chọn nhà cung cấp --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày dự kiến nhận hàng:</label>
+                        <input type="datetime-local" id="purchaseOrderExpectedDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi chú:</label>
+                        <textarea id="purchaseOrderNotes"></textarea>
+                    </div>
+                    <div class="purchase-order-items-header">
+                        <h4>Sách nhập kho</h4>
+                        <button type="button" class="btn btn-secondary btn-sm" data-ui-action="add-purchase-order-item">+ Thêm dòng</button>
+                    </div>
+                    <div id="purchaseOrderItems" class="purchase-order-items"></div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">Lưu phiếu nhập</button>
+                        <button type="button" class="btn btn-secondary" data-ui-action="hide-purchase-order-form">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <table id="purchaseOrdersList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã phiếu</th>
+                            <th>Nhà cung cấp</th>
+                            <th>Số mặt hàng</th>
+                            <th>Tổng tiền</th>
+                            <th>Ngày tạo</th>
+                            <th>Ngày dự kiến</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="orders" class="section">
+            <div class="section-header">
+                <h2>Quản lý đơn hàng</h2>
+                <button class="btn btn-primary" data-ui-action="refresh-orders">Làm mới danh sách</button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="search-bar">
+                <input type="text" id="searchOrder" placeholder="Tìm kiếm đơn hàng..." data-input-action="search-orders">
+                <select id="statusFilter" data-change-action="filter-by-status">
+                    <option value="">-- Tất cả trạng thái --</option>
+                    <option value="PENDING">Chờ xác nhận</option>
+                    <option value="CONFIRMED">Đã xác nhận</option>
+                    <option value="SHIPPED">Đang vận chuyển</option>
+                    <option value="DELIVERED">Đã giao</option>
+                    <option value="CANCELLED">Đã hủy</option>
+                </select>
+            </div>
+
+            <!-- Orders List -->
+            <div class="list-container">
+                <table id="ordersList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Payments Section -->
+        <section id="payments" class="section">
+            <div class="section-header">
+                <h2>Quản lý thanh toán</h2>
+                <button class="btn btn-primary" data-ui-action="refresh-payments">Làm mới danh sách</button>
+            </div>
+
+            <div class="search-bar">
+                <select id="paymentStatusFilter" data-change-action="filter-by-payment-status">
+                    <option value="">-- Tất cả trạng thái thanh toán --</option>
+                    <option value="PENDING">Chưa thanh toán</option>
+                    <option value="COMPLETED">Đã thanh toán</option>
+                    <option value="FAILED">Thất bại</option>
+                    <option value="REFUNDED">Đã hoàn tiền</option>
+                </select>
+            </div>
+
+            <div class="list-container">
+                <table id="paymentsList" class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã thanh toán</th>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Phương thức</th>
+                            <th>Số tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Mã giao dịch</th>
+                            <th>Thời gian</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section id="reviews" class="section">
+            <div class="section-header">
+                <h2>Quản lý đánh giá</h2>
+            </div>
+
+            <!-- Tab navigation for reviews -->
+            <div class="tab-navigation">
+                <button class="tab-button active" data-review-tab="pending">Đánh giá chờ duyệt</button>
+                <button class="tab-button" data-review-tab="all">Tất cả đánh giá</button>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="list-container">
+                <div id="reviewsList" class="reviews-container">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alertModal" class="modal hidden">
+        <div class="modal-content">
+            <p id="alertText"></p>
+            <button class="btn btn-primary" data-ui-action="close-alert">OK</button>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/constants.js"></script>
+    <script src="../js/utils/validator-utils.js"></script>
+    <script src="../js/utils/enhanced-validation.js"></script>
+    <script src="../js/utils/safe-html.js"></script>
+    <script src="../js/utils/action-router.js"></script>
+    <script src="../js/admin-modules/feature-events.js"></script>
+    <script src="../js/admin-modules/ui-actions.js"></script>
+    <script src="../js/admin-modules/handler-factories.js"></script>
+    <script src="../js/admin-modules/section-business.js"></script>
+    <script src="../js/admin-modules/orders-business.js"></script>
+    <script src="../js/admin-modules/reviews-business.js"></script>
+    <script src="../js/admin-modules/books-business.js"></script>
+    <script src="../js/admin-modules/categories-business.js"></script>
+    <script src="../js/admin-modules/coupons-business.js"></script>
+    <script src="../js/admin-modules/suppliers-business.js"></script>
+    <script src="../js/admin-modules/purchase-orders-business.js"></script>
+    <script src="../js/admin-modules/payments-business.js"></script>
+    <script src="../js/admin-modules/users-business.js"></script>
+    <script src="../js/admin-modules/orders-modal-business.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/admin-web.js"></script>
+    <script src="../js/admin-validation-integration.js"></script>
+</body>
+</html>
