@@ -120,7 +120,7 @@
             const safeBookTitle = escapeHtml(book.title || 'Sách');
             const safeCategoryName = escapeHtml(categoryName || 'Sách');
             const safeBookImage = sanitizeUrl(book.image || '');
-            const safeSupplierName = escapeHtml(book.supplierName || 'Đinh Tị');
+            const safeSupplierName = escapeHtml(book.supplierName || 'Chưa cập nhật');
             const safePublisher = escapeHtml(book.publisher || 'Văn Học');
             const safeAuthor = escapeHtml(book.author || 'Chưa có');
             const safeCoverType = escapeHtml(book.coverType || 'Bìa Mềm');

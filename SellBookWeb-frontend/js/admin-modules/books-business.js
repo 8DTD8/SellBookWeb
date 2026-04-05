@@ -64,12 +64,15 @@
 
         /**
          * Fill form with book data for editing.
-         * deps: { getBookById, showAlert }
+         * deps: { getBookById, loadBookSupplierOptions, showAlert }
          */
         async editBook(id, deps) {
-            const { getBookById, showAlert } = deps;
+            const { getBookById, loadBookSupplierOptions, showAlert } = deps;
             try {
                 const book = await getBookById(id);
+                if (typeof loadBookSupplierOptions === 'function') {
+                    await loadBookSupplierOptions(book.supplierName || '');
+                }
                 document.getElementById('bookId').value = book.id;
                 document.getElementById('bookTitle').value = book.title;
                 document.getElementById('bookAuthor').value = book.author;
@@ -78,7 +81,7 @@
                 document.getElementById('bookCategory').value = book.categoryId;
                 document.getElementById('bookDescription').value = book.description || '';
                 document.getElementById('bookImage').value = book.image || '';
-                document.getElementById('bookSupplier').value = book.supplierName || book.publisher || '';
+                document.getElementById('bookSupplier').value = book.supplierName || '';
                 document.getElementById('bookCoverType').value = book.coverType || 'Bìa Mềm';
                 document.getElementById('bookTranslator').value = book.translator || '';
                 document.getElementById('bookPublisher').value = book.publisher || '';
@@ -112,8 +115,8 @@
                 ? parseFloat(document.getElementById('bookDiscount').value)
                 : null;
             const publisherValue = document.getElementById('bookPublisher').value;
-            const supplierValue = document.getElementById('bookSupplier').value;
-            const supplierName = supplierValue || publisherValue || null;
+            const supplierValue = document.getElementById('bookSupplier').value.trim();
+            const supplierName = supplierValue || null;
             const coverTypeValue = document.getElementById('bookCoverType').value || 'Bìa Mềm';
 
             const bookData = {

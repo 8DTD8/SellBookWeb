@@ -266,7 +266,49 @@ function renderBooks(books) {
     if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#999;">Module chưa tải.</td></tr>';
 }
 
-function showAddBookForm() {
+async function loadBookSupplierOptions(selectedSupplierName = '') {
+    const supplierSelect = document.getElementById('bookSupplier');
+    if (!supplierSelect) {
+        return;
+    }
+
+    let availableSuppliers = Array.isArray(suppliersData) ? suppliersData : [];
+    if (availableSuppliers.length === 0) {
+        try {
+            const fetchedSuppliers = await fetchSuppliers();
+            availableSuppliers = Array.isArray(fetchedSuppliers) ? fetchedSuppliers : [];
+            suppliersData = availableSuppliers;
+        } catch (error) {
+            supplierSelect.innerHTML = '<option value="">-- Để trống nếu không chọn --</option>';
+            throw error;
+        }
+    }
+
+    const normalizedSelectedSupplier = (selectedSupplierName || '').trim();
+    const supplierOptions = availableSuppliers.filter((supplier) => {
+        const supplierName = (supplier?.name || '').trim();
+        return supplier?.active !== false || (normalizedSelectedSupplier && supplierName === normalizedSelectedSupplier);
+    });
+
+    const optionMarkup = supplierOptions.map((supplier) => {
+        const supplierName = supplier?.name || '';
+        const isSelected = supplierName === normalizedSelectedSupplier;
+        return `<option value="${escapeJsString(supplierName)}"${isSelected ? ' selected' : ''}>${escapeHtml(supplierName)}</option>`;
+    }).join('');
+
+    supplierSelect.innerHTML = `<option value="">-- Để trống nếu không chọn --</option>${optionMarkup}`;
+
+    if (normalizedSelectedSupplier && !supplierOptions.some((supplier) => (supplier?.name || '').trim() === normalizedSelectedSupplier)) {
+        supplierSelect.insertAdjacentHTML(
+            'beforeend',
+            `<option value="${escapeJsString(normalizedSelectedSupplier)}" selected>${escapeHtml(normalizedSelectedSupplier)}</option>`
+        );
+    }
+
+    supplierSelect.value = normalizedSelectedSupplier;
+}
+
+async function showAddBookForm() {
     document.getElementById('bookId').value = '';
     document.getElementById('bookTitle').value = '';
     document.getElementById('bookAuthor').value = '';
@@ -275,7 +317,11 @@ function showAddBookForm() {
     document.getElementById('bookCategory').value = '';
     document.getElementById('bookDescription').value = '';
     document.getElementById('bookImage').value = '';
-    document.getElementById('bookSupplier').value = '';
+    try {
+        await loadBookSupplierOptions();
+    } catch (error) {
+        showAlert('Không thể tải danh sách nhà cung cấp: ' + error.message);
+    }
     document.getElementById('bookCoverType').value = 'Bìa Mềm';
     document.getElementById('bookTranslator').value = '';
     document.getElementById('bookPublisher').value = '';
@@ -291,7 +337,7 @@ function hideBookForm() {
 
 async function editBook(id) {
     if (window.AdminBooksBusiness && typeof window.AdminBooksBusiness.editBook === 'function') {
-        await window.AdminBooksBusiness.editBook(id, { getBookById, showAlert });
+        await window.AdminBooksBusiness.editBook(id, { getBookById, loadBookSupplierOptions, showAlert });
         return;
     }
     showAlert('Không thể chỉnh sửa sách do thiếu module business.');

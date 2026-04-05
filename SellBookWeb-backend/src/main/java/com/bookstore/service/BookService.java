@@ -49,10 +49,7 @@ public class BookService {
         Book book = BookMapper.toEntity(bookDTO);
         
         // ✅ Set optional fields with sanitization
-        book.setSupplierName(ValidationUtil.sanitizeSupplierName(
-            bookDTO.getSupplierName(), 
-            bookDTO.getPublisher()
-        ));
+        book.setSupplierName(ValidationUtil.sanitizeSupplierName(bookDTO.getSupplierName()));
         book.setCoverType(ValidationUtil.sanitizeCoverType(bookDTO.getCoverType()));
         
         // ✅ Set defaults
@@ -169,13 +166,7 @@ public class BookService {
         
         // ✅ Use sanitization utility
         if (bookDTO.getSupplierName() != null || bookDTO.getPublisher() != null) {
-            String sanitizedSupplier = ValidationUtil.sanitizeSupplierName(
-                bookDTO.getSupplierName(),
-                bookDTO.getPublisher()
-            );
-            if (sanitizedSupplier != null) {
-                book.setSupplierName(sanitizedSupplier);
-            }
+            book.setSupplierName(ValidationUtil.sanitizeSupplierName(bookDTO.getSupplierName()));
         }
         
         if (bookDTO.getCoverType() != null) {

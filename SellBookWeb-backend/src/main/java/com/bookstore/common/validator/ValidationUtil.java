@@ -40,13 +40,10 @@ public class ValidationUtil {
     }
     
     /**
-     * Sanitize supplier name - use publisher if supplier is empty
+     * Sanitize supplier name and keep it empty when user does not choose one
      */
-    public static String sanitizeSupplierName(String supplierName, String publisherName) {
-        if (isNotEmpty(supplierName)) {
-            return supplierName;
-        }
-        return isNotEmpty(publisherName) ? publisherName : null;
+    public static String sanitizeSupplierName(String supplierName) {
+        return isNotEmpty(supplierName) ? supplierName.trim() : null;
     }
     
     /**
