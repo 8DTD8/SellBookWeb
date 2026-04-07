@@ -29,10 +29,10 @@ services:
       - key: SPRING_MAIL_PASSWORD
         sync: false
 
+  # Static sites: không dùng region (CDN toàn cầu) — xem Render Blueprint spec
   - type: web
     name: sellbook-web
     runtime: static
-    region: oregon
     branch: Test_cloud
     rootDir: SellBookWeb-frontend
     buildCommand: sh render-build.sh
