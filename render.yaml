@@ -1,0 +1,42 @@
+# Render Blueprint — SellBookWeb (API Docker + Static SPA)
+# New → Blueprint → chọn repo; điền các biến sync: false khi được hỏi.
+# Đặt tên service cố định để biết URL .onrender.com trước khi cấu hình CORS / PUBLIC_API_URL.
+
+services:
+  - type: web
+    name: sellbook-api
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: Test_cloud
+    rootDir: SellBookWeb-backend
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: SPRING_DATA_MONGODB_URI
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SPRING_MAIL_USERNAME
+        sync: false
+      - key: SPRING_MAIL_PASSWORD
+        sync: false
+
+  - type: web
+    name: sellbook-web
+    runtime: static
+    region: oregon
+    branch: Test_cloud
+    rootDir: SellBookWeb-frontend
+    buildCommand: sh render-build.sh
+    staticPublishPath: .
+    envVars:
+      - key: PUBLIC_API_URL
+        sync: false
