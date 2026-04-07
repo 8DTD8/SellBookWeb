@@ -129,6 +129,14 @@ async function fetchBooks(page = 0, size = 10) {
     return apiCall(`/books?page=${page}&size=${size}`);
 }
 
+async function fetchAdminBooks(page = 0, size = 1000) {
+    return apiCall(`/admin/books?page=${page}&size=${size}`);
+}
+
+async function fetchAdminDashboardStats() {
+    return apiCall('/admin/dashboard/stats');
+}
+
 async function getBookById(id) {
     return apiCall(`/books/${id}`);
 }
@@ -399,6 +407,8 @@ async function markAllNotificationsAsRead(userId) {
 // Expose all API functions to global scope for use in other scripts
 if (typeof window !== 'undefined') {
     window.fetchBooks = fetchBooks;
+    window.fetchAdminBooks = fetchAdminBooks;
+    window.fetchAdminDashboardStats = fetchAdminDashboardStats;
     window.getBookById = getBookById;
     window.createBook = createBook;
     window.updateBook = updateBook;

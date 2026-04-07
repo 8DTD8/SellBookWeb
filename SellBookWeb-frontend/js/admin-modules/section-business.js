@@ -67,7 +67,7 @@
 
     async function loadDashboardStats(deps) {
         const {
-            fetchBooks,
+            fetchAdminDashboardStats,
             fetchCategories,
             fetchUsers,
             getPendingReviews,
@@ -76,24 +76,26 @@
         } = deps;
 
         try {
-            const [booksResult, categoriesResult, usersResult, reviewsResult] = await Promise.allSettled([
-                fetchBooks(),
+            const [dashboardResult, categoriesResult, usersResult, reviewsResult] = await Promise.allSettled([
+                fetchAdminDashboardStats(),
                 fetchCategories(),
                 fetchUsers(),
                 getPendingReviews()
             ]);
 
-            const books = booksResult.status === 'fulfilled' && Array.isArray(booksResult.value) ? booksResult.value : [];
+            const totalBooks = dashboardResult.status === 'fulfilled'
+                ? Number(dashboardResult.value?.totalBooks || 0)
+                : 0;
             const categories = categoriesResult.status === 'fulfilled' && Array.isArray(categoriesResult.value) ? categoriesResult.value : [];
             const users = usersResult.status === 'fulfilled' && Array.isArray(usersResult.value) ? usersResult.value : [];
             const reviews = reviewsResult.status === 'fulfilled' && Array.isArray(reviewsResult.value) ? reviewsResult.value : [];
 
-            setStat('totalBooks', books.length);
+            setStat('totalBooks', totalBooks);
             setStat('totalCategories', categories.length);
             setStat('totalUsers', users.length);
             setStat('pendingReviews', reviews.length);
 
-            const authError = [booksResult, categoriesResult, usersResult, reviewsResult]
+            const authError = [dashboardResult, categoriesResult, usersResult, reviewsResult]
                 .filter(result => result.status === 'rejected')
                 .map(result => result.reason?.message || '')
                 .find(message => message.toLowerCase().includes('không có quyền') || message.toLowerCase().includes('đăng nhập'));

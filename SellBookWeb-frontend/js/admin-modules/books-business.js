@@ -9,12 +9,12 @@
 
         /**
          * Load books from API, store via setter, render, and populate category filter.
-         * deps: { fetchBooks, renderBooks, loadCategoriesForFilter, showAlert, setBooksData }
+         * deps: { fetchAdminBooks, renderBooks, loadCategoriesForFilter, showAlert, setBooksData }
          */
         async loadBooks(deps) {
-            const { fetchBooks, renderBooks, loadCategoriesForFilter, showAlert, setBooksData } = deps;
+            const { fetchAdminBooks, renderBooks, loadCategoriesForFilter, showAlert, setBooksData } = deps;
             try {
-                const books = await fetchBooks();
+                const books = await fetchAdminBooks(0, 1000);
                 const normalizedBooks = Array.isArray(books)
                     ? books.map((book) => {
                         const { isbn, ...rest } = (book || {});

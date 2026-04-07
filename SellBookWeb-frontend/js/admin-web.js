@@ -221,7 +221,7 @@ async function loadDashboard() {
         && typeof window.AdminSectionBusiness.loadDashboardStats === 'function'
     ) {
         await window.AdminSectionBusiness.loadDashboardStats({
-            fetchBooks,
+            fetchAdminDashboardStats,
             fetchCategories,
             fetchUsers,
             getPendingReviews,
@@ -246,7 +246,7 @@ async function loadDashboard() {
 async function loadBooks() {
     if (window.AdminBooksBusiness && typeof window.AdminBooksBusiness.loadBooks === 'function') {
         await window.AdminBooksBusiness.loadBooks({
-            fetchBooks,
+            fetchAdminBooks,
             renderBooks,
             loadCategoriesForFilter,
             showAlert,
@@ -915,7 +915,7 @@ async function showAllReviews() {
         && typeof window.AdminReviewsBusiness.showAllReviews === 'function'
     ) {
         await window.AdminReviewsBusiness.showAllReviews({
-            fetchBooks,
+            fetchAdminBooks,
             getReviewsByBook,
             renderReviews,
             showAlert

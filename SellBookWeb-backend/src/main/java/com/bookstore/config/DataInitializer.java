@@ -1,10 +1,14 @@
 package com.bookstore.config;
 
 import com.bookstore.model.Category;
+import com.bookstore.model.Book;
 import com.bookstore.model.Coupon;
+import com.bookstore.model.Supplier;
 import com.bookstore.model.User;
+import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CategoryRepository;
 import com.bookstore.repository.CouponRepository;
+import com.bookstore.repository.SupplierRepository;
 import com.bookstore.repository.UserRepository;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -22,13 +26,24 @@ public class DataInitializer {
     private final PasswordEncoder passwordEncoder;
     private final CategoryRepository categoryRepository;
     private final CouponRepository couponRepository;
+    private final SupplierRepository supplierRepository;
+    private final BookRepository bookRepository;
     private final MongoTemplate mongoTemplate;
 
-    public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder, CategoryRepository categoryRepository, CouponRepository couponRepository, MongoTemplate mongoTemplate) {
+    public DataInitializer(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            CategoryRepository categoryRepository,
+            CouponRepository couponRepository,
+            SupplierRepository supplierRepository,
+            BookRepository bookRepository,
+            MongoTemplate mongoTemplate) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.categoryRepository = categoryRepository;
         this.couponRepository = couponRepository;
+        this.supplierRepository = supplierRepository;
+        this.bookRepository = bookRepository;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -36,8 +51,10 @@ public class DataInitializer {
     public void initializeData() {
         dropStaleIndexes();
         initializeAdminUser();
-        initializeCategories();
+        Map<String, String> categoryIds = initializeCategories();
         initializeCoupons();
+        initializeSuppliers();
+        initializeBooks(categoryIds);
     }
 
     private void dropStaleIndexes() {
@@ -83,7 +100,7 @@ public class DataInitializer {
         }
     }
 
-    private void initializeCategories() {
+    private Map<String, String> initializeCategories() {
         LocalDateTime now = LocalDateTime.now();
         Map<String, String> categoryIds = new HashMap<>();
         
@@ -205,6 +222,416 @@ public class DataInitializer {
             "fas fa-pray", lifestyleId, now, categoryIds);
         
         System.out.println("✓ Categories initialized successfully!");
+        return categoryIds;
+    }
+
+    private void initializeSuppliers() {
+        createSupplierIfNotExists(
+            "Nha Nam",
+            "contact@nhanam.vn",
+            "024-35146876",
+            "59 Do Quang, Trung Hoa, Cau Giay",
+            "Ha Noi",
+            "Viet Nam",
+            "Phong doi tac Nha Nam",
+            "NHANAM-VCB-001"
+        );
+
+        createSupplierIfNotExists(
+            "Alpha Books",
+            "info@alphabooks.vn",
+            "024-73089895",
+            "176 Thai Ha, Trung Liet, Dong Da",
+            "Ha Noi",
+            "Viet Nam",
+            "Bo phan kinh doanh Alpha Books",
+            "ALPHABOOKS-VCB-002"
+        );
+
+        System.out.println("✓ Suppliers initialized successfully!");
+    }
+
+    private void initializeBooks(Map<String, String> categoryIds) {
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            System.out.println("⚠ Skip book initialization because category IDs are unavailable");
+            return;
+        }
+
+        createBookIfNotExists(
+            "Nhà Giả Kim",
+            "Paulo Coelho",
+            "Tiểu thuyết nổi tiếng về hành trình theo đuổi giấc mơ và lắng nghe tiếng gọi nội tâm.",
+            89000.0,
+            35,
+            getCategoryId(categoryIds, "Tiểu thuyết"),
+            "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
+            "Nha Nam",
+            "Bìa mềm",
+            "Lê Chu Cầu",
+            "Nhã Nam",
+            10.0,
+            "SALE10",
+            215
+        );
+
+        createBookIfNotExists(
+            "Rừng Na Uy",
+            "Haruki Murakami",
+            "Tác phẩm văn học Nhật Bản hiện đại, đào sâu cô đơn, ký ức và trưởng thành.",
+            125000.0,
+            22,
+            getCategoryId(categoryIds, "Tiểu thuyết"),
+            "https://covers.openlibrary.org/b/isbn/9780375704024-L.jpg",
+            "Nha Nam",
+            "Bìa mềm",
+            "Trịnh Lữ",
+            "Nhã Nam",
+            5.0,
+            "SALE10",
+            164
+        );
+
+        createBookIfNotExists(
+            "1984",
+            "George Orwell",
+            "Tiểu thuyết phản địa đàng kinh điển về kiểm soát thông tin, quyền lực và tự do cá nhân.",
+            99000.0,
+            28,
+            getCategoryId(categoryIds, "Kỳ ảo / Khoa học viễn tưởng"),
+            "https://covers.openlibrary.org/b/isbn/9780451524935-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Secker & Warburg",
+            12.0,
+            "SALE10",
+            241
+        );
+
+        createBookIfNotExists(
+            "Animal Farm",
+            "George Orwell",
+            "Truyện ngụ ngôn chính trị ngắn gọn nhưng sắc bén về quyền lực, tuyên truyền và tha hóa.",
+            76000.0,
+            30,
+            getCategoryId(categoryIds, "Tiểu thuyết"),
+            "https://covers.openlibrary.org/b/isbn/9780451526342-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Penguin Books",
+            0.0,
+            "",
+            187
+        );
+
+        createBookIfNotExists(
+            "Dune",
+            "Frank Herbert",
+            "Sử thi khoa học viễn tưởng về quyền lực, sinh thái và vận mệnh trên hành tinh sa mạc Arrakis.",
+            168000.0,
+            18,
+            getCategoryId(categoryIds, "Kỳ ảo / Khoa học viễn tưởng"),
+            "https://covers.openlibrary.org/b/isbn/9780441172719-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Ace",
+            15.0,
+            "SALE20",
+            143
+        );
+
+        createBookIfNotExists(
+            "The Hobbit",
+            "J.R.R. Tolkien",
+            "Cuộc phiêu lưu kinh điển mở ra Trung Địa, cân bằng hoàn hảo giữa chất thơ và tinh thần khám phá.",
+            145000.0,
+            20,
+            getCategoryId(categoryIds, "Kỳ ảo / Khoa học viễn tưởng"),
+            "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
+            "Nha Nam",
+            "Bìa mềm",
+            "",
+            "Mariner Books",
+            8.0,
+            "SALE10",
+            129
+        );
+
+        createBookIfNotExists(
+            "Murder on the Orient Express",
+            "Agatha Christie",
+            "Vụ án kinh điển của Hercule Poirot với cấu trúc trinh thám mẫu mực và cú chốt nổi tiếng.",
+            92000.0,
+            24,
+            getCategoryId(categoryIds, "Trinh thám / Kinh dị"),
+            "https://covers.openlibrary.org/b/isbn/9780062693662-L.jpg",
+            "Nha Nam",
+            "Bìa mềm",
+            "",
+            "HarperCollins",
+            0.0,
+            "",
+            176
+        );
+
+        createBookIfNotExists(
+            "The Little Prince",
+            "Antoine de Saint-Exupéry",
+            "Tác phẩm giàu chất thơ về tình bạn, trách nhiệm và cách người lớn đánh mất điều quan trọng.",
+            84000.0,
+            40,
+            getCategoryId(categoryIds, "Văn học thiếu nhi"),
+            "https://covers.openlibrary.org/b/isbn/9780156012195-L.jpg",
+            "Nha Nam",
+            "Bìa mềm",
+            "Nguyễn Thành Long",
+            "Nhã Nam",
+            5.0,
+            "SALE10",
+            302
+        );
+
+        createBookIfNotExists(
+            "Atomic Habits",
+            "James Clear",
+            "Cuốn sách thực hành rõ ràng về xây dựng thói quen tốt và loại bỏ thói quen xấu bằng thay đổi nhỏ.",
+            189000.0,
+            26,
+            getCategoryId(categoryIds, "Kỹ năng sống"),
+            "https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Avery",
+            10.0,
+            "SALE10",
+            287
+        );
+
+        createBookIfNotExists(
+            "Thinking, Fast and Slow",
+            "Daniel Kahneman",
+            "Công trình phổ biến khoa học nổi bật về hai hệ thống tư duy và các thiên kiến nhận thức thường gặp.",
+            215000.0,
+            16,
+            getCategoryId(categoryIds, "Tâm lý học"),
+            "https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Farrar, Straus and Giroux",
+            12.0,
+            "SALE20",
+            121
+        );
+
+        createBookIfNotExists(
+            "Sapiens",
+            "Yuval Noah Harari",
+            "Bức tranh lớn về lịch sử loài người, từ cách mạng nhận thức đến xã hội hiện đại.",
+            205000.0,
+            19,
+            getCategoryId(categoryIds, "Lịch sử - Địa lý - Văn hóa"),
+            "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Harper",
+            7.0,
+            "SALE10",
+            198
+        );
+
+        createBookIfNotExists(
+            "Clean Code",
+            "Robert C. Martin",
+            "Sách nền tảng về viết mã dễ đọc, dễ bảo trì và giảm chi phí kỹ thuật dài hạn.",
+            245000.0,
+            14,
+            getCategoryId(categoryIds, "Khoa học - Kỹ thuật"),
+            "https://covers.openlibrary.org/b/isbn/9780132350884-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Prentice Hall",
+            0.0,
+            "",
+            109
+        );
+
+        createBookIfNotExists(
+            "To Kill a Mockingbird",
+            "Harper Lee",
+            "Tiểu thuyết kinh điển về công lý, định kiến và tuổi thơ tại miền Nam nước Mỹ.",
+            118000.0,
+            21,
+            getCategoryId(categoryIds, "Tiểu thuyết"),
+            "https://covers.openlibrary.org/b/isbn/9780061120084-L.jpg",
+            "Nha Nam",
+            "Bìa mềm",
+            "",
+            "Harper Perennial Modern Classics",
+            5.0,
+            "SALE10",
+            178
+        );
+
+        createBookIfNotExists(
+            "Pride and Prejudice",
+            "Jane Austen",
+            "Chuyện tình kinh điển với giọng văn châm biếm sắc sảo về hôn nhân, giai cấp và định kiến.",
+            95000.0,
+            27,
+            getCategoryId(categoryIds, "Tiểu thuyết"),
+            "https://covers.openlibrary.org/b/isbn/9780141439518-L.jpg",
+            "Nha Nam",
+            "Bìa mềm",
+            "",
+            "Penguin Classics",
+            0.0,
+            "",
+            152
+        );
+
+        createBookIfNotExists(
+            "The Catcher in the Rye",
+            "J.D. Salinger",
+            "Một trong những tiểu thuyết trưởng thành nổi tiếng nhất thế kỷ 20, giàu giọng kể và tâm trạng nổi loạn.",
+            109000.0,
+            19,
+            getCategoryId(categoryIds, "Tiểu thuyết"),
+            "https://covers.openlibrary.org/b/isbn/9780316769488-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Little, Brown and Company",
+            0.0,
+            "",
+            134
+        );
+
+        createBookIfNotExists(
+            "Fahrenheit 451",
+            "Ray Bradbury",
+            "Tiểu thuyết cảnh báo nổi tiếng về kiểm duyệt, truyền thông và sự suy tàn của tư duy phản biện.",
+            102000.0,
+            25,
+            getCategoryId(categoryIds, "Kỳ ảo / Khoa học viễn tưởng"),
+            "https://covers.openlibrary.org/b/isbn/9781451673319-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Simon & Schuster",
+            8.0,
+            "SALE10",
+            166
+        );
+
+        createBookIfNotExists(
+            "Brave New World",
+            "Aldous Huxley",
+            "Tác phẩm phản địa đàng kinh điển về xã hội tiêu dùng, kiểm soát sinh học và khoái cảm nhân tạo.",
+            116000.0,
+            17,
+            getCategoryId(categoryIds, "Kỳ ảo / Khoa học viễn tưởng"),
+            "https://covers.openlibrary.org/b/isbn/9780060850524-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Harper Perennial",
+            10.0,
+            "SALE10",
+            127
+        );
+
+        createBookIfNotExists(
+            "The Da Vinci Code",
+            "Dan Brown",
+            "Tiểu thuyết trinh thám ly kỳ xoay quanh biểu tượng học, mật mã và lịch sử tôn giáo.",
+            132000.0,
+            23,
+            getCategoryId(categoryIds, "Trinh thám / Kinh dị"),
+            "https://covers.openlibrary.org/b/isbn/9780307474278-L.jpg",
+            "Nha Nam",
+            "Bìa mềm",
+            "",
+            "Anchor",
+            7.0,
+            "SALE10",
+            214
+        );
+
+        createBookIfNotExists(
+            "The 7 Habits of Highly Effective People",
+            "Stephen R. Covey",
+            "Tác phẩm kinh điển về hiệu quả cá nhân dựa trên nguyên tắc và tư duy dài hạn.",
+            175000.0,
+            20,
+            getCategoryId(categoryIds, "Kỹ năng sống"),
+            "https://covers.openlibrary.org/b/isbn/9780743269513-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Free Press",
+            10.0,
+            "SALE10",
+            248
+        );
+
+        createBookIfNotExists(
+            "How to Win Friends and Influence People",
+            "Dale Carnegie",
+            "Cuốn sách kinh điển về giao tiếp, xây dựng quan hệ và tạo ảnh hưởng trong công việc lẫn đời sống.",
+            148000.0,
+            24,
+            getCategoryId(categoryIds, "Kỹ năng sống"),
+            "https://covers.openlibrary.org/b/isbn/9780671027032-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Pocket Books",
+            5.0,
+            "SALE10",
+            271
+        );
+
+        createBookIfNotExists(
+            "The Psychology of Money",
+            "Morgan Housel",
+            "Những bài học dễ đọc nhưng sâu sắc về hành vi tài chính, rủi ro, tiết kiệm và đầu tư.",
+            165000.0,
+            22,
+            getCategoryId(categoryIds, "Tài chính - Đầu tư"),
+            "https://covers.openlibrary.org/b/isbn/9780857197689-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Harriman House",
+            10.0,
+            "SALE10",
+            233
+        );
+
+        createBookIfNotExists(
+            "The Lean Startup",
+            "Eric Ries",
+            "Cuốn sách nổi bật về cách xây dựng startup bằng kiểm chứng giả thuyết, học hỏi nhanh và tối ưu tài nguyên.",
+            172000.0,
+            18,
+            getCategoryId(categoryIds, "Khởi nghiệp"),
+            "https://covers.openlibrary.org/b/isbn/9780307887894-L.jpg",
+            "Alpha Books",
+            "Bìa mềm",
+            "",
+            "Crown Business",
+            12.0,
+            "SALE20",
+            145
+        );
+
+        System.out.println("✓ Books initialized successfully!");
     }
 
     private void initializeCoupons() {
@@ -250,5 +677,95 @@ public class DataInitializer {
         categoryIds.put(name, saved.getId());
         System.out.println("  ✓ Created category: " + name);
         return saved.getId();
+    }
+
+    private void createSupplierIfNotExists(
+            String name,
+            String email,
+            String phone,
+            String address,
+            String city,
+            String country,
+            String contactPerson,
+            String bankAccount) {
+        boolean exists = supplierRepository.findAll().stream()
+            .anyMatch(existing -> existing != null && existing.getName() != null && existing.getName().equalsIgnoreCase(name));
+
+        if (exists) {
+            return;
+        }
+
+        Supplier supplier = new Supplier();
+        supplier.setName(name);
+        supplier.setEmail(email);
+        supplier.setPhone(phone);
+        supplier.setAddress(address);
+        supplier.setCity(city);
+        supplier.setCountry(country);
+        supplier.setContactPerson(contactPerson);
+        supplier.setBankAccount(bankAccount);
+        supplier.setActive(true);
+        supplier.setCreatedAt(LocalDateTime.now());
+        supplier.setUpdatedAt(LocalDateTime.now());
+        supplierRepository.save(supplier);
+        System.out.println("  ✓ Created supplier: " + name);
+    }
+
+    private void createBookIfNotExists(
+            String title,
+            String author,
+            String description,
+            Double price,
+            Integer quantity,
+            String categoryId,
+            String image,
+            String supplierName,
+            String coverType,
+            String translator,
+            String publisher,
+            Double discount,
+            String discountCode,
+            Integer salesCount) {
+        boolean exists = bookRepository.findAll().stream()
+            .anyMatch(existing -> existing != null && existing.getTitle() != null && existing.getTitle().equalsIgnoreCase(title));
+
+        if (exists) {
+            return;
+        }
+
+        Book book = new Book();
+        book.setTitle(title);
+        book.setAuthor(author);
+        book.setDescription(description);
+        book.setPrice(price);
+        book.setQuantity(quantity);
+        book.setCategoryId(categoryId);
+        book.setImage(image);
+        book.setRating(0.0);
+        book.setSupplierName(supplierName);
+        book.setCoverType(coverType);
+        book.setTranslator(translator);
+        book.setPublisher(publisher);
+        book.setDiscount(discount);
+        book.setDiscountCode(discountCode);
+        book.setSalesCount(salesCount);
+        book.setActive(true);
+        book.setCreatedAt(LocalDateTime.now());
+        book.setUpdatedAt(LocalDateTime.now());
+        bookRepository.save(book);
+        System.out.println("  ✓ Created book: " + title);
+    }
+
+    private String getCategoryId(Map<String, String> categoryIds, String categoryName) {
+        String categoryId = categoryIds.get(categoryName);
+        if (categoryId != null && !categoryId.trim().isEmpty()) {
+            return categoryId;
+        }
+
+        return categoryRepository.findAll().stream()
+            .filter(category -> category != null && category.getName() != null && category.getName().equals(categoryName))
+            .map(Category::getId)
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("Không tìm thấy category: " + categoryName));
     }
 }

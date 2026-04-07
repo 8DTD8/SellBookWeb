@@ -23,10 +23,10 @@
     }
 
     async function showAllReviews(deps) {
-        const { fetchBooks, getReviewsByBook, renderReviews, showAlert } = deps;
+        const { fetchAdminBooks, getReviewsByBook, renderReviews, showAlert } = deps;
 
         try {
-            const books = await fetchBooks();
+            const books = await fetchAdminBooks(0, 1000);
             let allReviews = [];
 
             if (Array.isArray(books)) {
