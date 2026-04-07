@@ -1,0 +1,4 @@
+# Repo root — Docker / deploy secrets
+.env
+.env.*
+!.env.example

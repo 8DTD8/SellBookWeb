@@ -1,0 +1,39 @@
+# Dùng MongoDB Atlas (hoặc Mongo bên ngoài VPS): không chạy container mongo.
+# Tạo cluster Atlas, whitelist IP VPS (0.0.0.0/0 cho demo hoặc IP cố định), lấy connection string.
+#
+# cp .env.example .env  # điền SPRING_DATA_MONGODB_URI=mongodb+srv://...
+# docker compose -f docker-compose.atlas.yml up -d --build
+
+services:
+  backend:
+    build:
+      context: ./SellBookWeb-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI:?Set SPRING_DATA_MONGODB_URI in .env}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost,http://127.0.0.1,http://localhost:80,http://127.0.0.1:80,http://localhost:3000,http://localhost:4200,http://localhost:5500,http://127.0.0.1:3000,http://127.0.0.1:5500,http://127.0.0.1:5501,http://localhost:8080}
+      JWT_SECRET: ${JWT_SECRET:-SellBookWeb-JWT-Secret-Key-MinimumLength-32-Characters-Security-2026-Production}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
+    volumes:
+      - backend_uploads:/app/uploads
+      - backend_logs:/app/logs
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  backend_uploads:
+  backend_logs:

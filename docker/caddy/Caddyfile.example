@@ -1,0 +1,9 @@
+# Đổi yourdomain.com và chạy Caddy trên host (HTTPS tự động).
+# Cài Caddy trên VPS, copy file này thành /etc/caddy/Caddyfile và:
+#   sudo systemctl reload caddy
+#
+# Stack Docker map cổng 80 → container frontend. Caddy reverse_proxy tới localhost:80.
+
+yourdomain.com, www.yourdomain.com {
+    reverse_proxy 127.0.0.1:80
+}
