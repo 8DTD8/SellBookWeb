@@ -2,6 +2,9 @@
 # New → Blueprint → chọn repo; điền các biến sync: false khi được hỏi.
 # Đặt tên service cố định để biết URL .onrender.com trước khi cấu hình CORS / PUBLIC_API_URL.
 
+# dockerfilePath / dockerContext / staticPublishPath: relative to REPO ROOT (Render Blueprint spec).
+# Tránh rootDir + "Dockerfile" — dễ resolve sai thành ./Dockerfile ở gốc repo → build fail.
+
 services:
   - type: web
     name: sellbook-api
@@ -9,10 +12,12 @@ services:
     plan: free
     region: oregon
     branch: Test_cloud
-    rootDir: SellBookWeb-backend
-    dockerfilePath: Dockerfile
-    dockerContext: .
+    dockerfilePath: ./SellBookWeb-backend/Dockerfile
+    dockerContext: ./SellBookWeb-backend
     healthCheckPath: /api/health
+    buildFilter:
+      paths:
+        - SellBookWeb-backend/**
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -34,9 +39,11 @@ services:
     name: sellbook-web
     runtime: static
     branch: Test_cloud
-    rootDir: SellBookWeb-frontend
-    buildCommand: sh render-build.sh
-    staticPublishPath: .
+    buildCommand: cd SellBookWeb-frontend && sh render-build.sh
+    staticPublishPath: ./SellBookWeb-frontend
+    buildFilter:
+      paths:
+        - SellBookWeb-frontend/**
     envVars:
       - key: PUBLIC_API_URL
         sync: false

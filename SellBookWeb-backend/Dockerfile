@@ -1,5 +1,6 @@
 FROM maven:3.9-eclipse-temurin-17-alpine AS build
 WORKDIR /app
+ENV MAVEN_OPTS="-Xmx1024m"
 COPY pom.xml .
 COPY src ./src
 RUN mvn -q -DskipTests package

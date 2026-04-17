@@ -22,6 +22,8 @@ Nhánh gợi ý: **`Test_cloud`** (theo [deploy-vps.md](deploy-vps.md)).
 
 Trong repo đã có [render.yaml](../render.yaml). Trên Render: **New → Blueprint** → chọn repo → nhập biến bí mật khi được hỏi (`sync: false`).
 
+Blueprint dùng `dockerfilePath` / `dockerContext` / `staticPublishPath` **tương đối gốc repo** (ví dụ `./SellBookWeb-backend/Dockerfile`, `./SellBookWeb-frontend`); không trùng cách nhập tùy chọn “Root directory” trên Dashboard.
+
 ### Cách B — Tạo thủ công
 
 **Web Service (API)**
