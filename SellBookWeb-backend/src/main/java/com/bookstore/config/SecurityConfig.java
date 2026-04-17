@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
                 // ✅ Static files (HTML, JS, CSS) - No authentication needed
-                .antMatchers("/", "/index.html", "/src/**", "/pages/**", "/js/**", "/css/**", "/public/**").permitAll()
+                .antMatchers("/", "/favicon.ico", "/error", "/index.html", "/src/**", "/pages/**", "/js/**", "/css/**", "/public/**").permitAll()
                 // ✅ Public read endpoints only
                 .antMatchers(HttpMethod.GET, "/api/health").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/books").permitAll()
