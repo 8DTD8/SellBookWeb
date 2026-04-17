@@ -14,7 +14,7 @@ Nhánh gợi ý: **`Test_cloud`** (theo [deploy-vps.md](deploy-vps.md)).
 ## 1. MongoDB Atlas
 
 1. Tạo cluster (M0 free), database user, network access: **0.0.0.0/0** (demo) hoặc hẹp hơn nếu cần.
-2. Lấy connection string `mongodb+srv://.../bookstore?...` và gán vào `SPRING_DATA_MONGODB_URI` trên service API.
+2. Lấy connection string `mongodb+srv://.../bookstore?...` và gán vào `SPRING_DATA_MONGODB_URI` trên service API. Giá trị phải **bắt đầu bằng** `mongodb+srv://` hoặc `mongodb://`, **không** có khoảng trắng đầu/cuối, **không** bọc dấu `"` trong ô env (nếu paste nhầm sẽ lỗi `The connection string is invalid`).
 
 ## 2. Blueprint hoặc tạo tay trên Dashboard
 
