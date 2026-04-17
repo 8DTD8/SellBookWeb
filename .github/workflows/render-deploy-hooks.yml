@@ -1,0 +1,23 @@
+# Gọi Render Deploy Hook sau khi push lên Test_cloud (không đụng main).
+# Trên Render: mỗi service → Settings → Deploy Hook → tạo URL, thêm vào GitHub:
+#   Repository secrets: RENDER_DEPLOY_HOOK_API, RENDER_DEPLOY_HOOK_WEB
+# Nếu chưa đặt secret, workflow vẫn chạy nhưng bỏ qua bước gọi hook.
+
+name: Render deploy hooks (Test_cloud)
+
+on:
+  push:
+    branches:
+      - Test_cloud
+
+jobs:
+  trigger-render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger API service deploy
+        if: ${{ secrets.RENDER_DEPLOY_HOOK_API != '' }}
+        run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_API }}"
+
+      - name: Trigger static site deploy
+        if: ${{ secrets.RENDER_DEPLOY_HOOK_WEB != '' }}
+        run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_WEB }}"
