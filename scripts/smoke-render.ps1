@@ -1,5 +1,5 @@
-# Kiểm tra nhanh sau khi deploy Render (chạy tay trên Windows PowerShell).
-# Ví dụ:
+# Quick smoke test after Render deploy (run locally in PowerShell).
+# Example:
 #   .\scripts\smoke-render.ps1 -ApiBaseUrl "https://sellbook-api.onrender.com/api" -StaticUrl "https://sellbook-web.onrender.com"
 
 param(
@@ -13,10 +13,10 @@ $ErrorActionPreference = "Stop"
 $health = $ApiBaseUrl.TrimEnd("/") + "/health"
 Write-Host "GET $health"
 $r = Invoke-WebRequest -Uri $health -UseBasicParsing -TimeoutSec 120
-Write-Host "Status:" $r.StatusCode
-Write-Host "Body:" $r.Content
+Write-Host "API health status:" $r.StatusCode
+Write-Host "API health body:" $r.Content
 if ($StaticUrl) {
     Write-Host "GET $StaticUrl"
     $s = Invoke-WebRequest -Uri $StaticUrl -UseBasicParsing -TimeoutSec 120
-    Write-Host "Static status:" $s.StatusCode
+    Write-Host "Static HTTP status:" $s.StatusCode
 }

@@ -1,7 +1,7 @@
-# Gọi Render Deploy Hook sau khi push lên Test_cloud (không đụng main).
-# Trên Render: mỗi service → Settings → Deploy Hook → tạo URL, thêm vào GitHub:
-#   Repository secrets: RENDER_DEPLOY_HOOK_API, RENDER_DEPLOY_HOOK_WEB
-# Nếu chưa đặt secret, workflow vẫn chạy nhưng bỏ qua bước gọi hook.
+# POST Render deploy hooks after push to Test_cloud (does not touch main).
+# In Render: each service → Settings → Deploy Hook → copy URL into GitHub repo secrets:
+#   RENDER_DEPLOY_HOOK_API, RENDER_DEPLOY_HOOK_WEB
+# If secrets are unset, steps are skipped.
 
 name: Render deploy hooks (Test_cloud)
 

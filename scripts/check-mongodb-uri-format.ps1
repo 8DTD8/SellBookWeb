@@ -1,6 +1,5 @@
-# Kiểm tra định dạng chuỗi MongoDB URI (Atlas hoặc local) trước khi dán vào Render.
-# Không kết nối tới cluster — chỉ validate pattern.
-# Ví dụ: .\scripts\check-mongodb-uri-format.ps1 -Uri "mongodb+srv://user:pass@cluster/bookstore?..."
+# Validate MongoDB URI string format before pasting into Render (does not connect to cluster).
+# Example: .\scripts\check-mongodb-uri-format.ps1 -Uri "mongodb+srv://user:pass@cluster/bookstore?..."
 
 param(
     [Parameter(Mandatory = $true)]
@@ -8,8 +7,8 @@ param(
 )
 
 if ($Uri -match '^(mongodb(\+srv)?://)') {
-    Write-Host "OK: URI có vẻ hợp lệ (bắt đầu bằng mongodb:// hoặc mongodb+srv://)."
+    Write-Host "OK: URI prefix looks valid (mongodb:// or mongodb+srv://)."
     exit 0
 }
-Write-Error "URI phải bắt đầu bằng mongodb:// hoặc mongodb+srv://"
+Write-Error "URI must start with mongodb:// or mongodb+srv://"
 exit 1
