@@ -8,6 +8,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -43,10 +44,19 @@ public class AppConfig {
         if (raw == null || raw.isBlank()) {
             raw = DEFAULT_DEV_ORIGINS;
         }
-        return Arrays.stream(raw.split(","))
+        LinkedHashSet<String> origins = Arrays.stream(raw.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList())
-                .toArray(new String[0]);
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        // Deploy (Render): nếu chỉ set FRONTEND_URL mà quên CORS — vẫn cho origin của site gọi API
+        String frontend = env.getProperty("frontend.url");
+        if (frontend != null && !frontend.isBlank()) {
+            String o = frontend.trim();
+            if (o.endsWith("/")) {
+                o = o.substring(0, o.length() - 1);
+            }
+            origins.add(o);
+        }
+        return origins.toArray(new String[0]);
     }
 }
